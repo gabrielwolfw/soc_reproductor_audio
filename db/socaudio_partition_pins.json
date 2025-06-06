@@ -1,0 +1,157 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "audio_DACDAT",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[0]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[1]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[2]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[3]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[4]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[5]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[6]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[7]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[8]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[9]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[10]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[11]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[12]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[13]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[14]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[15]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[16]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[17]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[18]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[19]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[20]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[21]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[22]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[23]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[24]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[25]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[26]",
+					"strict" : false
+				},
+				{
+					"name" : "seven_segments[27]",
+					"strict" : false
+				},
+				{
+					"name" : "clk_fpga",
+					"strict" : false
+				},
+				{
+					"name" : "audio_DACLRCK",
+					"strict" : false
+				},
+				{
+					"name" : "audio_BCLK",
+					"strict" : false
+				},
+				{
+					"name" : "rst_n",
+					"strict" : false
+				},
+				{
+					"name" : "buttons[0]",
+					"strict" : false
+				},
+				{
+					"name" : "buttons[1]",
+					"strict" : false
+				},
+				{
+					"name" : "buttons[2]",
+					"strict" : false
+				},
+				{
+					"name" : "buttons[3]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

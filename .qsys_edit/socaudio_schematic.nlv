@@ -1,0 +1,23 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst socaudio.NIOS.reset_bridge -pg 1
+preplace inst socaudio.JTAG_UART -pg 1 -lvl 3 -y 210
+preplace inst socaudio.RAM -pg 1 -lvl 3 -y 130
+preplace inst socaudio.NIOS -pg 1 -lvl 2 -y 280
+preplace inst socaudio.CLK -pg 1 -lvl 1 -y 450
+preplace inst socaudio.SEVEN_SEGMENTS -pg 1 -lvl 3 -y 410
+preplace inst socaudio.BUTTONS -pg 1 -lvl 3 -y 30
+preplace inst socaudio.TIMER -pg 1 -lvl 3 -y 310
+preplace inst socaudio.NIOS.clock_bridge -pg 1
+preplace inst socaudio -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst socaudio.NIOS.cpu -pg 1
+preplace netloc FAN_OUT<net_container>socaudio</net_container>(MASTER)NIOS.irq,(SLAVE)JTAG_UART.irq,(SLAVE)TIMER.irq) 1 2 1 710
+preplace netloc EXPORT<net_container>socaudio</net_container>(SLAVE)socaudio.reset,(SLAVE)CLK.clk_in_reset) 1 0 1 NJ
+preplace netloc EXPORT<net_container>socaudio</net_container>(SLAVE)CLK.clk_in,(SLAVE)socaudio.clk) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>socaudio</net_container>(SLAVE)NIOS.debug_mem_slave,(SLAVE)SEVEN_SEGMENTS.s1,(SLAVE)BUTTONS.s1,(SLAVE)JTAG_UART.avalon_jtag_slave,(SLAVE)TIMER.s1,(SLAVE)RAM.s1,(MASTER)NIOS.instruction_master,(MASTER)NIOS.data_master) 1 1 2 330 220 690
+preplace netloc FAN_OUT<net_container>socaudio</net_container>(SLAVE)NIOS.clk,(SLAVE)BUTTONS.clk,(SLAVE)RAM.clk1,(SLAVE)JTAG_UART.clk,(SLAVE)SEVEN_SEGMENTS.clk,(SLAVE)TIMER.clk,(MASTER)CLK.clk) 1 1 2 310 240 750
+preplace netloc EXPORT<net_container>socaudio</net_container>(SLAVE)socaudio.buttons,(SLAVE)BUTTONS.external_connection) 1 0 3 NJ 60 NJ 60 NJ
+preplace netloc FAN_OUT<net_container>socaudio</net_container>(MASTER)CLK.clk_reset,(SLAVE)SEVEN_SEGMENTS.reset,(SLAVE)BUTTONS.reset,(SLAVE)TIMER.reset,(SLAVE)NIOS.reset,(SLAVE)JTAG_UART.reset,(SLAVE)RAM.reset1) 1 1 2 330 420 730
+preplace netloc EXPORT<net_container>socaudio</net_container>(SLAVE)socaudio.seven_segments,(SLAVE)SEVEN_SEGMENTS.external_connection) 1 0 3 NJ 440 NJ 440 NJ
+levelinfo -pg 1 0 100 940
+levelinfo -hier socaudio 110 140 450 780 930
