@@ -9,6 +9,6 @@
   </columns>
  </systemtable>
  <library
-   expandedCategories="Library/Interface Protocols/Serial,Library/Processors and Peripherals/Peripherals,Library/Basic Functions,Project,Library/Processors and Peripherals,Library,Library/Basic Functions/On Chip Memory,Library/Interface Protocols" />
+   expandedCategories="Library/Basic Functions/On Chip Memory,Library/Basic Functions,Library,Project" />
  <window width="2902" height="1570" x="-11" y="-11" />
 </preferences>
