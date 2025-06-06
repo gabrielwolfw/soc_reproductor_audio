@@ -4,7 +4,7 @@
  * Machine generated for CPU 'NIOS' in SOPC Builder design 'socaudio'
  * SOPC Builder design path: ../../socaudio.sopcinfo
  *
- * Generated: Thu Jun 05 14:34:00 CST 2025
+ * Generated: Thu Jun 05 19:15:16 CST 2025
  */
 
 /*
