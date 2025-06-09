@@ -8,7 +8,7 @@ module top (
     output [27:0] seven_segments
 );
 
-    socaudio u_socaudio (
+    soc_audio u_soc_audio (
         .audio_BCLK(audio_BCLK),
         .audio_DACDAT(audio_DACDAT),
         .audio_DACLRCK(audio_DACLRCK),

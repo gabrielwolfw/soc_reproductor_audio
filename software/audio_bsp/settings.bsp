@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>18.0</BspVersion>
-        <BspGeneratedTimeStamp>Jun 6, 2025 1:31:13 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1749195073452</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>9/06/2025 12:55:40 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1749495340439</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>C:\Users\lobok\Desktop\Empotrados\soc_reproductor_audio\software\audio_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\socaudio.sopcinfo</SopcDesignFile>
@@ -899,38 +899,44 @@
                 <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         </Setting>
         <MemoryMap>
+                <slaveDescriptor>SHARED_MEMORY</slaveDescriptor>
+                <addressRange>0x00000000 - 0x00007FFF</addressRange>
+                <addressSpan>32768</addressSpan>
+                <attributes>memory</attributes>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>RAM</slaveDescriptor>
-                <addressRange>0x00004000 - 0x00006F9F</addressRange>
-                <addressSpan>12192</addressSpan>
+                <addressRange>0x0000C000 - 0x0000FFFF</addressRange>
+                <addressSpan>16384</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>TIMER</slaveDescriptor>
-                <addressRange>0x00009000 - 0x0000901F</addressRange>
+                <addressRange>0x00011000 - 0x0001101F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>AUDIO</slaveDescriptor>
-                <addressRange>0x00009020 - 0x0000902F</addressRange>
-                <addressSpan>16</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
                 <slaveDescriptor>BUTTONS</slaveDescriptor>
-                <addressRange>0x00009030 - 0x0000903F</addressRange>
+                <addressRange>0x00011020 - 0x0001102F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>SEVEN_SEGMENTS</slaveDescriptor>
-                <addressRange>0x00009040 - 0x0000904F</addressRange>
+                <addressRange>0x00011030 - 0x0001103F</addressRange>
+                <addressSpan>16</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>AUDIO</slaveDescriptor>
+                <addressRange>0x00011040 - 0x0001104F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>JTAG_UART</slaveDescriptor>
-                <addressRange>0x00009050 - 0x00009057</addressRange>
+                <addressRange>0x00011050 - 0x00011057</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

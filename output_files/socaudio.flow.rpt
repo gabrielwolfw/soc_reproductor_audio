@@ -1,5 +1,5 @@
 Flow report for socaudio
-Thu Jun 05 17:28:28 2025
+Mon Jun 09 12:48:28 2025
 Quartus Prime Version 18.0.0 Build 614 04/24/2018 SJ Lite Edition
 
 
@@ -40,25 +40,25 @@ refer to the applicable agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Thu Jun 05 17:28:05 2025       ;
+; Flow Status                     ; Successful - Mon Jun 09 12:47:37 2025       ;
 ; Quartus Prime Version           ; 18.0.0 Build 614 04/24/2018 SJ Lite Edition ;
 ; Revision Name                   ; socaudio                                    ;
-; Top-level Entity Name           ; top                                         ;
+; Top-level Entity Name           ; soc_audio                                   ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSEMA5F31C6                                ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 1,481 / 32,070 ( 5 % )                      ;
-; Total registers                 ; 2271                                        ;
-; Total pins                      ; 37 / 457 ( 8 % )                            ;
+; Logic utilization (in ALMs)     ; 1,956 / 32,070 ( 6 % )                      ;
+; Total registers                 ; 3955                                        ;
+; Total pins                      ; 117 / 457 ( 26 % )                          ;
 ; Total virtual pins              ; 0                                           ;
-; Total block memory bits         ; 164,800 / 4,065,280 ( 4 % )                 ;
-; Total DSP Blocks                ; 3 / 87 ( 3 % )                              ;
+; Total block memory bits         ; 146,432 / 4,065,280 ( 4 % )                 ;
+; Total DSP Blocks                ; 0 / 87 ( 0 % )                              ;
 ; Total HSSI RX PCSs              ; 0                                           ;
 ; Total HSSI PMA RX Deserializers ; 0                                           ;
 ; Total HSSI TX PCSs              ; 0                                           ;
 ; Total HSSI PMA TX Serializers   ; 0                                           ;
-; Total PLLs                      ; 0 / 6 ( 0 % )                               ;
-; Total DLLs                      ; 0 / 4 ( 0 % )                               ;
+; Total PLLs                      ; 2 / 6 ( 33 % )                              ;
+; Total DLLs                      ; 1 / 4 ( 25 % )                              ;
 +---------------------------------+---------------------------------------------+
 
 
@@ -67,35 +67,66 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 06/05/2025 17:17:30 ;
+; Start date & time ; 06/09/2025 12:39:39 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; socaudio            ;
 +-------------------+---------------------+
 
 
-+---------------------------------------------------------------------------------------------------------------------------------------------+
-; Flow Non-Default Global Settings                                                                                                            ;
-+-------------------------------------+------------------------------------------------------------+---------------+-------------+------------+
-; Assignment Name                     ; Value                                                      ; Default Value ; Entity Name ; Section Id ;
-+-------------------------------------+------------------------------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 10995770589194.174916544810368                             ; --            ; --          ; --         ;
-; MAX_CORE_JUNCTION_TEMP              ; 85                                                         ; --            ; --          ; --         ;
-; MIN_CORE_JUNCTION_TEMP              ; 0                                                          ; --            ; --          ; --         ;
-; MISC_FILE                           ; socaudio/synthesis/../socaudio.cmp                         ; --            ; --          ; --         ;
-; MISC_FILE                           ; socaudio/synthesis/../../socaudio.qsys                     ; --            ; --          ; --         ;
-; PARTITION_COLOR                     ; -- (Not supported for targeted family)                     ; --            ; top         ; Top        ;
-; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family)                     ; --            ; top         ; Top        ;
-; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family)                     ; --            ; top         ; Top        ;
-; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                                        ; --            ; --          ; --         ;
-; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW                      ; --            ; --          ; --         ;
-; PROJECT_OUTPUT_DIRECTORY            ; output_files                                               ; --            ; --          ; --         ;
-; SLD_FILE                            ; socaudio/synthesis/socaudio.regmap                         ; --            ; --          ; --         ;
-; SLD_FILE                            ; socaudio/synthesis/socaudio.debuginfo                      ; --            ; --          ; --         ;
-; SLD_INFO                            ; QSYS_NAME socaudio HAS_SOPCINFO 1 GENERATION_ID 1749161428 ; --            ; --          ; --         ;
-; SOPCINFO_FILE                       ; socaudio/synthesis/../../socaudio.sopcinfo                 ; --            ; --          ; --         ;
-; SYNTHESIS_ONLY_QIP                  ; On                                                         ; --            ; --          ; --         ;
-; TOP_LEVEL_ENTITY                    ; top                                                        ; socaudio      ; --          ; --         ;
-+-------------------------------------+------------------------------------------------------------+---------------+-------------+------------+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                                                                           ;
++---------------------------------------+-------------------------------------------------------------------------+---------------+-----------------------------+------------+
+; Assignment Name                       ; Value                                                                   ; Default Value ; Entity Name                 ; Section Id ;
++---------------------------------------+-------------------------------------------------------------------------+---------------+-----------------------------+------------+
+; COMPILER_SIGNATURE_ID                 ; 10995770589194.174949437316128                                          ; --            ; --                          ; --         ;
+; ECO_REGENERATE_REPORT                 ; On                                                                      ; Off           ; --                          ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/alt_types.pre.h                ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/emif.pre.xml                   ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sdram_io.pre.h                 ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sequencer.pre.c                ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sequencer.pre.h                ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sequencer_auto.pre.h           ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sequencer_auto_ac_init.pre.c   ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sequencer_auto_inst_init.pre.c ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/sequencer_defines.pre.h        ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/system.pre.h                   ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/tclrpt.pre.c                   ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/sequencer/tclrpt.pre.h                   ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_ISW_FILE                          ; soc_audio/synthesis/submodules/hps.pre.xml                              ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; HPS_PARTITION                         ; On                                                                      ; --            ; soc_audio_HPS_hps_io_border ; --         ;
+; MAX_CORE_JUNCTION_TEMP                ; 85                                                                      ; --            ; --                          ; --         ;
+; MIN_CORE_JUNCTION_TEMP                ; 0                                                                       ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/../soc_audio.cmp                                    ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/../../C                                             ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/soc_audio_HPS_hps.svd                               ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/../../soc_audio.qsys                                ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/alt_types.pre.h                ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/emif.pre.xml                   ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sdram_io.pre.h                 ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sequencer.pre.c                ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sequencer.pre.h                ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sequencer_auto.pre.h           ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sequencer_auto_ac_init.pre.c   ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sequencer_auto_inst_init.pre.c ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/sequencer_defines.pre.h        ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/system.pre.h                   ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/tclrpt.pre.c                   ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/sequencer/tclrpt.pre.h                   ; --            ; --                          ; --         ;
+; MISC_FILE                             ; soc_audio/synthesis/submodules/hps.pre.xml                              ; --            ; --                          ; --         ;
+; PARTITION_COLOR                       ; -- (Not supported for targeted family)                                  ; --            ; soc_audio                   ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL   ; -- (Not supported for targeted family)                                  ; --            ; soc_audio                   ; Top        ;
+; PARTITION_NETLIST_TYPE                ; -- (Not supported for targeted family)                                  ; --            ; soc_audio                   ; Top        ;
+; POWER_BOARD_THERMAL_MODEL             ; None (CONSERVATIVE)                                                     ; --            ; --                          ; --         ;
+; POWER_PRESET_COOLING_SOLUTION         ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW                                   ; --            ; --                          ; --         ;
+; PROJECT_OUTPUT_DIRECTORY              ; output_files                                                            ; --            ; --                          ; --         ;
+; SLD_FILE                              ; soc_audio/synthesis/soc_audio.regmap                                    ; --            ; --                          ; --         ;
+; SLD_FILE                              ; soc_audio/synthesis/soc_audio.debuginfo                                 ; --            ; --                          ; --         ;
+; SLD_INFO                              ; QSYS_NAME soc_audio HAS_SOPCINFO 1 GENERATION_ID 1749456310             ; --            ; soc_audio                   ; --         ;
+; SOPCINFO_FILE                         ; soc_audio/synthesis/../../soc_audio.sopcinfo                            ; --            ; --                          ; --         ;
+; SYNTHESIS_ONLY_QIP                    ; On                                                                      ; --            ; --                          ; --         ;
+; TOP_LEVEL_ENTITY                      ; soc_audio                                                               ; socaudio      ; --                          ; --         ;
+; USE_DLL_FREQUENCY_FOR_DQS_DELAY_CHAIN ; On                                                                      ; Off           ; --                          ; --         ;
++---------------------------------------+-------------------------------------------------------------------------+---------------+-----------------------------+------------+
 
 
 +--------------------------------------------------------------------------------------------------------------------------+
@@ -103,11 +134,11 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:01:43     ; 1.0                     ; 5117 MB             ; 00:02:42                           ;
-; Fitter               ; 00:08:18     ; 1.1                     ; 7888 MB             ; 00:52:47                           ;
-; Assembler            ; 00:00:20     ; 1.0                     ; 4886 MB             ; 00:00:19                           ;
-; Timing Analyzer      ; 00:00:21     ; 3.0                     ; 5376 MB             ; 00:00:42                           ;
-; Total                ; 00:10:42     ; --                      ; --                  ; 00:56:30                           ;
+; Analysis & Synthesis ; 00:03:11     ; 1.0                     ; 5299 MB             ; 00:04:20                           ;
+; Fitter               ; 00:04:26     ; 1.2                     ; 8499 MB             ; 00:29:10                           ;
+; Assembler            ; 00:00:16     ; 1.0                     ; 4933 MB             ; 00:00:14                           ;
+; Timing Analyzer      ; 00:00:50     ; 1.7                     ; 5817 MB             ; 00:01:14                           ;
+; Total                ; 00:08:43     ; --                      ; --                  ; 00:34:58                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

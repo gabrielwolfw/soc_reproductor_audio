@@ -4,7 +4,7 @@
  * Machine generated for CPU 'NIOS' in SOPC Builder design 'socaudio'
  * SOPC Builder design path: ../../socaudio.sopcinfo
  *
- * Generated: Thu Jun 05 23:16:20 CST 2025
+ * Generated: Mon Jun 09 12:55:42 CST 2025
  */
 
 /*
@@ -65,10 +65,12 @@
  *
  */
 
-#define RAM_REGION_BASE 0x4020
-#define RAM_REGION_SPAN 12160
-#define RESET_REGION_BASE 0x4000
+#define RAM_REGION_BASE 0xc020
+#define RAM_REGION_SPAN 16352
+#define RESET_REGION_BASE 0xc000
 #define RESET_REGION_SPAN 32
+#define SHARED_MEMORY_REGION_BASE 0x0
+#define SHARED_MEMORY_REGION_SPAN 32768
 
 
 /*

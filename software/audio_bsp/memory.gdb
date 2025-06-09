@@ -3,7 +3,7 @@
 # Machine generated for CPU 'NIOS' in SOPC Builder design 'socaudio'
 # SOPC Builder design path: ../../socaudio.sopcinfo
 #
-# Generated: Thu Jun 05 23:16:20 CST 2025
+# Generated: Mon Jun 09 12:55:42 CST 2025
 
 # DO NOT MODIFY THIS FILE
 #
@@ -46,5 +46,8 @@
 # The cache attribute is specified which improves GDB performance
 # by allowing GDB to cache memory contents on the host.
 
+# SHARED_MEMORY
+memory 0x0 0x8000 cache
+
 # RAM
-memory 0x4000 0x6fa0 cache
+memory 0xc000 0x10000 cache

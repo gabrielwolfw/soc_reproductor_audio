@@ -4,7 +4,7 @@
  * Machine generated for CPU 'NIOS' in SOPC Builder design 'socaudio'
  * SOPC Builder design path: ../../socaudio.sopcinfo
  *
- * Generated: Thu Jun 05 23:16:20 CST 2025
+ * Generated: Mon Jun 09 12:55:42 CST 2025
  */
 
 /*
@@ -50,12 +50,14 @@
 
 MEMORY
 {
-    reset : ORIGIN = 0x4000, LENGTH = 32
-    RAM : ORIGIN = 0x4020, LENGTH = 12160
+    SHARED_MEMORY : ORIGIN = 0x0, LENGTH = 32768
+    reset : ORIGIN = 0xc000, LENGTH = 32
+    RAM : ORIGIN = 0xc020, LENGTH = 16352
 }
 
 /* Define symbols for each memory base-address */
-__alt_mem_RAM = 0x4000;
+__alt_mem_SHARED_MEMORY = 0x0;
+__alt_mem_RAM = 0xc000;
 
 OUTPUT_FORMAT( "elf32-littlenios2",
                "elf32-littlenios2",
@@ -307,7 +309,24 @@ SECTIONS
      *
      */
 
-    .RAM LOADADDR (.bss) + SIZEOF (.bss) : AT ( LOADADDR (.bss) + SIZEOF (.bss) )
+    .SHARED_MEMORY : AT ( LOADADDR (.bss) + SIZEOF (.bss) )
+    {
+        PROVIDE (_alt_partition_SHARED_MEMORY_start = ABSOLUTE(.));
+        *(.SHARED_MEMORY .SHARED_MEMORY. SHARED_MEMORY.*)
+        . = ALIGN(4);
+        PROVIDE (_alt_partition_SHARED_MEMORY_end = ABSOLUTE(.));
+    } > SHARED_MEMORY
+
+    PROVIDE (_alt_partition_SHARED_MEMORY_load_addr = LOADADDR(.SHARED_MEMORY));
+
+    /*
+     *
+     * This section's LMA is set to the .text region.
+     * crt0 will copy to this section's specified mapped region virtual memory address (VMA)
+     *
+     */
+
+    .RAM LOADADDR (.SHARED_MEMORY) + SIZEOF (.SHARED_MEMORY) : AT ( LOADADDR (.SHARED_MEMORY) + SIZEOF (.SHARED_MEMORY) )
     {
         PROVIDE (_alt_partition_RAM_start = ABSOLUTE(.));
         *(.RAM .RAM. RAM.*)
@@ -367,7 +386,7 @@ SECTIONS
 /*
  * Don't override this, override the __alt_stack_* symbols instead.
  */
-__alt_data_end = 0x6fa0;
+__alt_data_end = 0x10000;
 
 /*
  * The next two symbols define the location of the default stack.  You can
@@ -383,4 +402,4 @@ PROVIDE( __alt_stack_limit   = __alt_stack_base );
  * Override this symbol to put the heap in a different memory.
  */
 PROVIDE( __alt_heap_start    = end );
-PROVIDE( __alt_heap_limit    = 0x6fa0 );
+PROVIDE( __alt_heap_limit    = 0x10000 );
