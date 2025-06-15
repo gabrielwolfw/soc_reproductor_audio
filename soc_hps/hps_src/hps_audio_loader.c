@@ -13,8 +13,8 @@
 #define HW_REGS_MASK    ( HW_REGS_SPAN - 1 )
 
 // Offsets en el bridge para comunicación FPGA
-#define SHARED_CTRL_OFFSET    0x0000      // Control structure offset
-#define SHARED_AUDIO_OFFSET   0x1000      // Audio data offset
+#define SHARED_CTRL_OFFSET    0x200000
+#define SHARED_AUDIO_OFFSET   (0x200000 + 0x0400)
 
 // Estructura de control (debe coincidir con FPGA)
 typedef struct __attribute__((packed)) {
