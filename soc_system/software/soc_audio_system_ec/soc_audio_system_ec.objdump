@@ -9,11 +9,11 @@ Program Header:
     LOAD off    0x00001000 vaddr 0x00000000 paddr 0x00000000 align 2**12
          filesz 0x00000020 memsz 0x00000020 flags r-x
     LOAD off    0x00001020 vaddr 0x00000020 paddr 0x00000020 align 2**12
-         filesz 0x0000136c memsz 0x0000136c flags r-x
-    LOAD off    0x0000238c vaddr 0x0000138c paddr 0x00001478 align 2**12
-         filesz 0x000000ec memsz 0x000000ec flags rw-
-    LOAD off    0x00002564 vaddr 0x00001564 paddr 0x00001564 align 2**12
-         filesz 0x00000000 memsz 0x00000130 flags rw-
+         filesz 0x00001d38 memsz 0x00001d38 flags r-x
+    LOAD off    0x00002d58 vaddr 0x00001d58 paddr 0x00001e3c align 2**12
+         filesz 0x000000e4 memsz 0x000000e4 flags rw-
+    LOAD off    0x00002f20 vaddr 0x00001f20 paddr 0x00001f20 align 2**12
+         filesz 0x00000000 memsz 0x00000134 flags rw-
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
@@ -21,66 +21,69 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .exceptions   00000160  00000020  00000020  00001020  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .text         000010b0  00000180  00000180  00001180  2**2
+  2 .text         0000197c  00000180  00000180  00001180  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  3 .rodata       0000015c  00001230  00001230  00002230  2**2
+  3 .rodata       0000025c  00001afc  00001afc  00002afc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  4 .rwdata       000000ec  0000138c  00001478  0000238c  2**2
+  4 .rwdata       000000e4  00001d58  00001e3c  00002d58  2**2
                   CONTENTS, ALLOC, LOAD, DATA, SMALL_DATA
-  5 .bss          00000130  00001564  00001564  00002564  2**2
+  5 .bss          00000134  00001f20  00001f20  00002f20  2**2
                   ALLOC, SMALL_DATA
-  6 .RAM          00000000  00001694  00001694  00002478  2**0
+  6 .RAM          00000000  00002054  00002054  00002e3c  2**0
                   CONTENTS
-  7 .comment      00000023  00000000  00000000  00002478  2**0
+  7 .SHARED_MEMORY 00000000  00040000  00040000  00002e3c  2**0
+                  CONTENTS
+  8 .comment      00000023  00000000  00000000  00002e3c  2**0
                   CONTENTS, READONLY
-  8 .debug_aranges 00000388  00000000  00000000  000024a0  2**3
+  9 .debug_aranges 000003a8  00000000  00000000  00002e60  2**3
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_info   00003964  00000000  00000000  00002828  2**0
+ 10 .debug_info   00003dfc  00000000  00000000  00003208  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_abbrev 0000165b  00000000  00000000  0000618c  2**0
+ 11 .debug_abbrev 0000175e  00000000  00000000  00007004  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_line   00001700  00000000  00000000  000077e7  2**0
+ 12 .debug_line   000018e4  00000000  00000000  00008762  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_frame  000005d0  00000000  00000000  00008ee8  2**2
+ 13 .debug_frame  0000063c  00000000  00000000  0000a048  2**2
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_str    000015cc  00000000  00000000  000094b8  2**0
+ 14 .debug_str    000017e2  00000000  00000000  0000a684  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_loc    0000132b  00000000  00000000  0000aa84  2**0
+ 15 .debug_loc    000014a6  00000000  00000000  0000be66  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_alt_sim_info 00000010  00000000  00000000  0000bdb0  2**2
+ 16 .debug_alt_sim_info 00000010  00000000  00000000  0000d30c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_ranges 00000250  00000000  00000000  0000bdc0  2**3
+ 17 .debug_ranges 00000238  00000000  00000000  0000d320  2**3
                   CONTENTS, READONLY, DEBUGGING
- 17 .thread_model 00000003  00000000  00000000  0000d7e6  2**0
+ 18 .thread_model 00000003  00000000  00000000  0000ee22  2**0
                   CONTENTS, READONLY
- 18 .cpu          00000006  00000000  00000000  0000d7e9  2**0
+ 19 .cpu          00000006  00000000  00000000  0000ee25  2**0
                   CONTENTS, READONLY
- 19 .qsys         00000001  00000000  00000000  0000d7ef  2**0
+ 20 .qsys         00000001  00000000  00000000  0000ee2b  2**0
                   CONTENTS, READONLY
- 20 .simulation_enabled 00000001  00000000  00000000  0000d7f0  2**0
+ 21 .simulation_enabled 00000001  00000000  00000000  0000ee2c  2**0
                   CONTENTS, READONLY
- 21 .stderr_dev   00000009  00000000  00000000  0000d7f1  2**0
+ 22 .stderr_dev   00000009  00000000  00000000  0000ee2d  2**0
                   CONTENTS, READONLY
- 22 .stdin_dev    00000009  00000000  00000000  0000d7fa  2**0
+ 23 .stdin_dev    00000009  00000000  00000000  0000ee36  2**0
                   CONTENTS, READONLY
- 23 .stdout_dev   00000009  00000000  00000000  0000d803  2**0
+ 24 .stdout_dev   00000009  00000000  00000000  0000ee3f  2**0
                   CONTENTS, READONLY
- 24 .sopc_system_name 0000000a  00000000  00000000  0000d80c  2**0
+ 25 .sopc_system_name 0000000a  00000000  00000000  0000ee48  2**0
                   CONTENTS, READONLY
- 25 .quartus_project_dir 00000021  00000000  00000000  0000d816  2**0
+ 26 .quartus_project_dir 00000021  00000000  00000000  0000ee52  2**0
                   CONTENTS, READONLY
- 26 .jdi          00004909  00000000  00000000  0000d837  2**0
+ 27 .jdi          00004909  00000000  00000000  0000ee73  2**0
                   CONTENTS, READONLY
- 27 .sopcinfo     0004d276  00000000  00000000  00012140  2**0
+ 28 .sopcinfo     002b00fc  00000000  00000000  0001377c  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 00000000 l    d  .entry	00000000 .entry
 00000020 l    d  .exceptions	00000000 .exceptions
 00000180 l    d  .text	00000000 .text
-00001230 l    d  .rodata	00000000 .rodata
-0000138c l    d  .rwdata	00000000 .rwdata
-00001564 l    d  .bss	00000000 .bss
-00001694 l    d  .RAM	00000000 .RAM
+00001afc l    d  .rodata	00000000 .rodata
+00001d58 l    d  .rwdata	00000000 .rwdata
+00001f20 l    d  .bss	00000000 .bss
+00002054 l    d  .RAM	00000000 .RAM
+00040000 l    d  .SHARED_MEMORY	00000000 .SHARED_MEMORY
 00000000 l    d  .comment	00000000 .comment
 00000000 l    d  .debug_aranges	00000000 .debug_aranges
 00000000 l    d  .debug_info	00000000 .debug_info
@@ -96,11 +99,11 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 alt_irq_handler.c
 00000000 l    df *ABS*	00000000 alt_instruction_exception_entry.c
 00000000 l    df *ABS*	00000000 hello_world_small.c
-000001bc l     F .text	000000b8 audio_isr
-00001564 l     O .bss	00000004 sample_index
-00000418 l     F .text	0000006c timer_isr
-00001444 l     O .rwdata	00000004 prev_button_state.2294
+000005d0 l     F .text	00000054 audio_isr
+00000784 l     F .text	000001d4 timer_isr
+00001e10 l     O .rwdata	00000004 prev_button_state.2339
 00000000 l    df *ABS*	00000000 lib2-divmod.c
+00000000 l    df *ABS*	00000000 lib2-mul.c
 00000000 l    df *ABS*	00000000 alt_irq_register.c
 00000000 l    df *ABS*	00000000 alt_irq_vars.c
 00000000 l    df *ABS*	00000000 alt_load.c
@@ -109,13 +112,13 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 alt_putchar.c
 00000000 l    df *ABS*	00000000 alt_putstr.c
 00000000 l    df *ABS*	00000000 alt_sys_init.c
-000013bc l     O .rwdata	00000030 AUDIO_CONFIG
-0000138c l     O .rwdata	00000030 AUDIO
+00001d88 l     O .rwdata	00000030 AUDIO_CONFIG
+00001d58 l     O .rwdata	00000030 AUDIO
 00000000 l    df *ABS*	00000000 altera_avalon_jtag_uart_write.c
 00000000 l    df *ABS*	00000000 altera_up_avalon_audio.c
 00000000 l    df *ABS*	00000000 alt_dcache_flush_all.c
 00000000 l    df *ABS*	00000000 alt_dev.c
-0000107c l     F .text	00000008 alt_dev_null_write
+00001948 l     F .text	00000008 alt_dev_null_write
 00000000 l    df *ABS*	00000000 alt_dev_llist_insert.c
 00000000 l    df *ABS*	00000000 alt_errno.c
 00000000 l    df *ABS*	00000000 alt_find_dev.c
@@ -124,100 +127,105 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 int_errno.c
 00000000 l    df *ABS*	00000000 memcmp.c
 00000000 l    df *ABS*	00000000 strlen.c
-0000158c g     O .bss	00000004 alt_instruction_exception_handler
-00000afc g     F .text	0000002c alt_main
-00001594 g     O .bss	00000100 alt_irq
-00001478 g       *ABS*	00000000 __flash_rwdata_start
-0000156c g     O .bss	00000004 elapsed_seconds
-00000e54 g     F .text	00000020 alt_up_audio_read_fifo_avail
-00000ee0 g     F .text	00000024 alt_up_audio_record_r
-00000e30 g     F .text	00000024 alt_up_audio_reset_audio_core
-00000ce0 g     F .text	00000038 alt_putstr
-00000274 g     F .text	000000d4 generate_audio_samples
-00001168 g     F .text	00000008 altera_nios2_gen2_irq_init
+00001f4c g     O .bss	00000004 alt_instruction_exception_handler
+000013c8 g     F .text	0000002c alt_main
+00001f54 g     O .bss	00000100 alt_irq
+00001e3c g       *ABS*	00000000 __flash_rwdata_start
+00001f2c g     O .bss	00000004 elapsed_seconds
+00001720 g     F .text	00000020 alt_up_audio_read_fifo_avail
+000017ac g     F .text	00000024 alt_up_audio_record_r
+000016fc g     F .text	00000024 alt_up_audio_reset_audio_core
+000015ac g     F .text	00000038 alt_putstr
+00001a34 g     F .text	00000008 altera_nios2_gen2_irq_init
+00001e18 g     O .rwdata	00000004 shared_ctrl
 00000000 g     F .entry	0000000c __reset
 00000020 g       *ABS*	00000000 __flash_exceptions_start
-00001590 g     O .bss	00000004 errno
-00000e1c g     F .text	00000014 alt_up_audio_write_interrupt_pending
-00001584 g     O .bss	00000004 alt_argv
-00009444 g       *ABS*	00000000 _gp
-000013ec g     O .rwdata	00000030 alt_fd_list
-000010f0 g     F .text	00000074 alt_find_dev
-00001170 g     F .text	00000074 alt_exception_cause_generated_bad_addr
-00001048 g     F .text	00000018 alt_up_audio_read_fifo_head
-000008cc g     F .text	00000064 .hidden __udivsi3
-00001578 g     O .bss	00000004 audio_dev
-00001460 g     O .rwdata	00000004 alt_max_fd
-00001060 g     F .text	00000018 alt_up_audio_write_fifo_head
-00000988 g     F .text	00000094 alt_irq_register
-00001694 g       *ABS*	00000000 __bss_end
-00000da8 g     F .text	00000008 alt_up_audio_open_dev
-00001448 g     O .rwdata	00000004 sample_low
-00000fbc g     F .text	00000068 alt_up_audio_play_r
-0000157c g     O .bss	00000004 alt_irq_active
+00001f50 g     O .bss	00000004 errno
+000016e8 g     F .text	00000014 alt_up_audio_write_interrupt_pending
+00001f44 g     O .bss	00000004 alt_argv
+00009e10 g       *ABS*	00000000 _gp
+00001db8 g     O .rwdata	00000030 alt_fd_list
+00000204 g     F .text	00000100 request_next_chunk
+000019bc g     F .text	00000074 alt_find_dev
+00001e14 g     O .rwdata	00000004 shared_data
+00001a3c g     F .text	00000074 alt_exception_cause_generated_bad_addr
+00001914 g     F .text	00000018 alt_up_audio_read_fifo_head
+00001170 g     F .text	00000064 .hidden __udivsi3
+000001bc g     F .text	00000048 check_hps_connection
+00001f38 g     O .bss	00000004 audio_dev
+00001f24 g     O .bss	00000004 audio_read_ptr
+00001e24 g     O .rwdata	00000004 alt_max_fd
+0000192c g     F .text	00000018 alt_up_audio_write_fifo_head
+00001254 g     F .text	00000094 alt_irq_register
+00002054 g       *ABS*	00000000 __bss_end
+00001674 g     F .text	00000008 alt_up_audio_open_dev
+00001888 g     F .text	00000068 alt_up_audio_play_r
+00001f3c g     O .bss	00000004 alt_irq_active
 000000fc g     F .exceptions	00000060 alt_irq_handler
-0000141c g     O .rwdata	00000028 alt_dev_null
-00001078 g     F .text	00000004 alt_dcache_flush_all
-00001478 g       *ABS*	00000000 __ram_rwdata_end
-00001464 g     O .rwdata	00000008 alt_dev_list
-0000145c g     O .rwdata	00000004 JTAG_UART
-0000138c g       *ABS*	00000000 __ram_rodata_end
-00000930 g     F .text	00000058 .hidden __umodsi3
-00001694 g       *ABS*	00000000 end
+00001de8 g     O .rwdata	00000028 alt_dev_null
+00001944 g     F .text	00000004 alt_dcache_flush_all
+00001e3c g       *ABS*	00000000 __ram_rwdata_end
+00001e28 g     O .rwdata	00000008 alt_dev_list
+00001e20 g     O .rwdata	00000004 JTAG_UART
+00001d58 g       *ABS*	00000000 __ram_rodata_end
+000011d4 g     F .text	00000058 .hidden __umodsi3
+00002054 g       *ABS*	00000000 end
 0000015c g     F .exceptions	00000024 alt_instruction_exception_entry
 00008000 g       *ABS*	00000000 __alt_stack_pointer
-00000d74 g     F .text	00000034 altera_avalon_jtag_uart_write
-00000b28 g     F .text	00000170 alt_printf
-00000484 g     F .text	00000268 handle_buttons
+00001f20 g     O .bss	00000004 system_uptime_ms
+00001640 g     F .text	00000034 altera_avalon_jtag_uart_write
+000013f4 g     F .text	00000170 alt_printf
+00000958 g     F .text	00000240 handle_buttons
 00000180 g     F .text	0000003c _start
-00000f6c g     F .text	00000050 alt_up_audio_write_fifo
-00000d38 g     F .text	0000003c alt_sys_init
-00000e94 g     F .text	0000004c alt_up_audio_read_fifo
-00000df0 g     F .text	00000018 alt_up_audio_disable_write_interrupt
-0000138c g       *ABS*	00000000 __ram_rwdata_start
-00001230 g       *ABS*	00000000 __ram_rodata_start
-00001454 g     O .rwdata	00000004 current_track
-00000348 g     F .text	000000d0 update_seven_segment_display
-00000ddc g     F .text	00000014 alt_up_audio_enable_write_interrupt
-000011e4 g     F .text	00000030 memcmp
-00001694 g       *ABS*	00000000 __alt_stack_base
-00001450 g     O .rwdata	00000004 current_freq
-00000dc4 g     F .text	00000018 alt_up_audio_disable_read_interrupt
-00001084 g     F .text	0000006c alt_dev_llist_insert
-00001564 g       *ABS*	00000000 __bss_start
-000006ec g     F .text	000000e8 main
+00001838 g     F .text	00000050 alt_up_audio_write_fifo
+00001604 g     F .text	0000003c alt_sys_init
+00001760 g     F .text	0000004c alt_up_audio_read_fifo
+000016bc g     F .text	00000018 alt_up_audio_disable_write_interrupt
+00040000 g       *ABS*	00000000 __alt_mem_SHARED_MEMORY
+0000122c g     F .text	00000028 .hidden __mulsi3
+00001d58 g       *ABS*	00000000 __ram_rwdata_start
+00001afc g       *ABS*	00000000 __ram_rodata_start
+000006b4 g     F .text	000000d0 update_seven_segment_display
+000016a8 g     F .text	00000014 alt_up_audio_enable_write_interrupt
+00001ab0 g     F .text	00000030 memcmp
+00002054 g       *ABS*	00000000 __alt_stack_base
+00001690 g     F .text	00000018 alt_up_audio_disable_read_interrupt
+00001950 g     F .text	0000006c alt_dev_llist_insert
+00001f20 g       *ABS*	00000000 __bss_start
+00000b98 g     F .text	000004e0 main
 00000000 g       *ABS*	00000000 __alt_mem_RAM
-00000e74 g     F .text	00000020 alt_up_audio_write_fifo_space
-00001580 g     O .bss	00000004 alt_envp
-00001474 g     O .rwdata	00000004 alt_errno
-00001360 g     O .rodata	0000000a seven_seg_patterns
-000007d4 g     F .text	00000084 .hidden __divsi3
-00001230 g       *ABS*	00000000 __flash_rodata_start
-00000d18 g     F .text	00000020 alt_irq_init
-00001588 g     O .bss	00000004 alt_argc
-0000144c g     O .rwdata	00000004 sample_high
+00001740 g     F .text	00000020 alt_up_audio_write_fifo_space
+00001f40 g     O .bss	00000004 alt_envp
+00001e38 g     O .rwdata	00000004 alt_errno
+00001d2e g     O .rodata	0000000a seven_seg_patterns
+00001078 g     F .text	00000084 .hidden __divsi3
+00001afc g       *ABS*	00000000 __flash_rodata_start
+000015e4 g     F .text	00000020 alt_irq_init
+00001f48 g     O .bss	00000004 alt_argc
 00000020 g       .exceptions	00000000 alt_irq_entry
-0000146c g     O .rwdata	00000008 alt_fs_list
-00000f04 g     F .text	00000068 alt_up_audio_record_l
+00001e30 g     O .rwdata	00000008 alt_fs_list
+000017d0 g     F .text	00000068 alt_up_audio_record_l
+00000304 g     F .text	000002cc process_audio_data
 00000020 g       *ABS*	00000000 __ram_exceptions_start
-00001568 g     O .bss	00000004 elapsed_minutes
-00001478 g       *ABS*	00000000 _edata
-00001694 g       *ABS*	00000000 _end
+00001f28 g     O .bss	00000004 elapsed_minutes
+00001e3c g       *ABS*	00000000 _edata
+00002054 g       *ABS*	00000000 _end
 00000180 g       *ABS*	00000000 __ram_exceptions_end
-00001024 g     F .text	00000024 alt_up_audio_play_l
-00000858 g     F .text	00000074 .hidden __modsi3
+000018f0 g     F .text	00000024 alt_up_audio_play_l
+00000624 g     F .text	00000090 send_command_to_hps
+000010fc g     F .text	00000074 .hidden __modsi3
 00008000 g       *ABS*	00000000 __alt_data_end
 00000020 g     F .exceptions	00000000 alt_exception
 0000000c g       .entry	00000000 _exit
-00001214 g     F .text	0000001c strlen
-00000c98 g     F .text	00000048 alt_putchar
-00001574 g     O .bss	00000004 is_playing
-00001164 g     F .text	00000004 alt_icache_flush_all
-00001458 g     O .rwdata	00000004 alt_priority_mask
-00001570 g     O .bss	00000004 elapsed_ms
-00000a1c g     F .text	000000e0 alt_load
-00000db0 g     F .text	00000014 alt_up_audio_enable_read_interrupt
-00000e08 g     F .text	00000014 alt_up_audio_read_interrupt_pending
+00001ae0 g     F .text	0000001c strlen
+00001564 g     F .text	00000048 alt_putchar
+00001f34 g     O .bss	00000004 is_playing
+00001a30 g     F .text	00000004 alt_icache_flush_all
+00001e1c g     O .rwdata	00000004 alt_priority_mask
+00001f30 g     O .bss	00000004 elapsed_ms
+000012e8 g     F .text	000000e0 alt_load
+0000167c g     F .text	00000014 alt_up_audio_enable_read_interrupt
+000016d4 g     F .text	00000014 alt_up_audio_read_interrupt_pending
 
 
 
@@ -454,7 +462,7 @@ static ALT_INLINE alt_u32 ALT_ALWAYS_INLINE alt_irq_pending (void)
 #else
         alt_irq[i].handler(alt_irq[i].context, i); 
  10c:	04000034 	movhi	r16,0
- 110:	84056504 	addi	r16,r16,5524
+ 110:	8407d504 	addi	r16,r16,8020
 
   active = alt_irq_pending ();
 
@@ -489,7 +497,7 @@ static ALT_INLINE alt_u32 ALT_ALWAYS_INLINE alt_irq_pending (void)
     active = alt_irq_pending ();
     
   } while (active);
- 13c:	183ff51e 	bne	r3,zero,114 <_gp+0xffff6cd0>
+ 13c:	183ff51e 	bne	r3,zero,114 <__alt_mem_SHARED_MEMORY+0xfffc0114>
   /*
    * Notify the operating system that interrupt processing is complete.
    */ 
@@ -511,7 +519,7 @@ static ALT_INLINE alt_u32 ALT_ALWAYS_INLINE alt_irq_pending (void)
  154:	29400044 	addi	r5,r5,1
 
     } while (1);
- 158:	003ff006 	br	11c <_gp+0xffff6cd8>
+ 158:	003ff006 	br	11c <__alt_mem_SHARED_MEMORY+0xfffc011c>
 
 0000015c <alt_instruction_exception_entry>:
 #else
@@ -520,7 +528,7 @@ static ALT_INLINE alt_u32 ALT_ALWAYS_INLINE alt_irq_pending (void)
 #endif /* NIOS2_HAS_EXTRA_EXCEPTION_INFO */
 
   if(alt_instruction_exception_handler) {
- 15c:	d0a05217 	ldw	r2,-32440(gp)
+ 15c:	d0a04f17 	ldw	r2,-32452(gp)
  160:	10000426 	beq	r2,zero,174 <alt_instruction_exception_entry+0x18>
      * Call handler. Its return value indicates whether the exception-causing
      * instruction should be re-issued. The code that called us,
@@ -563,7 +571,7 @@ Disassembly of section .text:
     movhi gp, %hi(_gp)
      188:	06800034 	movhi	gp,0
     ori gp, gp, %lo(_gp)
-     18c:	d6a51114 	ori	gp,gp,37956
+     18c:	d6a78414 	ori	gp,gp,40464
  */
 #ifndef ALT_SIM_OPTIMIZE
     /* Log that the BSS is about to be cleared. */
@@ -572,12 +580,12 @@ Disassembly of section .text:
     movhi r2, %hi(__bss_start)
      190:	00800034 	movhi	r2,0
     ori r2, r2, %lo(__bss_start)
-     194:	10855914 	ori	r2,r2,5476
+     194:	1087c814 	ori	r2,r2,7968
 
     movhi r3, %hi(__bss_end)
      198:	00c00034 	movhi	r3,0
     ori r3, r3, %lo(__bss_end)
-     19c:	18c5a514 	ori	r3,r3,5780
+     19c:	18c81514 	ori	r3,r3,8276
 
     beq r2, r3, 1f
      1a0:	10c00326 	beq	r2,r3,1b0 <_start+0x30>
@@ -588,2539 +596,3323 @@ Disassembly of section .text:
     addi r2, r2, 4
      1a8:	10800104 	addi	r2,r2,4
     bltu r2, r3, 0b
-     1ac:	10fffd36 	bltu	r2,r3,1a4 <_gp+0xffff6d60>
+     1ac:	10fffd36 	bltu	r2,r3,1a4 <__alt_mem_SHARED_MEMORY+0xfffc01a4>
      * section aren't defined until alt_load() has been called).
      */
     mov   et, zero
 #endif
 
     call alt_load
-     1b0:	0000a1c0 	call	a1c <alt_load>
+     1b0:	00012e80 	call	12e8 <alt_load>
 
     /* Log that alt_main is about to be called. */
     ALT_LOG_PUTS(alt_log_msg_alt_main)
 
     /* Call the C entry point. It should never return. */
     call alt_main
-     1b4:	0000afc0 	call	afc <alt_main>
+     1b4:	00013c80 	call	13c8 <alt_main>
 
 000001b8 <alt_after_alt_main>:
 
     /* Wait in infinite loop in case alt_main does return. */
 alt_after_alt_main:
     br alt_after_alt_main
-     1b8:	003fff06 	br	1b8 <_gp+0xffff6d74>
+     1b8:	003fff06 	br	1b8 <__alt_mem_SHARED_MEMORY+0xfffc01b8>
 
-000001bc <audio_isr>:
-    }
+000001bc <check_hps_connection>:
+void request_next_chunk(void);
+int check_hps_connection(void);
+
+// --- Verificar conexión SIMPLE ---
+int check_hps_connection(void) {
+    return (shared_ctrl->magic == 0xABCD2025) ? 1 : 0;
+     1bc:	d1a00217 	ldw	r6,-32760(gp)
+     1c0:	31000f03 	ldbu	r4,60(r6)
+     1c4:	30c00f43 	ldbu	r3,61(r6)
+     1c8:	30800f83 	ldbu	r2,62(r6)
+     1cc:	21403fcc 	andi	r5,r4,255
+     1d0:	18c03fcc 	andi	r3,r3,255
+     1d4:	1806923a 	slli	r3,r3,8
+     1d8:	10803fcc 	andi	r2,r2,255
+     1dc:	1004943a 	slli	r2,r2,16
+     1e0:	1948b03a 	or	r4,r3,r5
+     1e4:	1106b03a 	or	r3,r2,r4
+     1e8:	30800fc3 	ldbu	r2,63(r6)
+     1ec:	1004963a 	slli	r2,r2,24
+     1f0:	10c4b03a 	or	r2,r2,r3
+}
+     1f4:	00eaf374 	movhi	r3,43981
+     1f8:	18c80944 	addi	r3,r3,8229
+     1fc:	10c5003a 	cmpeq	r2,r2,r3
+     200:	f800283a 	ret
+
+00000204 <request_next_chunk>:
+    shared_ctrl->playback_pos = (elapsed_minutes * 60 + elapsed_seconds) * 1000 + elapsed_ms;
 }
 
-// --- Interrupción Audio usando el driver correcto ---
-static void audio_isr(void* context) {
-    if (!is_playing || audio_dev == NULL)
-     1bc:	d0a04c17 	ldw	r2,-32464(gp)
-     1c0:	10002b26 	beq	r2,zero,270 <audio_isr+0xb4>
-     1c4:	d1204d17 	ldw	r4,-32460(gp)
-     1c8:	20002926 	beq	r4,zero,270 <audio_isr+0xb4>
-        update_seven_segment_display();
-    }
-}
-
-// --- Interrupción Audio usando el driver correcto ---
-static void audio_isr(void* context) {
-     1cc:	defffd04 	addi	sp,sp,-12
-    if (!is_playing || audio_dev == NULL)
+// --- Solicitar siguiente chunk ---
+void request_next_chunk(void) {
+    if (!shared_ctrl->hps_connected) {
+     204:	d0a00217 	ldw	r2,-32760(gp)
+     208:	11400d03 	ldbu	r5,52(r2)
+     20c:	11000d43 	ldbu	r4,53(r2)
+     210:	10c00d83 	ldbu	r3,54(r2)
+     214:	29803fcc 	andi	r6,r5,255
+     218:	21003fcc 	andi	r4,r4,255
+     21c:	2008923a 	slli	r4,r4,8
+     220:	18c03fcc 	andi	r3,r3,255
+     224:	1806943a 	slli	r3,r3,16
+     228:	218ab03a 	or	r5,r4,r6
+     22c:	1948b03a 	or	r4,r3,r5
+     230:	10c00dc3 	ldbu	r3,55(r2)
+     234:	1806963a 	slli	r3,r3,24
+     238:	1906b03a 	or	r3,r3,r4
+     23c:	18003026 	beq	r3,zero,300 <request_next_chunk+0xfc>
         return;
-
-    // Verificar espacio disponible en FIFO usando el driver
-    int write_space_left = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-     1d0:	000b883a 	mov	r5,zero
-        update_seven_segment_display();
     }
+
+    shared_ctrl->request_next = 1;
+     240:	10c00b03 	ldbu	r3,44(r2)
+     244:	00c00044 	movi	r3,1
+     248:	10c00b05 	stb	r3,44(r2)
+     24c:	10c00b43 	ldbu	r3,45(r2)
+     250:	10000b45 	stb	zero,45(r2)
+     254:	10c00b83 	ldbu	r3,46(r2)
+     258:	10000b85 	stb	zero,46(r2)
+     25c:	10c00bc3 	ldbu	r3,47(r2)
+     260:	10000bc5 	stb	zero,47(r2)
+    shared_ctrl->chunk_ready = 0;
+     264:	10c00a03 	ldbu	r3,40(r2)
+     268:	10000a05 	stb	zero,40(r2)
+     26c:	10c00a43 	ldbu	r3,41(r2)
+     270:	10000a45 	stb	zero,41(r2)
+     274:	10c00a83 	ldbu	r3,42(r2)
+     278:	10000a85 	stb	zero,42(r2)
+     27c:	10c00ac3 	ldbu	r3,43(r2)
+     280:	10000ac5 	stb	zero,43(r2)
+    audio_read_ptr = 0;
+     284:	d0204515 	stw	zero,-32492(gp)
+
+    alt_printf("Requesting next chunk %d/%d\n",
+              shared_ctrl->current_chunk + 2, shared_ctrl->total_chunks);
+     288:	11000303 	ldbu	r4,12(r2)
+     28c:	10c00343 	ldbu	r3,13(r2)
+     290:	11400383 	ldbu	r5,14(r2)
+     294:	21803fcc 	andi	r6,r4,255
+     298:	18c03fcc 	andi	r3,r3,255
+     29c:	1806923a 	slli	r3,r3,8
+     2a0:	29403fcc 	andi	r5,r5,255
+     2a4:	280a943a 	slli	r5,r5,16
+     2a8:	1988b03a 	or	r4,r3,r6
+     2ac:	2906b03a 	or	r3,r5,r4
+     2b0:	114003c3 	ldbu	r5,15(r2)
+
+    shared_ctrl->request_next = 1;
+    shared_ctrl->chunk_ready = 0;
+    audio_read_ptr = 0;
+
+    alt_printf("Requesting next chunk %d/%d\n",
+     2b4:	11000403 	ldbu	r4,16(r2)
+              shared_ctrl->current_chunk + 2, shared_ctrl->total_chunks);
+     2b8:	280a963a 	slli	r5,r5,24
+
+    shared_ctrl->request_next = 1;
+    shared_ctrl->chunk_ready = 0;
+    audio_read_ptr = 0;
+
+    alt_printf("Requesting next chunk %d/%d\n",
+     2bc:	21c03fcc 	andi	r7,r4,255
+              shared_ctrl->current_chunk + 2, shared_ctrl->total_chunks);
+     2c0:	28cab03a 	or	r5,r5,r3
+
+    shared_ctrl->request_next = 1;
+    shared_ctrl->chunk_ready = 0;
+    audio_read_ptr = 0;
+
+    alt_printf("Requesting next chunk %d/%d\n",
+     2c4:	10c00443 	ldbu	r3,17(r2)
+     2c8:	29400084 	addi	r5,r5,2
+     2cc:	18c03fcc 	andi	r3,r3,255
+     2d0:	1806923a 	slli	r3,r3,8
+     2d4:	19c8b03a 	or	r4,r3,r7
+     2d8:	10c00483 	ldbu	r3,18(r2)
+     2dc:	118004c3 	ldbu	r6,19(r2)
+     2e0:	18c03fcc 	andi	r3,r3,255
+     2e4:	1806943a 	slli	r3,r3,16
+     2e8:	300c963a 	slli	r6,r6,24
+     2ec:	1906b03a 	or	r3,r3,r4
+     2f0:	01000034 	movhi	r4,0
+     2f4:	30ccb03a 	or	r6,r6,r3
+     2f8:	2106bf04 	addi	r4,r4,6908
+     2fc:	00013f41 	jmpi	13f4 <alt_printf>
+     300:	f800283a 	ret
+
+00000304 <process_audio_data>:
 }
 
-// --- Interrupción Audio usando el driver correcto ---
-static void audio_isr(void* context) {
-     1d4:	dc000115 	stw	r16,4(sp)
-     1d8:	dfc00215 	stw	ra,8(sp)
-    if (!is_playing || audio_dev == NULL)
+// --- Procesar datos de audio desde SHARED_MEMORY ---
+void process_audio_data(void) {
+    // Verificar que hay un chunk listo
+    if (shared_ctrl->chunk_ready == 0 || shared_ctrl->chunk_size == 0) {
+     304:	d1a00217 	ldw	r6,-32760(gp)
+     308:	31000a03 	ldbu	r4,40(r6)
+     30c:	30c00a43 	ldbu	r3,41(r6)
+     310:	30800a83 	ldbu	r2,42(r6)
+     314:	21403fcc 	andi	r5,r4,255
+     318:	18c03fcc 	andi	r3,r3,255
+     31c:	1806923a 	slli	r3,r3,8
+     320:	10803fcc 	andi	r2,r2,255
+     324:	1004943a 	slli	r2,r2,16
+     328:	1948b03a 	or	r4,r3,r5
+     32c:	1106b03a 	or	r3,r2,r4
+     330:	30800ac3 	ldbu	r2,43(r6)
+     334:	1004963a 	slli	r2,r2,24
+     338:	10c4b03a 	or	r2,r2,r3
+     33c:	1000a326 	beq	r2,zero,5cc <process_audio_data+0x2c8>
+     340:	31000503 	ldbu	r4,20(r6)
+     344:	30c00543 	ldbu	r3,21(r6)
+     348:	30800583 	ldbu	r2,22(r6)
+     34c:	21403fcc 	andi	r5,r4,255
+     350:	18c03fcc 	andi	r3,r3,255
+     354:	1806923a 	slli	r3,r3,8
+     358:	10803fcc 	andi	r2,r2,255
+     35c:	1004943a 	slli	r2,r2,16
+     360:	1948b03a 	or	r4,r3,r5
+     364:	1106b03a 	or	r3,r2,r4
+     368:	308005c3 	ldbu	r2,23(r6)
+     36c:	1004963a 	slli	r2,r2,24
+     370:	10c4b03a 	or	r2,r2,r3
+     374:	10009526 	beq	r2,zero,5cc <process_audio_data+0x2c8>
         return;
+    }
 
-    // Verificar espacio disponible en FIFO usando el driver
+    // Verificar espacio disponible en FIFO
     int write_space_left = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-     1dc:	0000e740 	call	e74 <alt_up_audio_write_fifo_space>
+     378:	d1204a17 	ldw	r4,-32472(gp)
+    alt_printf("Requesting next chunk %d/%d\n",
+              shared_ctrl->current_chunk + 2, shared_ctrl->total_chunks);
+}
+
+// --- Procesar datos de audio desde SHARED_MEMORY ---
+void process_audio_data(void) {
+     37c:	defffb04 	addi	sp,sp,-20
+    if (shared_ctrl->chunk_ready == 0 || shared_ctrl->chunk_size == 0) {
+        return;
+    }
+
+    // Verificar espacio disponible en FIFO
+    int write_space_left = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
+     380:	000b883a 	mov	r5,zero
+    alt_printf("Requesting next chunk %d/%d\n",
+              shared_ctrl->current_chunk + 2, shared_ctrl->total_chunks);
+}
+
+// --- Procesar datos de audio desde SHARED_MEMORY ---
+void process_audio_data(void) {
+     384:	dc000215 	stw	r16,8(sp)
+     388:	dfc00415 	stw	ra,16(sp)
+     38c:	dc400315 	stw	r17,12(sp)
+    if (shared_ctrl->chunk_ready == 0 || shared_ctrl->chunk_size == 0) {
+        return;
+    }
+
+    // Verificar espacio disponible en FIFO
+    int write_space_left = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
+     390:	00017400 	call	1740 <alt_up_audio_write_fifo_space>
     int write_space_right = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_RIGHT);
-     1e0:	d1204d17 	ldw	r4,-32460(gp)
-static void audio_isr(void* context) {
-    if (!is_playing || audio_dev == NULL)
+     394:	d1204a17 	ldw	r4,-32472(gp)
+    if (shared_ctrl->chunk_ready == 0 || shared_ctrl->chunk_size == 0) {
         return;
+    }
 
-    // Verificar espacio disponible en FIFO usando el driver
+    // Verificar espacio disponible en FIFO
     int write_space_left = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-     1e4:	1021883a 	mov	r16,r2
+     398:	1021883a 	mov	r16,r2
     int write_space_right = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_RIGHT);
-     1e8:	01400044 	movi	r5,1
-     1ec:	0000e740 	call	e74 <alt_up_audio_write_fifo_space>
+     39c:	01400044 	movi	r5,1
+     3a0:	00017400 	call	1740 <alt_up_audio_write_fifo_space>
 
-    // Solo escribir si hay espacio en ambos canales
     if (write_space_left > 0 && write_space_right > 0) {
-     1f0:	04001c0e 	bge	zero,r16,264 <audio_isr+0xa8>
-     1f4:	00801b0e 	bge	zero,r2,264 <audio_isr+0xa8>
-        // Lógica de generación de onda cuadrada
-        int samples_per_cycle = SAMPLE_RATE / current_freq;
-     1f8:	d1600317 	ldw	r5,-32756(gp)
-     1fc:	012ee014 	movui	r4,48000
-     200:	00007d40 	call	7d4 <__divsi3>
-        int half_cycle = samples_per_cycle / 2;
+     3a4:	0400850e 	bge	zero,r16,5bc <process_audio_data+0x2b8>
+     3a8:	0080840e 	bge	zero,r2,5bc <process_audio_data+0x2b8>
+        int samples_to_write = (write_space_left < 16) ? write_space_left : 16;
+     3ac:	00800404 	movi	r2,16
+     3b0:	1400010e 	bge	r2,r16,3b8 <process_audio_data+0xb4>
+     3b4:	1021883a 	mov	r16,r2
 
-        // Genera la onda cuadrada
-        unsigned int sample = (sample_index % samples_per_cycle < half_cycle) ? sample_high : sample_low;
-     204:	1020d7fa 	srli	r16,r2,31
-     208:	d1204817 	ldw	r4,-32480(gp)
-     20c:	100b883a 	mov	r5,r2
-     210:	80a1883a 	add	r16,r16,r2
-     214:	8021d07a 	srai	r16,r16,1
-     218:	00008580 	call	858 <__modsi3>
-     21c:	1400020e 	bge	r2,r16,228 <audio_isr+0x6c>
-     220:	d0a00217 	ldw	r2,-32760(gp)
-     224:	00000106 	br	22c <audio_isr+0x70>
-     228:	d0a00117 	ldw	r2,-32764(gp)
+        for (int i = 0; i < samples_to_write; i++) {
+     3b8:	0023883a 	mov	r17,zero
+            // Verificar si llegamos al final del chunk actual
+            if (audio_read_ptr >= shared_ctrl->chunk_size) {
+     3bc:	d1e00217 	ldw	r7,-32760(gp)
+     3c0:	39400503 	ldbu	r5,20(r7)
+     3c4:	39000543 	ldbu	r4,21(r7)
+     3c8:	38c00583 	ldbu	r3,22(r7)
+     3cc:	29803fcc 	andi	r6,r5,255
+     3d0:	21003fcc 	andi	r4,r4,255
+     3d4:	2008923a 	slli	r4,r4,8
+     3d8:	18c03fcc 	andi	r3,r3,255
+     3dc:	1806943a 	slli	r3,r3,16
+     3e0:	218ab03a 	or	r5,r4,r6
+     3e4:	1948b03a 	or	r4,r3,r5
+     3e8:	38c005c3 	ldbu	r3,23(r7)
+     3ec:	d0a04517 	ldw	r2,-32492(gp)
+     3f0:	1806963a 	slli	r3,r3,24
+     3f4:	1906b03a 	or	r3,r3,r4
+     3f8:	10c00236 	bltu	r2,r3,404 <process_audio_data+0x100>
+                request_next_chunk();
+     3fc:	00002040 	call	204 <request_next_chunk>
+     400:	00002f06 	br	4c0 <process_audio_data+0x1bc>
+                break;
+            }
 
-        // Escribir usando el driver de Altera
-        alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_LEFT);
-     22c:	d1204d17 	ldw	r4,-32460(gp)
-     230:	000f883a 	mov	r7,zero
-     234:	01800044 	movi	r6,1
-     238:	d80b883a 	mov	r5,sp
-        // Lógica de generación de onda cuadrada
-        int samples_per_cycle = SAMPLE_RATE / current_freq;
-        int half_cycle = samples_per_cycle / 2;
+            // Verificar que no nos pasemos del tamaño del chunk
+            if (audio_read_ptr + 4 > shared_ctrl->chunk_size) {
+     404:	d0a04517 	ldw	r2,-32492(gp)
+     408:	39400503 	ldbu	r5,20(r7)
+     40c:	39000543 	ldbu	r4,21(r7)
+     410:	38c00583 	ldbu	r3,22(r7)
+     414:	29803fcc 	andi	r6,r5,255
+     418:	21003fcc 	andi	r4,r4,255
+     41c:	2008923a 	slli	r4,r4,8
+     420:	18c03fcc 	andi	r3,r3,255
+     424:	1806943a 	slli	r3,r3,16
+     428:	218ab03a 	or	r5,r4,r6
+     42c:	10800104 	addi	r2,r2,4
+     430:	1948b03a 	or	r4,r3,r5
+     434:	38c005c3 	ldbu	r3,23(r7)
+     438:	1806963a 	slli	r3,r3,24
+     43c:	1906b03a 	or	r3,r3,r4
+     440:	18bfee36 	bltu	r3,r2,3fc <__alt_mem_SHARED_MEMORY+0xfffc03fc>
+                request_next_chunk();
+                break;
+            }
 
-        // Genera la onda cuadrada
-        unsigned int sample = (sample_index % samples_per_cycle < half_cycle) ? sample_high : sample_low;
-     23c:	d8800015 	stw	r2,0(sp)
+            // Leer muestra de 16 bits stereo desde SHARED_MEMORY
+            uint16_t left_sample = *(uint16_t*)(shared_data + audio_read_ptr);
+     444:	d1200117 	ldw	r4,-32764(gp)
+     448:	d0e04517 	ldw	r3,-32492(gp)
+            uint16_t right_sample = *(uint16_t*)(shared_data + audio_read_ptr + 2);
+     44c:	d0a04517 	ldw	r2,-32492(gp)
+            // Convertir a 32-bit para el codec (sign extend)
+            int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
+            int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
 
-        // Escribir usando el driver de Altera
-        alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_LEFT);
-     240:	0000f6c0 	call	f6c <alt_up_audio_write_fifo>
-        alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_RIGHT);
-     244:	d1204d17 	ldw	r4,-32460(gp)
-     248:	01c00044 	movi	r7,1
-     24c:	380d883a 	mov	r6,r7
-     250:	d80b883a 	mov	r5,sp
-     254:	0000f6c0 	call	f6c <alt_up_audio_write_fifo>
+            // Escribir al codec
+            if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
+     450:	000f883a 	mov	r7,zero
+                request_next_chunk();
+                break;
+            }
 
-        sample_index++;
-     258:	d0a04817 	ldw	r2,-32480(gp)
-     25c:	10800044 	addi	r2,r2,1
-     260:	d0a04815 	stw	r2,-32480(gp)
+            // Leer muestra de 16 bits stereo desde SHARED_MEMORY
+            uint16_t left_sample = *(uint16_t*)(shared_data + audio_read_ptr);
+     454:	20c7883a 	add	r3,r4,r3
+            uint16_t right_sample = *(uint16_t*)(shared_data + audio_read_ptr + 2);
+     458:	2085883a 	add	r2,r4,r2
+     45c:	1080008b 	ldhu	r2,2(r2)
+
+            // Convertir a 32-bit para el codec (sign extend)
+            int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
+     460:	18c0000f 	ldh	r3,0(r3)
+            int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
+
+            // Escribir al codec
+            if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
+     464:	d1204a17 	ldw	r4,-32472(gp)
+            uint16_t left_sample = *(uint16_t*)(shared_data + audio_read_ptr);
+            uint16_t right_sample = *(uint16_t*)(shared_data + audio_read_ptr + 2);
+
+            // Convertir a 32-bit para el codec (sign extend)
+            int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
+            int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
+     468:	10bfffcc 	andi	r2,r2,65535
+     46c:	10a0001c 	xori	r2,r2,32768
+     470:	10a00004 	addi	r2,r2,-32768
+            // Leer muestra de 16 bits stereo desde SHARED_MEMORY
+            uint16_t left_sample = *(uint16_t*)(shared_data + audio_read_ptr);
+            uint16_t right_sample = *(uint16_t*)(shared_data + audio_read_ptr + 2);
+
+            // Convertir a 32-bit para el codec (sign extend)
+            int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
+     474:	1806923a 	slli	r3,r3,8
+            int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
+     478:	1004923a 	slli	r2,r2,8
+
+            // Escribir al codec
+            if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
+     47c:	01800044 	movi	r6,1
+     480:	d9400104 	addi	r5,sp,4
+            // Leer muestra de 16 bits stereo desde SHARED_MEMORY
+            uint16_t left_sample = *(uint16_t*)(shared_data + audio_read_ptr);
+            uint16_t right_sample = *(uint16_t*)(shared_data + audio_read_ptr + 2);
+
+            // Convertir a 32-bit para el codec (sign extend)
+            int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
+     484:	d8c00115 	stw	r3,4(sp)
+            int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
+     488:	d8800015 	stw	r2,0(sp)
+
+            // Escribir al codec
+            if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
+     48c:	00018380 	call	1838 <alt_up_audio_write_fifo>
+     490:	10000b1e 	bne	r2,zero,4c0 <process_audio_data+0x1bc>
+                alt_up_audio_write_fifo(audio_dev, (unsigned int*)&right_32, 1, ALT_UP_AUDIO_RIGHT) == 0) {
+     494:	d1204a17 	ldw	r4,-32472(gp)
+     498:	01c00044 	movi	r7,1
+     49c:	380d883a 	mov	r6,r7
+     4a0:	d80b883a 	mov	r5,sp
+     4a4:	00018380 	call	1838 <alt_up_audio_write_fifo>
+            // Convertir a 32-bit para el codec (sign extend)
+            int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
+            int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
+
+            // Escribir al codec
+            if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
+     4a8:	1000051e 	bne	r2,zero,4c0 <process_audio_data+0x1bc>
+                alt_up_audio_write_fifo(audio_dev, (unsigned int*)&right_32, 1, ALT_UP_AUDIO_RIGHT) == 0) {
+
+                audio_read_ptr += 4;
+     4ac:	d0a04517 	ldw	r2,-32492(gp)
+    int write_space_right = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_RIGHT);
+
+    if (write_space_left > 0 && write_space_right > 0) {
+        int samples_to_write = (write_space_left < 16) ? write_space_left : 16;
+
+        for (int i = 0; i < samples_to_write; i++) {
+     4b0:	8c400044 	addi	r17,r17,1
+
+            // Escribir al codec
+            if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
+                alt_up_audio_write_fifo(audio_dev, (unsigned int*)&right_32, 1, ALT_UP_AUDIO_RIGHT) == 0) {
+
+                audio_read_ptr += 4;
+     4b4:	10800104 	addi	r2,r2,4
+     4b8:	d0a04515 	stw	r2,-32492(gp)
+    int write_space_right = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_RIGHT);
+
+    if (write_space_left > 0 && write_space_right > 0) {
+        int samples_to_write = (write_space_left < 16) ? write_space_left : 16;
+
+        for (int i = 0; i < samples_to_write; i++) {
+     4bc:	847fbf1e 	bne	r16,r17,3bc <__alt_mem_SHARED_MEMORY+0xfffc03bc>
+                break;
+            }
+        }
+
+        // Actualizar punteros en memoria compartida
+        shared_ctrl->read_ptr = audio_read_ptr;
+     4c0:	d0a04517 	ldw	r2,-32492(gp)
+     4c4:	d4200217 	ldw	r16,-32760(gp)
+     4c8:	10c03fcc 	andi	r3,r2,255
+     4cc:	81001903 	ldbu	r4,100(r16)
+     4d0:	80c01905 	stb	r3,100(r16)
+     4d4:	1006d23a 	srli	r3,r2,8
+     4d8:	81001943 	ldbu	r4,101(r16)
+     4dc:	18c03fcc 	andi	r3,r3,255
+     4e0:	80c01945 	stb	r3,101(r16)
+     4e4:	1006d43a 	srli	r3,r2,16
+     4e8:	1004d63a 	srli	r2,r2,24
+     4ec:	81001983 	ldbu	r4,102(r16)
+     4f0:	18c03fcc 	andi	r3,r3,255
+     4f4:	80c01985 	stb	r3,102(r16)
+     4f8:	80c019c3 	ldbu	r3,103(r16)
+     4fc:	808019c5 	stb	r2,103(r16)
+
+        // Calcular progreso del chunk actual
+        if (shared_ctrl->chunk_size > 0) {
+     500:	81000503 	ldbu	r4,20(r16)
+     504:	80c00543 	ldbu	r3,21(r16)
+     508:	80800583 	ldbu	r2,22(r16)
+     50c:	21403fcc 	andi	r5,r4,255
+     510:	18c03fcc 	andi	r3,r3,255
+     514:	1806923a 	slli	r3,r3,8
+     518:	10803fcc 	andi	r2,r2,255
+     51c:	1004943a 	slli	r2,r2,16
+     520:	1948b03a 	or	r4,r3,r5
+     524:	1106b03a 	or	r3,r2,r4
+     528:	808005c3 	ldbu	r2,23(r16)
+     52c:	1004963a 	slli	r2,r2,24
+     530:	10c4b03a 	or	r2,r2,r3
+     534:	10002126 	beq	r2,zero,5bc <process_audio_data+0x2b8>
+            shared_ctrl->buffer_level = (audio_read_ptr * 100) / shared_ctrl->chunk_size;
+     538:	d1204517 	ldw	r4,-32492(gp)
+     53c:	80c00503 	ldbu	r3,20(r16)
+     540:	80800543 	ldbu	r2,21(r16)
+     544:	84400583 	ldbu	r17,22(r16)
+     548:	19403fcc 	andi	r5,r3,255
+     54c:	10803fcc 	andi	r2,r2,255
+     550:	1004923a 	slli	r2,r2,8
+     554:	8c403fcc 	andi	r17,r17,255
+     558:	8822943a 	slli	r17,r17,16
+     55c:	1146b03a 	or	r3,r2,r5
+     560:	01401904 	movi	r5,100
+     564:	88c4b03a 	or	r2,r17,r3
+     568:	844005c3 	ldbu	r17,23(r16)
+     56c:	8822963a 	slli	r17,r17,24
+     570:	88a2b03a 	or	r17,r17,r2
+     574:	000122c0 	call	122c <__mulsi3>
+     578:	1009883a 	mov	r4,r2
+     57c:	880b883a 	mov	r5,r17
+     580:	00011700 	call	1170 <__udivsi3>
+     584:	10c03fcc 	andi	r3,r2,255
+     588:	81001b03 	ldbu	r4,108(r16)
+     58c:	80c01b05 	stb	r3,108(r16)
+     590:	1006d23a 	srli	r3,r2,8
+     594:	81001b43 	ldbu	r4,109(r16)
+     598:	18c03fcc 	andi	r3,r3,255
+     59c:	80c01b45 	stb	r3,109(r16)
+     5a0:	1006d43a 	srli	r3,r2,16
+     5a4:	1004d63a 	srli	r2,r2,24
+     5a8:	81001b83 	ldbu	r4,110(r16)
+     5ac:	18c03fcc 	andi	r3,r3,255
+     5b0:	80c01b85 	stb	r3,110(r16)
+     5b4:	80c01bc3 	ldbu	r3,111(r16)
+     5b8:	80801bc5 	stb	r2,111(r16)
+        }
     }
 }
-     264:	dfc00217 	ldw	ra,8(sp)
-     268:	dc000117 	ldw	r16,4(sp)
-     26c:	dec00304 	addi	sp,sp,12
-     270:	f800283a 	ret
+     5bc:	dfc00417 	ldw	ra,16(sp)
+     5c0:	dc400317 	ldw	r17,12(sp)
+     5c4:	dc000217 	ldw	r16,8(sp)
+     5c8:	dec00504 	addi	sp,sp,20
+     5cc:	f800283a 	ret
 
-00000274 <generate_audio_samples>:
+000005d0 <audio_isr>:
 
-// --- Función para generar audio en polling (alternativa) ---
-void generate_audio_samples(void) {
-    if (!is_playing || audio_dev == NULL)
-     274:	d0a04c17 	ldw	r2,-32464(gp)
-     278:	10003226 	beq	r2,zero,344 <generate_audio_samples+0xd0>
-     27c:	d1204d17 	ldw	r4,-32460(gp)
-     280:	20003026 	beq	r4,zero,344 <generate_audio_samples+0xd0>
-        sample_index++;
-    }
-}
-
-// --- Función para generar audio en polling (alternativa) ---
-void generate_audio_samples(void) {
-     284:	defffa04 	addi	sp,sp,-24
-    if (!is_playing || audio_dev == NULL)
+// --- Interrupción Audio - SIGNATURA CORREGIDA ---
+static void audio_isr(void* context, alt_u32 id) {
+    if (!is_playing || audio_dev == NULL || !shared_ctrl->hps_connected)
+     5d0:	d0a04917 	ldw	r2,-32476(gp)
+     5d4:	10001226 	beq	r2,zero,620 <audio_isr+0x50>
+     5d8:	d0a04a17 	ldw	r2,-32472(gp)
+     5dc:	10001026 	beq	r2,zero,620 <audio_isr+0x50>
+     5e0:	d1a00217 	ldw	r6,-32760(gp)
+     5e4:	31000d03 	ldbu	r4,52(r6)
+     5e8:	30c00d43 	ldbu	r3,53(r6)
+     5ec:	30800d83 	ldbu	r2,54(r6)
+     5f0:	21403fcc 	andi	r5,r4,255
+     5f4:	18c03fcc 	andi	r3,r3,255
+     5f8:	1806923a 	slli	r3,r3,8
+     5fc:	10803fcc 	andi	r2,r2,255
+     600:	1004943a 	slli	r2,r2,16
+     604:	1948b03a 	or	r4,r3,r5
+     608:	1106b03a 	or	r3,r2,r4
+     60c:	30800dc3 	ldbu	r2,55(r6)
+     610:	1004963a 	slli	r2,r2,24
+     614:	10c4b03a 	or	r2,r2,r3
+     618:	10000126 	beq	r2,zero,620 <audio_isr+0x50>
         return;
 
-    // Verificar espacio disponible en FIFO
-    int write_space = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-     288:	000b883a 	mov	r5,zero
-        sample_index++;
-    }
+    process_audio_data();
+     61c:	00003041 	jmpi	304 <process_audio_data>
+     620:	f800283a 	ret
+
+00000624 <send_command_to_hps>:
 }
 
-// --- Función para generar audio en polling (alternativa) ---
-void generate_audio_samples(void) {
-     28c:	dc800315 	stw	r18,12(sp)
-     290:	dfc00515 	stw	ra,20(sp)
-     294:	dcc00415 	stw	r19,16(sp)
-     298:	dc400215 	stw	r17,8(sp)
-     29c:	dc000115 	stw	r16,4(sp)
-    if (!is_playing || audio_dev == NULL)
+// --- Enviar comando al HPS ---
+void send_command_to_hps(uint32_t cmd) {
+    if (!shared_ctrl->hps_connected) {
+     624:	d0a00217 	ldw	r2,-32760(gp)
+     628:	11c00d03 	ldbu	r7,52(r2)
+     62c:	11800d43 	ldbu	r6,53(r2)
+     630:	10c00d83 	ldbu	r3,54(r2)
+     634:	3a003fcc 	andi	r8,r7,255
+     638:	31803fcc 	andi	r6,r6,255
+     63c:	300c923a 	slli	r6,r6,8
+     640:	18c03fcc 	andi	r3,r3,255
+     644:	1806943a 	slli	r3,r3,16
+     648:	320eb03a 	or	r7,r6,r8
+     64c:	19ccb03a 	or	r6,r3,r7
+     650:	10c00dc3 	ldbu	r3,55(r2)
+     654:	1806963a 	slli	r3,r3,24
+     658:	1986b03a 	or	r3,r3,r6
+     65c:	1800031e 	bne	r3,zero,66c <send_command_to_hps+0x48>
+        alt_printf("HPS not connected\n");
+     660:	01000034 	movhi	r4,0
+     664:	2106c704 	addi	r4,r4,6940
+     668:	00013f41 	jmpi	13f4 <alt_printf>
         return;
-
-    // Verificar espacio disponible en FIFO
-    int write_space = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-     2a0:	0000e740 	call	e74 <alt_up_audio_write_fifo_space>
-     2a4:	1025883a 	mov	r18,r2
-
-    if (write_space > 0) {
-     2a8:	0080200e 	bge	zero,r2,32c <generate_audio_samples+0xb8>
-     2ac:	0023883a 	mov	r17,zero
-        // Generar múltiples muestras para llenar el buffer
-        for (int i = 0; i < write_space && i < 32; i++) {
-     2b0:	04c00804 	movi	r19,32
-            int samples_per_cycle = SAMPLE_RATE / current_freq;
-     2b4:	d1600317 	ldw	r5,-32756(gp)
-     2b8:	012ee014 	movui	r4,48000
-     2bc:	00007d40 	call	7d4 <__divsi3>
-            int half_cycle = samples_per_cycle / 2;
-
-            // Genera la onda cuadrada
-            unsigned int sample = (sample_index % samples_per_cycle < half_cycle) ? sample_high : sample_low;
-     2c0:	1020d7fa 	srli	r16,r2,31
-     2c4:	d1204817 	ldw	r4,-32480(gp)
-     2c8:	100b883a 	mov	r5,r2
-     2cc:	80a1883a 	add	r16,r16,r2
-     2d0:	8021d07a 	srai	r16,r16,1
-     2d4:	00008580 	call	858 <__modsi3>
-     2d8:	1400020e 	bge	r2,r16,2e4 <generate_audio_samples+0x70>
-     2dc:	d0a00217 	ldw	r2,-32760(gp)
-     2e0:	00000106 	br	2e8 <generate_audio_samples+0x74>
-     2e4:	d0a00117 	ldw	r2,-32764(gp)
-
-            // Escribir a ambos canales
-            alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_LEFT);
-     2e8:	d1204d17 	ldw	r4,-32460(gp)
-     2ec:	000f883a 	mov	r7,zero
-     2f0:	01800044 	movi	r6,1
-     2f4:	d80b883a 	mov	r5,sp
-        for (int i = 0; i < write_space && i < 32; i++) {
-            int samples_per_cycle = SAMPLE_RATE / current_freq;
-            int half_cycle = samples_per_cycle / 2;
-
-            // Genera la onda cuadrada
-            unsigned int sample = (sample_index % samples_per_cycle < half_cycle) ? sample_high : sample_low;
-     2f8:	d8800015 	stw	r2,0(sp)
-
-            // Escribir a ambos canales
-            alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_LEFT);
-     2fc:	0000f6c0 	call	f6c <alt_up_audio_write_fifo>
-            alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_RIGHT);
-     300:	d1204d17 	ldw	r4,-32460(gp)
-     304:	01c00044 	movi	r7,1
-     308:	380d883a 	mov	r6,r7
-     30c:	d80b883a 	mov	r5,sp
-     310:	0000f6c0 	call	f6c <alt_up_audio_write_fifo>
-
-            sample_index++;
-     314:	d0a04817 	ldw	r2,-32480(gp)
-    // Verificar espacio disponible en FIFO
-    int write_space = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-
-    if (write_space > 0) {
-        // Generar múltiples muestras para llenar el buffer
-        for (int i = 0; i < write_space && i < 32; i++) {
-     318:	8c400044 	addi	r17,r17,1
-
-            // Escribir a ambos canales
-            alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_LEFT);
-            alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_RIGHT);
-
-            sample_index++;
-     31c:	10800044 	addi	r2,r2,1
-     320:	d0a04815 	stw	r2,-32480(gp)
-    // Verificar espacio disponible en FIFO
-    int write_space = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
-
-    if (write_space > 0) {
-        // Generar múltiples muestras para llenar el buffer
-        for (int i = 0; i < write_space && i < 32; i++) {
-     324:	94400126 	beq	r18,r17,32c <generate_audio_samples+0xb8>
-     328:	8cffe21e 	bne	r17,r19,2b4 <_gp+0xffff6e70>
-            alt_up_audio_write_fifo(audio_dev, &sample, 1, ALT_UP_AUDIO_RIGHT);
-
-            sample_index++;
-        }
     }
-}
-     32c:	dfc00517 	ldw	ra,20(sp)
-     330:	dcc00417 	ldw	r19,16(sp)
-     334:	dc800317 	ldw	r18,12(sp)
-     338:	dc400217 	ldw	r17,8(sp)
-     33c:	dc000117 	ldw	r16,4(sp)
-     340:	dec00604 	addi	sp,sp,24
-     344:	f800283a 	ret
 
-00000348 <update_seven_segment_display>:
+    shared_ctrl->command = cmd;
+     66c:	20c03fcc 	andi	r3,r4,255
+     670:	11400003 	ldbu	r5,0(r2)
+     674:	10c00005 	stb	r3,0(r2)
+     678:	2006d23a 	srli	r3,r4,8
+     67c:	11400043 	ldbu	r5,1(r2)
+     680:	18c03fcc 	andi	r3,r3,255
+     684:	10c00045 	stb	r3,1(r2)
+     688:	2006d43a 	srli	r3,r4,16
+     68c:	11400083 	ldbu	r5,2(r2)
+     690:	18c03fcc 	andi	r3,r3,255
+     694:	10c00085 	stb	r3,2(r2)
+     698:	114000c3 	ldbu	r5,3(r2)
+     69c:	2006d63a 	srli	r3,r4,24
+    alt_printf("Command sent: %d\n", cmd);
+     6a0:	200b883a 	mov	r5,r4
+     6a4:	01000034 	movhi	r4,0
+     6a8:	2106cc04 	addi	r4,r4,6960
+    if (!shared_ctrl->hps_connected) {
+        alt_printf("HPS not connected\n");
+        return;
+    }
+
+    shared_ctrl->command = cmd;
+     6ac:	10c000c5 	stb	r3,3(r2)
+    alt_printf("Command sent: %d\n", cmd);
+     6b0:	00013f41 	jmpi	13f4 <alt_printf>
+
+000006b4 <update_seven_segment_display>:
+}
 
 // --- 7 segmentos MMSS ---
 void update_seven_segment_display(void) {
     volatile unsigned int * sevenseg = (unsigned int *) SEVEN_SEGMENTS_BASE;
     unsigned char min_tens = elapsed_minutes / 10;
-     348:	d1204917 	ldw	r4,-32476(gp)
-        }
-    }
+     6b4:	d1204617 	ldw	r4,-32488(gp)
+    shared_ctrl->command = cmd;
+    alt_printf("Command sent: %d\n", cmd);
 }
 
 // --- 7 segmentos MMSS ---
 void update_seven_segment_display(void) {
-     34c:	defffa04 	addi	sp,sp,-24
-     350:	dd000415 	stw	r20,16(sp)
+     6b8:	defffa04 	addi	sp,sp,-24
+     6bc:	dd000415 	stw	r20,16(sp)
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-     354:	01400284 	movi	r5,10
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+     6c0:	01400284 	movi	r5,10
 
 // --- 7 segmentos MMSS ---
 void update_seven_segment_display(void) {
     volatile unsigned int * sevenseg = (unsigned int *) SEVEN_SEGMENTS_BASE;
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
-     358:	d5204917 	ldw	r20,-32476(gp)
-        }
-    }
+     6c4:	d5204617 	ldw	r20,-32488(gp)
+    shared_ctrl->command = cmd;
+    alt_printf("Command sent: %d\n", cmd);
 }
 
 // --- 7 segmentos MMSS ---
 void update_seven_segment_display(void) {
-     35c:	dfc00515 	stw	ra,20(sp)
-     360:	dcc00315 	stw	r19,12(sp)
-     364:	dc800215 	stw	r18,8(sp)
-     368:	dc400115 	stw	r17,4(sp)
-     36c:	dc000015 	stw	r16,0(sp)
+     6c8:	dfc00515 	stw	ra,20(sp)
+     6cc:	dcc00315 	stw	r19,12(sp)
+     6d0:	dc800215 	stw	r18,8(sp)
+     6d4:	dc400115 	stw	r17,4(sp)
+     6d8:	dc000015 	stw	r16,0(sp)
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-     370:	04400034 	movhi	r17,0
-     374:	00007d40 	call	7d4 <__divsi3>
-     378:	8c44d804 	addi	r17,r17,4960
-     37c:	10803fcc 	andi	r2,r2,255
-     380:	8885883a 	add	r2,r17,r2
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-     384:	a009883a 	mov	r4,r20
-     388:	01400284 	movi	r5,10
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+     6dc:	04400034 	movhi	r17,0
+     6e0:	00010780 	call	1078 <__divsi3>
+     6e4:	8c474b84 	addi	r17,r17,7470
+     6e8:	10803fcc 	andi	r2,r2,255
+     6ec:	8885883a 	add	r2,r17,r2
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+     6f0:	a009883a 	mov	r4,r20
+     6f4:	01400284 	movi	r5,10
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     38c:	14000003 	ldbu	r16,0(r2)
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-     390:	00008580 	call	858 <__modsi3>
-     394:	10803fcc 	andi	r2,r2,255
-     398:	8885883a 	add	r2,r17,r2
+     6f8:	14000003 	ldbu	r16,0(r2)
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+     6fc:	00010fc0 	call	10fc <__modsi3>
+     700:	10803fcc 	andi	r2,r2,255
+     704:	8885883a 	add	r2,r17,r2
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     39c:	10800003 	ldbu	r2,0(r2)
+     708:	10800003 	ldbu	r2,0(r2)
 // --- 7 segmentos MMSS ---
 void update_seven_segment_display(void) {
     volatile unsigned int * sevenseg = (unsigned int *) SEVEN_SEGMENTS_BASE;
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
-     3a0:	d4a04a17 	ldw	r18,-32472(gp)
+     70c:	d4a04717 	ldw	r18,-32484(gp)
     unsigned char sec_ones = elapsed_seconds % 10;
-     3a4:	d4e04a17 	ldw	r19,-32472(gp)
+     710:	d4e04717 	ldw	r19,-32484(gp)
 
     unsigned int display_value =
-     3a8:	100493ba 	slli	r2,r2,14
-     3ac:	8020957a 	slli	r16,r16,21
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |   // HEX1
-        ((unsigned int)seven_seg_patterns[sec_ones]);          // HEX0
-     3b0:	9809883a 	mov	r4,r19
-     3b4:	01400284 	movi	r5,10
+     714:	100493ba 	slli	r2,r2,14
+     718:	8020957a 	slli	r16,r16,21
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |
+        ((unsigned int)seven_seg_patterns[sec_ones]);
+     71c:	9809883a 	mov	r4,r19
+     720:	01400284 	movi	r5,10
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     3b8:	80a0b03a 	or	r16,r16,r2
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |   // HEX1
-        ((unsigned int)seven_seg_patterns[sec_ones]);          // HEX0
-     3bc:	00008580 	call	858 <__modsi3>
-     3c0:	10803fcc 	andi	r2,r2,255
-     3c4:	8885883a 	add	r2,r17,r2
+     724:	80a0b03a 	or	r16,r16,r2
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |
+        ((unsigned int)seven_seg_patterns[sec_ones]);
+     728:	00010fc0 	call	10fc <__modsi3>
+     72c:	10803fcc 	andi	r2,r2,255
+     730:	8885883a 	add	r2,r17,r2
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     3c8:	10800003 	ldbu	r2,0(r2)
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |   // HEX1
-     3cc:	01400284 	movi	r5,10
-     3d0:	9009883a 	mov	r4,r18
+     734:	10800003 	ldbu	r2,0(r2)
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |
+     738:	01400284 	movi	r5,10
+     73c:	9009883a 	mov	r4,r18
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     3d4:	80a0b03a 	or	r16,r16,r2
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |   // HEX1
-     3d8:	00007d40 	call	7d4 <__divsi3>
-     3dc:	10803fcc 	andi	r2,r2,255
-     3e0:	88a3883a 	add	r17,r17,r2
+     740:	80a0b03a 	or	r16,r16,r2
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |
+     744:	00010780 	call	1078 <__divsi3>
+     748:	10803fcc 	andi	r2,r2,255
+     74c:	88a3883a 	add	r17,r17,r2
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     3e4:	88800003 	ldbu	r2,0(r17)
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |   // HEX1
-        ((unsigned int)seven_seg_patterns[sec_ones]);          // HEX0
+     750:	88800003 	ldbu	r2,0(r17)
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |
+        ((unsigned int)seven_seg_patterns[sec_ones]);
 
     *sevenseg = display_value;
-     3e8:	00e20414 	movui	r3,34832
+     754:	00e20414 	movui	r3,34832
     unsigned char min_tens = elapsed_minutes / 10;
     unsigned char min_ones = elapsed_minutes % 10;
     unsigned char sec_tens = elapsed_seconds / 10;
     unsigned char sec_ones = elapsed_seconds % 10;
 
     unsigned int display_value =
-     3ec:	100491fa 	slli	r2,r2,7
-     3f0:	8084b03a 	or	r2,r16,r2
-        ((unsigned int)seven_seg_patterns[min_tens] << 21) |   // HEX3
-        ((unsigned int)seven_seg_patterns[min_ones] << 14) |   // HEX2
-        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |   // HEX1
-        ((unsigned int)seven_seg_patterns[sec_ones]);          // HEX0
+     758:	100491fa 	slli	r2,r2,7
+     75c:	8084b03a 	or	r2,r16,r2
+        ((unsigned int)seven_seg_patterns[min_tens] << 21) |
+        ((unsigned int)seven_seg_patterns[min_ones] << 14) |
+        ((unsigned int)seven_seg_patterns[sec_tens] << 7)  |
+        ((unsigned int)seven_seg_patterns[sec_ones]);
 
     *sevenseg = display_value;
-     3f4:	18800015 	stw	r2,0(r3)
+     760:	18800015 	stw	r2,0(r3)
 }
-     3f8:	dfc00517 	ldw	ra,20(sp)
-     3fc:	dd000417 	ldw	r20,16(sp)
-     400:	dcc00317 	ldw	r19,12(sp)
-     404:	dc800217 	ldw	r18,8(sp)
-     408:	dc400117 	ldw	r17,4(sp)
-     40c:	dc000017 	ldw	r16,0(sp)
-     410:	dec00604 	addi	sp,sp,24
-     414:	f800283a 	ret
+     764:	dfc00517 	ldw	ra,20(sp)
+     768:	dd000417 	ldw	r20,16(sp)
+     76c:	dcc00317 	ldw	r19,12(sp)
+     770:	dc800217 	ldw	r18,8(sp)
+     774:	dc400117 	ldw	r17,4(sp)
+     778:	dc000017 	ldw	r16,0(sp)
+     77c:	dec00604 	addi	sp,sp,24
+     780:	f800283a 	ret
 
-00000418 <timer_isr>:
-void generate_audio_samples(void);
+00000784 <timer_isr>:
+int check_hps_connection(void) {
+    return (shared_ctrl->magic == 0xABCD2025) ? 1 : 0;
+}
 
-// --- Interrupción Timer (500ms) ---
-static void timer_isr(void* context) {
-    volatile unsigned int* timer_status = (unsigned int*) (TIMER_BASE);
+// --- Interrupción Timer (500ms) - SIGNATURA CORREGIDA ---
+static void timer_isr(void* context, alt_u32 id) {
+     784:	defffc04 	addi	sp,sp,-16
+     788:	dc000015 	stw	r16,0(sp)
+     78c:	dfc00315 	stw	ra,12(sp)
+     790:	dc800215 	stw	r18,8(sp)
+     794:	dc400115 	stw	r17,4(sp)
+    volatile unsigned int* timer_status = (unsigned int*) TIMER_BASE;
     *timer_status = 0; // Limpia TO
-     418:	00a20814 	movui	r2,34848
-     41c:	10000015 	stw	zero,0(r2)
+     798:	00a20814 	movui	r2,34848
+     79c:	10000015 	stw	zero,0(r2)
 
-    if (is_playing) {
-     420:	d0a04c17 	ldw	r2,-32464(gp)
-     424:	10001626 	beq	r2,zero,480 <timer_isr+0x68>
-        elapsed_ms += 500;
-     428:	d0a04b17 	ldw	r2,-32468(gp)
-        if (elapsed_ms >= 1000) {
-     42c:	00c0f9c4 	movi	r3,999
-static void timer_isr(void* context) {
-    volatile unsigned int* timer_status = (unsigned int*) (TIMER_BASE);
+    // Incrementar uptime del sistema
+    system_uptime_ms += 500;
+     7a0:	d0a04417 	ldw	r2,-32496(gp)
+
+    // Actualizar heartbeat de FPGA
+    shared_ctrl->fpga_heartbeat++;
+     7a4:	d4200217 	ldw	r16,-32760(gp)
+static void timer_isr(void* context, alt_u32 id) {
+    volatile unsigned int* timer_status = (unsigned int*) TIMER_BASE;
     *timer_status = 0; // Limpia TO
 
+    // Incrementar uptime del sistema
+    system_uptime_ms += 500;
+     7a8:	10807d04 	addi	r2,r2,500
+     7ac:	d0a04415 	stw	r2,-32496(gp)
+
+    // Actualizar heartbeat de FPGA
+    shared_ctrl->fpga_heartbeat++;
+     7b0:	81000e03 	ldbu	r4,56(r16)
+     7b4:	80c00e43 	ldbu	r3,57(r16)
+     7b8:	80800e83 	ldbu	r2,58(r16)
+     7bc:	21403fcc 	andi	r5,r4,255
+     7c0:	18c03fcc 	andi	r3,r3,255
+     7c4:	1806923a 	slli	r3,r3,8
+     7c8:	10803fcc 	andi	r2,r2,255
+     7cc:	1004943a 	slli	r2,r2,16
+     7d0:	1948b03a 	or	r4,r3,r5
+     7d4:	1106b03a 	or	r3,r2,r4
+     7d8:	80800ec3 	ldbu	r2,59(r16)
+     7dc:	81000e03 	ldbu	r4,56(r16)
+     7e0:	1004963a 	slli	r2,r2,24
+     7e4:	10c4b03a 	or	r2,r2,r3
+     7e8:	10800044 	addi	r2,r2,1
+     7ec:	10c03fcc 	andi	r3,r2,255
+     7f0:	80c00e05 	stb	r3,56(r16)
+     7f4:	1006d23a 	srli	r3,r2,8
+     7f8:	81000e43 	ldbu	r4,57(r16)
+     7fc:	18c03fcc 	andi	r3,r3,255
+     800:	80c00e45 	stb	r3,57(r16)
+     804:	1006d43a 	srli	r3,r2,16
+     808:	1004d63a 	srli	r2,r2,24
+     80c:	81000e83 	ldbu	r4,58(r16)
+     810:	18c03fcc 	andi	r3,r3,255
+     814:	80c00e85 	stb	r3,58(r16)
+     818:	80c00ec3 	ldbu	r3,59(r16)
+     81c:	80800ec5 	stb	r2,59(r16)
+    shared_ctrl->fpga_ready = 1;
+     820:	80801203 	ldbu	r2,72(r16)
+     824:	00800044 	movi	r2,1
+     828:	80801205 	stb	r2,72(r16)
+     82c:	80801243 	ldbu	r2,73(r16)
+     830:	80001245 	stb	zero,73(r16)
+     834:	80801283 	ldbu	r2,74(r16)
+     838:	80001285 	stb	zero,74(r16)
+     83c:	808012c3 	ldbu	r2,75(r16)
+     840:	800012c5 	stb	zero,75(r16)
+
+    // Verificar conexión HPS
+    shared_ctrl->hps_connected = check_hps_connection();
+     844:	00001bc0 	call	1bc <check_hps_connection>
+     848:	10c03fcc 	andi	r3,r2,255
+     84c:	81000d03 	ldbu	r4,52(r16)
+     850:	80c00d05 	stb	r3,52(r16)
+     854:	1006d23a 	srli	r3,r2,8
+     858:	81000d43 	ldbu	r4,53(r16)
+     85c:	18c03fcc 	andi	r3,r3,255
+     860:	80c00d45 	stb	r3,53(r16)
+     864:	1006d43a 	srli	r3,r2,16
+     868:	1004d63a 	srli	r2,r2,24
+     86c:	81000d83 	ldbu	r4,54(r16)
+     870:	18c03fcc 	andi	r3,r3,255
+     874:	80c00d85 	stb	r3,54(r16)
+     878:	80c00dc3 	ldbu	r3,55(r16)
+     87c:	80800dc5 	stb	r2,55(r16)
+
+    if (is_playing) {
+     880:	d0a04917 	ldw	r2,-32476(gp)
+     884:	10001626 	beq	r2,zero,8e0 <timer_isr+0x15c>
+        elapsed_ms += 500;
+     888:	d0a04817 	ldw	r2,-32480(gp)
+        if (elapsed_ms >= 1000) {
+     88c:	00c0f9c4 	movi	r3,999
+
+    // Verificar conexión HPS
+    shared_ctrl->hps_connected = check_hps_connection();
+
     if (is_playing) {
         elapsed_ms += 500;
-     430:	10807d04 	addi	r2,r2,500
-     434:	d0a04b15 	stw	r2,-32468(gp)
+     890:	10807d04 	addi	r2,r2,500
+     894:	d0a04815 	stw	r2,-32480(gp)
         if (elapsed_ms >= 1000) {
-     438:	d0a04b17 	ldw	r2,-32468(gp)
-     43c:	18800f0e 	bge	r3,r2,47c <timer_isr+0x64>
+     898:	d0a04817 	ldw	r2,-32480(gp)
+     89c:	18800f0e 	bge	r3,r2,8dc <timer_isr+0x158>
             elapsed_ms = 0;
-     440:	d0204b15 	stw	zero,-32468(gp)
+     8a0:	d0204815 	stw	zero,-32480(gp)
             elapsed_seconds++;
-     444:	d0a04a17 	ldw	r2,-32472(gp)
+     8a4:	d0a04717 	ldw	r2,-32484(gp)
             if (elapsed_seconds >= 60) {
-     448:	00c00ec4 	movi	r3,59
+     8a8:	00c00ec4 	movi	r3,59
 
     if (is_playing) {
         elapsed_ms += 500;
         if (elapsed_ms >= 1000) {
             elapsed_ms = 0;
             elapsed_seconds++;
-     44c:	10800044 	addi	r2,r2,1
-     450:	d0a04a15 	stw	r2,-32472(gp)
+     8ac:	10800044 	addi	r2,r2,1
+     8b0:	d0a04715 	stw	r2,-32484(gp)
             if (elapsed_seconds >= 60) {
-     454:	d0a04a17 	ldw	r2,-32472(gp)
-     458:	1880080e 	bge	r3,r2,47c <timer_isr+0x64>
+     8b4:	d0a04717 	ldw	r2,-32484(gp)
+     8b8:	1880080e 	bge	r3,r2,8dc <timer_isr+0x158>
                 elapsed_seconds = 0;
-     45c:	d0204a15 	stw	zero,-32472(gp)
+     8bc:	d0204715 	stw	zero,-32484(gp)
                 elapsed_minutes++;
-     460:	d0a04917 	ldw	r2,-32476(gp)
+     8c0:	d0a04617 	ldw	r2,-32488(gp)
                 if (elapsed_minutes >= 100)
-     464:	00c018c4 	movi	r3,99
+     8c4:	00c018c4 	movi	r3,99
         if (elapsed_ms >= 1000) {
             elapsed_ms = 0;
             elapsed_seconds++;
             if (elapsed_seconds >= 60) {
                 elapsed_seconds = 0;
                 elapsed_minutes++;
-     468:	10800044 	addi	r2,r2,1
-     46c:	d0a04915 	stw	r2,-32476(gp)
+     8c8:	10800044 	addi	r2,r2,1
+     8cc:	d0a04615 	stw	r2,-32488(gp)
                 if (elapsed_minutes >= 100)
-     470:	d0a04917 	ldw	r2,-32476(gp)
-     474:	1880010e 	bge	r3,r2,47c <timer_isr+0x64>
+     8d0:	d0a04617 	ldw	r2,-32488(gp)
+     8d4:	1880010e 	bge	r3,r2,8dc <timer_isr+0x158>
                     elapsed_minutes = 0;
-     478:	d0204915 	stw	zero,-32476(gp)
+     8d8:	d0204615 	stw	zero,-32488(gp)
             }
         }
         update_seven_segment_display();
-     47c:	00003481 	jmpi	348 <update_seven_segment_display>
-     480:	f800283a 	ret
+     8dc:	00006b40 	call	6b4 <update_seven_segment_display>
+    }
 
-00000484 <handle_buttons>:
+    // Actualizar posición de reproducción
+    shared_ctrl->playback_pos = (elapsed_minutes * 60 + elapsed_seconds) * 1000 + elapsed_ms;
+     8e0:	d1204617 	ldw	r4,-32488(gp)
+     8e4:	d4a04717 	ldw	r18,-32484(gp)
+     8e8:	01400f04 	movi	r5,60
+     8ec:	d4604817 	ldw	r17,-32480(gp)
+     8f0:	000122c0 	call	122c <__mulsi3>
+     8f4:	1489883a 	add	r4,r2,r18
+     8f8:	0140fa04 	movi	r5,1000
+     8fc:	000122c0 	call	122c <__mulsi3>
+     900:	d4200217 	ldw	r16,-32760(gp)
+     904:	1445883a 	add	r2,r2,r17
+     908:	10c03fcc 	andi	r3,r2,255
+     90c:	81001803 	ldbu	r4,96(r16)
+     910:	80c01805 	stb	r3,96(r16)
+     914:	1006d23a 	srli	r3,r2,8
+     918:	81001843 	ldbu	r4,97(r16)
+     91c:	18c03fcc 	andi	r3,r3,255
+     920:	80c01845 	stb	r3,97(r16)
+     924:	1006d43a 	srli	r3,r2,16
+     928:	81001883 	ldbu	r4,98(r16)
+     92c:	1004d63a 	srli	r2,r2,24
+     930:	18c03fcc 	andi	r3,r3,255
+     934:	80c01885 	stb	r3,98(r16)
+     938:	80c018c3 	ldbu	r3,99(r16)
+     93c:	808018c5 	stb	r2,99(r16)
+}
+     940:	dfc00317 	ldw	ra,12(sp)
+     944:	dc800217 	ldw	r18,8(sp)
+     948:	dc400117 	ldw	r17,4(sp)
+     94c:	dc000017 	ldw	r16,0(sp)
+     950:	dec00404 	addi	sp,sp,16
+     954:	f800283a 	ret
+
+00000958 <handle_buttons>:
 
     *sevenseg = display_value;
 }
 
 // --- Botones: Play/Pause, Next, Prev ---
 void handle_buttons(void) {
-     484:	defffd04 	addi	sp,sp,-12
+     958:	defffd04 	addi	sp,sp,-12
     static int prev_button_state = 0x7;
     volatile unsigned int * button_ptr = (unsigned int *) BUTTONS_BASE;
     int button_state = *button_ptr;
-     488:	00a20014 	movui	r2,34816
+     95c:	00a20014 	movui	r2,34816
 
     *sevenseg = display_value;
 }
 
 // --- Botones: Play/Pause, Next, Prev ---
 void handle_buttons(void) {
-     48c:	dc400115 	stw	r17,4(sp)
+     960:	dc000015 	stw	r16,0(sp)
     static int prev_button_state = 0x7;
     volatile unsigned int * button_ptr = (unsigned int *) BUTTONS_BASE;
     int button_state = *button_ptr;
-     490:	14400017 	ldw	r17,0(r2)
+     964:	14000017 	ldw	r16,0(r2)
     int button_pressed = (~button_state) & prev_button_state;
-     494:	d0a00017 	ldw	r2,-32768(gp)
+     968:	d0a00017 	ldw	r2,-32768(gp)
 
     *sevenseg = display_value;
 }
 
 // --- Botones: Play/Pause, Next, Prev ---
 void handle_buttons(void) {
-     498:	dc000015 	stw	r16,0(sp)
+     96c:	dc400115 	stw	r17,4(sp)
     static int prev_button_state = 0x7;
     volatile unsigned int * button_ptr = (unsigned int *) BUTTONS_BASE;
     int button_state = *button_ptr;
     int button_pressed = (~button_state) & prev_button_state;
-     49c:	0460303a 	nor	r16,zero,r17
-     4a0:	80a0703a 	and	r16,r16,r2
+     970:	0422303a 	nor	r17,zero,r16
+     974:	88a2703a 	and	r17,r17,r2
 
     *sevenseg = display_value;
 }
 
 // --- Botones: Play/Pause, Next, Prev ---
 void handle_buttons(void) {
-     4a4:	dfc00215 	stw	ra,8(sp)
+     978:	dfc00215 	stw	ra,8(sp)
     static int prev_button_state = 0x7;
     volatile unsigned int * button_ptr = (unsigned int *) BUTTONS_BASE;
     int button_state = *button_ptr;
     int button_pressed = (~button_state) & prev_button_state;
 
     if (button_pressed & 0x1) { // KEY0: Play/Pause
-     4a8:	8080004c 	andi	r2,r16,1
-     4ac:	10001226 	beq	r2,zero,4f8 <handle_buttons+0x74>
-        is_playing = !is_playing;
-     4b0:	d0a04c17 	ldw	r2,-32464(gp)
-     4b4:	1005003a 	cmpeq	r2,r2,zero
-     4b8:	d0a04c15 	stw	r2,-32464(gp)
-        if (is_playing) {
-     4bc:	d0a04c17 	ldw	r2,-32464(gp)
-     4c0:	10000126 	beq	r2,zero,4c8 <handle_buttons+0x44>
-            sample_index = 0; // Reset sample index when starting
-     4c4:	d0204815 	stw	zero,-32480(gp)
-        }
-        alt_printf("Play/Pause - Track %d (%d Hz) - %s\n",
-     4c8:	d1600417 	ldw	r5,-32752(gp)
-     4cc:	d1a00317 	ldw	r6,-32756(gp)
-                   current_track, current_freq, is_playing ? "Playing" : "Paused");
-     4d0:	d0a04c17 	ldw	r2,-32464(gp)
-    if (button_pressed & 0x1) { // KEY0: Play/Pause
-        is_playing = !is_playing;
-        if (is_playing) {
-            sample_index = 0; // Reset sample index when starting
-        }
-        alt_printf("Play/Pause - Track %d (%d Hz) - %s\n",
-     4d4:	1000031e 	bne	r2,zero,4e4 <handle_buttons+0x60>
-     4d8:	01c00034 	movhi	r7,0
-     4dc:	39c48e04 	addi	r7,r7,4664
-     4e0:	00000206 	br	4ec <handle_buttons+0x68>
-     4e4:	01c00034 	movhi	r7,0
-     4e8:	39c48c04 	addi	r7,r7,4656
-     4ec:	01000034 	movhi	r4,0
-     4f0:	21049004 	addi	r4,r4,4672
-     4f4:	0000b280 	call	b28 <alt_printf>
-                   current_track, current_freq, is_playing ? "Playing" : "Paused");
-    }
-
-    if (button_pressed & 0x2) { // KEY1: Next
-     4f8:	8080008c 	andi	r2,r16,2
-     4fc:	10003a26 	beq	r2,zero,5e8 <handle_buttons+0x164>
-        current_track++;
-     500:	d0a00417 	ldw	r2,-32752(gp)
-        if (current_track > 10) current_track = 1;
-     504:	00c00284 	movi	r3,10
-        alt_printf("Play/Pause - Track %d (%d Hz) - %s\n",
-                   current_track, current_freq, is_playing ? "Playing" : "Paused");
-    }
-
-    if (button_pressed & 0x2) { // KEY1: Next
-        current_track++;
-     508:	10800044 	addi	r2,r2,1
-     50c:	d0a00415 	stw	r2,-32752(gp)
-        if (current_track > 10) current_track = 1;
-     510:	d0a00417 	ldw	r2,-32752(gp)
-     514:	1880020e 	bge	r3,r2,520 <handle_buttons+0x9c>
-     518:	00800044 	movi	r2,1
-     51c:	d0a00415 	stw	r2,-32752(gp)
-
-        switch (current_track) {
-     520:	d0a00417 	ldw	r2,-32752(gp)
-     524:	00c00244 	movi	r3,9
-     528:	10bfffc4 	addi	r2,r2,-1
-     52c:	18802236 	bltu	r3,r2,5b8 <handle_buttons+0x134>
-     530:	100490ba 	slli	r2,r2,2
-     534:	00c00034 	movhi	r3,0
-     538:	18c15204 	addi	r3,r3,1352
-     53c:	10c5883a 	add	r2,r2,r3
-     540:	10800017 	ldw	r2,0(r2)
-     544:	1000683a 	jmp	r2
-     548:	000005b8 	rdprs	zero,zero,22
-     54c:	00000570 	cmpltui	zero,zero,21
-     550:	00000578 	rdprs	zero,zero,21
-     554:	00000580 	call	58 <__flash_exceptions_start+0x38>
-     558:	00000588 	cmpgei	zero,zero,22
-     55c:	00000590 	cmplti	zero,zero,22
-     560:	00000598 	cmpnei	zero,zero,22
-     564:	000005a0 	cmpeqi	zero,zero,22
-     568:	000005a8 	cmpgeui	zero,zero,22
-     56c:	000005b0 	cmpltui	zero,zero,22
-            case 1: current_freq = 440; break;   // A4
-            case 2: current_freq = 523; break;   // C5
-     570:	008082c4 	movi	r2,523
-     574:	00001106 	br	5bc <handle_buttons+0x138>
-            case 3: current_freq = 659; break;   // E5
-     578:	0080a4c4 	movi	r2,659
-     57c:	00000f06 	br	5bc <handle_buttons+0x138>
-            case 4: current_freq = 784; break;   // G5
-     580:	0080c404 	movi	r2,784
-     584:	00000d06 	br	5bc <handle_buttons+0x138>
-            case 5: current_freq = 880; break;   // A5
-     588:	0080dc04 	movi	r2,880
-     58c:	00000b06 	br	5bc <handle_buttons+0x138>
-            case 6: current_freq = 1047; break;  // C6
-     590:	008105c4 	movi	r2,1047
-     594:	00000906 	br	5bc <handle_buttons+0x138>
-            case 7: current_freq = 220; break;   // A3
-     598:	00803704 	movi	r2,220
-     59c:	00000706 	br	5bc <handle_buttons+0x138>
-            case 8: current_freq = 330; break;   // E4
-     5a0:	00805284 	movi	r2,330
-     5a4:	00000506 	br	5bc <handle_buttons+0x138>
-            case 9: current_freq = 1175; break;  // D6
-     5a8:	008125c4 	movi	r2,1175
-     5ac:	00000306 	br	5bc <handle_buttons+0x138>
-            case 10: current_freq = 262; break;  // C4
-     5b0:	00804184 	movi	r2,262
-     5b4:	00000106 	br	5bc <handle_buttons+0x138>
-            default: current_freq = 440; break;
-     5b8:	00806e04 	movi	r2,440
-     5bc:	d0a00315 	stw	r2,-32756(gp)
-        }
-
-        elapsed_ms = 0; elapsed_seconds = 0; elapsed_minutes = 0;
-     5c0:	d0204b15 	stw	zero,-32468(gp)
-     5c4:	d0204a15 	stw	zero,-32472(gp)
-     5c8:	d0204915 	stw	zero,-32476(gp)
-        sample_index = 0;
-     5cc:	d0204815 	stw	zero,-32480(gp)
+     97c:	8880004c 	andi	r2,r17,1
+     980:	10004926 	beq	r2,zero,aa8 <handle_buttons+0x150>
+        if (!shared_ctrl->hps_connected) {
+     984:	d0a00217 	ldw	r2,-32760(gp)
+     988:	11400d03 	ldbu	r5,52(r2)
+     98c:	11000d43 	ldbu	r4,53(r2)
+     990:	10c00d83 	ldbu	r3,54(r2)
+     994:	29803fcc 	andi	r6,r5,255
+     998:	21003fcc 	andi	r4,r4,255
+     99c:	2008923a 	slli	r4,r4,8
+     9a0:	18c03fcc 	andi	r3,r3,255
+     9a4:	1806943a 	slli	r3,r3,16
+     9a8:	218ab03a 	or	r5,r4,r6
+     9ac:	1948b03a 	or	r4,r3,r5
+     9b0:	10c00dc3 	ldbu	r3,55(r2)
+     9b4:	1806963a 	slli	r3,r3,24
+     9b8:	1906b03a 	or	r3,r3,r4
+     9bc:	1800071e 	bne	r3,zero,9dc <handle_buttons+0x84>
+            alt_printf("HPS not connected\n");
+     9c0:	01000034 	movhi	r4,0
+     9c4:	2106c704 	addi	r4,r4,6940
         update_seven_segment_display();
-     5d0:	00003480 	call	348 <update_seven_segment_display>
-        alt_printf("Next track: %d (%d Hz)\n", current_track, current_freq);
-     5d4:	d1600417 	ldw	r5,-32752(gp)
-     5d8:	d1a00317 	ldw	r6,-32756(gp)
-     5dc:	01000034 	movhi	r4,0
-     5e0:	21049904 	addi	r4,r4,4708
-     5e4:	0000b280 	call	b28 <alt_printf>
+        alt_printf("Previous track\n");
+    }
+
+    prev_button_state = button_state;
+}
+     9c8:	dfc00217 	ldw	ra,8(sp)
+     9cc:	dc400117 	ldw	r17,4(sp)
+     9d0:	dc000017 	ldw	r16,0(sp)
+     9d4:	dec00304 	addi	sp,sp,12
+    int button_state = *button_ptr;
+    int button_pressed = (~button_state) & prev_button_state;
+
+    if (button_pressed & 0x1) { // KEY0: Play/Pause
+        if (!shared_ctrl->hps_connected) {
+            alt_printf("HPS not connected\n");
+     9d8:	00013f41 	jmpi	13f4 <alt_printf>
+            return;
+        }
+
+        if (is_playing) {
+     9dc:	d0e04917 	ldw	r3,-32476(gp)
+     9e0:	18001626 	beq	r3,zero,a3c <handle_buttons+0xe4>
+            is_playing = 0;
+     9e4:	d0204915 	stw	zero,-32476(gp)
+            shared_ctrl->command = CMD_PAUSE;
+     9e8:	10c00003 	ldbu	r3,0(r2)
+     9ec:	00c00084 	movi	r3,2
+     9f0:	10c00005 	stb	r3,0(r2)
+     9f4:	11000043 	ldbu	r4,1(r2)
+     9f8:	10000045 	stb	zero,1(r2)
+     9fc:	11000083 	ldbu	r4,2(r2)
+     a00:	10000085 	stb	zero,2(r2)
+     a04:	110000c3 	ldbu	r4,3(r2)
+     a08:	100000c5 	stb	zero,3(r2)
+            shared_ctrl->status = STATUS_PAUSED;
+     a0c:	11000103 	ldbu	r4,4(r2)
+     a10:	10c00105 	stb	r3,4(r2)
+     a14:	10c00143 	ldbu	r3,5(r2)
+     a18:	10000145 	stb	zero,5(r2)
+     a1c:	10c00183 	ldbu	r3,6(r2)
+     a20:	10000185 	stb	zero,6(r2)
+     a24:	10c001c3 	ldbu	r3,7(r2)
+            alt_printf("Paused\n");
+     a28:	01000034 	movhi	r4,0
+        }
+
+        if (is_playing) {
+            is_playing = 0;
+            shared_ctrl->command = CMD_PAUSE;
+            shared_ctrl->status = STATUS_PAUSED;
+     a2c:	100001c5 	stb	zero,7(r2)
+            alt_printf("Paused\n");
+     a30:	2106d104 	addi	r4,r4,6980
+     a34:	00013f40 	call	13f4 <alt_printf>
+     a38:	00001b06 	br	aa8 <handle_buttons+0x150>
+        } else {
+            is_playing = 1;
+     a3c:	00c00044 	movi	r3,1
+     a40:	d0e04915 	stw	r3,-32476(gp)
+            shared_ctrl->command = CMD_PLAY;
+     a44:	11000003 	ldbu	r4,0(r2)
+     a48:	10c00005 	stb	r3,0(r2)
+     a4c:	10c00043 	ldbu	r3,1(r2)
+     a50:	10000045 	stb	zero,1(r2)
+     a54:	10c00083 	ldbu	r3,2(r2)
+     a58:	10000085 	stb	zero,2(r2)
+     a5c:	10c000c3 	ldbu	r3,3(r2)
+     a60:	100000c5 	stb	zero,3(r2)
+            alt_printf("Playing song %d\n", shared_ctrl->song_id + 1);
+     a64:	11000203 	ldbu	r4,8(r2)
+     a68:	10c00243 	ldbu	r3,9(r2)
+     a6c:	11400283 	ldbu	r5,10(r2)
+     a70:	21803fcc 	andi	r6,r4,255
+     a74:	18c03fcc 	andi	r3,r3,255
+     a78:	1806923a 	slli	r3,r3,8
+     a7c:	29403fcc 	andi	r5,r5,255
+     a80:	280a943a 	slli	r5,r5,16
+     a84:	1988b03a 	or	r4,r3,r6
+     a88:	2906b03a 	or	r3,r5,r4
+     a8c:	114002c3 	ldbu	r5,11(r2)
+     a90:	01000034 	movhi	r4,0
+     a94:	2106d304 	addi	r4,r4,6988
+     a98:	280a963a 	slli	r5,r5,24
+     a9c:	28cab03a 	or	r5,r5,r3
+     aa0:	29400044 	addi	r5,r5,1
+     aa4:	00013f40 	call	13f4 <alt_printf>
+        }
+    }
+
+    if (button_pressed & 0x2) { // KEY1: Next
+     aa8:	8880008c 	andi	r2,r17,2
+     aac:	10001926 	beq	r2,zero,b14 <handle_buttons+0x1bc>
+        if (!shared_ctrl->hps_connected) {
+     ab0:	d1a00217 	ldw	r6,-32760(gp)
+     ab4:	31000d03 	ldbu	r4,52(r6)
+     ab8:	30c00d43 	ldbu	r3,53(r6)
+     abc:	30800d83 	ldbu	r2,54(r6)
+     ac0:	21403fcc 	andi	r5,r4,255
+     ac4:	18c03fcc 	andi	r3,r3,255
+     ac8:	1806923a 	slli	r3,r3,8
+     acc:	10803fcc 	andi	r2,r2,255
+     ad0:	1004943a 	slli	r2,r2,16
+     ad4:	1948b03a 	or	r4,r3,r5
+     ad8:	1106b03a 	or	r3,r2,r4
+     adc:	30800dc3 	ldbu	r2,55(r6)
+     ae0:	1004963a 	slli	r2,r2,24
+     ae4:	10c4b03a 	or	r2,r2,r3
+     ae8:	103fb526 	beq	r2,zero,9c0 <__alt_mem_SHARED_MEMORY+0xfffc09c0>
+            alt_printf("HPS not connected\n");
+            return;
+        }
+
+        send_command_to_hps(CMD_NEXT);
+     aec:	01000104 	movi	r4,4
+     af0:	00006240 	call	624 <send_command_to_hps>
+        elapsed_ms = 0;
+     af4:	d0204815 	stw	zero,-32480(gp)
+        elapsed_seconds = 0;
+     af8:	d0204715 	stw	zero,-32484(gp)
+        elapsed_minutes = 0;
+     afc:	d0204615 	stw	zero,-32488(gp)
+        audio_read_ptr = 0;
+     b00:	d0204515 	stw	zero,-32492(gp)
+        update_seven_segment_display();
+     b04:	00006b40 	call	6b4 <update_seven_segment_display>
+        alt_printf("Next track\n");
+     b08:	01000034 	movhi	r4,0
+     b0c:	2106d804 	addi	r4,r4,7008
+     b10:	00013f40 	call	13f4 <alt_printf>
     }
 
     if (button_pressed & 0x4) { // KEY2: Previous
-     5e8:	8400010c 	andi	r16,r16,4
-     5ec:	80003926 	beq	r16,zero,6d4 <handle_buttons+0x250>
-        current_track--;
-     5f0:	d0a00417 	ldw	r2,-32752(gp)
-     5f4:	10bfffc4 	addi	r2,r2,-1
-     5f8:	d0a00415 	stw	r2,-32752(gp)
-        if (current_track < 1) current_track = 10;
-     5fc:	d0a00417 	ldw	r2,-32752(gp)
-     600:	00800216 	blt	zero,r2,60c <handle_buttons+0x188>
-     604:	00800284 	movi	r2,10
-     608:	d0a00415 	stw	r2,-32752(gp)
-
-        switch (current_track) {
-     60c:	d0a00417 	ldw	r2,-32752(gp)
-     610:	00c00244 	movi	r3,9
-     614:	10bfffc4 	addi	r2,r2,-1
-     618:	18802236 	bltu	r3,r2,6a4 <handle_buttons+0x220>
-     61c:	100490ba 	slli	r2,r2,2
-     620:	00c00034 	movhi	r3,0
-     624:	18c18d04 	addi	r3,r3,1588
-     628:	10c5883a 	add	r2,r2,r3
-     62c:	10800017 	ldw	r2,0(r2)
-     630:	1000683a 	jmp	r2
-     634:	000006a4 	muli	zero,zero,26
-     638:	0000065c 	xori	zero,zero,25
-     63c:	00000664 	muli	zero,zero,25
-     640:	0000066c 	andhi	zero,zero,25
-     644:	00000674 	movhi	zero,25
-     648:	0000067c 	xorhi	zero,zero,25
-     64c:	00000684 	movi	zero,26
-     650:	0000068c 	andi	zero,zero,26
-     654:	00000694 	movui	zero,26
-     658:	0000069c 	xori	zero,zero,26
-            case 1: current_freq = 440; break;
-            case 2: current_freq = 523; break;
-     65c:	008082c4 	movi	r2,523
-     660:	00001106 	br	6a8 <handle_buttons+0x224>
-            case 3: current_freq = 659; break;
-     664:	0080a4c4 	movi	r2,659
-     668:	00000f06 	br	6a8 <handle_buttons+0x224>
-            case 4: current_freq = 784; break;
-     66c:	0080c404 	movi	r2,784
-     670:	00000d06 	br	6a8 <handle_buttons+0x224>
-            case 5: current_freq = 880; break;
-     674:	0080dc04 	movi	r2,880
-     678:	00000b06 	br	6a8 <handle_buttons+0x224>
-            case 6: current_freq = 1047; break;
-     67c:	008105c4 	movi	r2,1047
-     680:	00000906 	br	6a8 <handle_buttons+0x224>
-            case 7: current_freq = 220; break;
-     684:	00803704 	movi	r2,220
-     688:	00000706 	br	6a8 <handle_buttons+0x224>
-            case 8: current_freq = 330; break;
-     68c:	00805284 	movi	r2,330
-     690:	00000506 	br	6a8 <handle_buttons+0x224>
-            case 9: current_freq = 1175; break;
-     694:	008125c4 	movi	r2,1175
-     698:	00000306 	br	6a8 <handle_buttons+0x224>
-            case 10: current_freq = 262; break;
-     69c:	00804184 	movi	r2,262
-     6a0:	00000106 	br	6a8 <handle_buttons+0x224>
-            default: current_freq = 440; break;
-     6a4:	00806e04 	movi	r2,440
-     6a8:	d0a00315 	stw	r2,-32756(gp)
+     b14:	8c40010c 	andi	r17,r17,4
+     b18:	88001926 	beq	r17,zero,b80 <handle_buttons+0x228>
+        if (!shared_ctrl->hps_connected) {
+     b1c:	d1a00217 	ldw	r6,-32760(gp)
+     b20:	31000d03 	ldbu	r4,52(r6)
+     b24:	30c00d43 	ldbu	r3,53(r6)
+     b28:	30800d83 	ldbu	r2,54(r6)
+     b2c:	21403fcc 	andi	r5,r4,255
+     b30:	18c03fcc 	andi	r3,r3,255
+     b34:	1806923a 	slli	r3,r3,8
+     b38:	10803fcc 	andi	r2,r2,255
+     b3c:	1004943a 	slli	r2,r2,16
+     b40:	1948b03a 	or	r4,r3,r5
+     b44:	1106b03a 	or	r3,r2,r4
+     b48:	30800dc3 	ldbu	r2,55(r6)
+     b4c:	1004963a 	slli	r2,r2,24
+     b50:	10c4b03a 	or	r2,r2,r3
+     b54:	103f9a26 	beq	r2,zero,9c0 <__alt_mem_SHARED_MEMORY+0xfffc09c0>
+            alt_printf("HPS not connected\n");
+            return;
         }
 
-        elapsed_ms = 0; elapsed_seconds = 0; elapsed_minutes = 0;
-     6ac:	d0204b15 	stw	zero,-32468(gp)
-     6b0:	d0204a15 	stw	zero,-32472(gp)
-     6b4:	d0204915 	stw	zero,-32476(gp)
-        sample_index = 0;
-     6b8:	d0204815 	stw	zero,-32480(gp)
+        send_command_to_hps(CMD_PREV);
+     b58:	01000144 	movi	r4,5
+     b5c:	00006240 	call	624 <send_command_to_hps>
+        elapsed_ms = 0;
+     b60:	d0204815 	stw	zero,-32480(gp)
+        elapsed_seconds = 0;
+     b64:	d0204715 	stw	zero,-32484(gp)
+        elapsed_minutes = 0;
+     b68:	d0204615 	stw	zero,-32488(gp)
+        audio_read_ptr = 0;
+     b6c:	d0204515 	stw	zero,-32492(gp)
         update_seven_segment_display();
-     6bc:	00003480 	call	348 <update_seven_segment_display>
-        alt_printf("Previous track: %d (%d Hz)\n", current_track, current_freq);
-     6c0:	d1600417 	ldw	r5,-32752(gp)
-     6c4:	d1a00317 	ldw	r6,-32756(gp)
-     6c8:	01000034 	movhi	r4,0
-     6cc:	21049f04 	addi	r4,r4,4732
-     6d0:	0000b280 	call	b28 <alt_printf>
+     b70:	00006b40 	call	6b4 <update_seven_segment_display>
+        alt_printf("Previous track\n");
+     b74:	01000034 	movhi	r4,0
+     b78:	2106db04 	addi	r4,r4,7020
+     b7c:	00013f40 	call	13f4 <alt_printf>
     }
 
     prev_button_state = button_state;
-     6d4:	d4600015 	stw	r17,-32768(gp)
+     b80:	d4200015 	stw	r16,-32768(gp)
 }
-     6d8:	dfc00217 	ldw	ra,8(sp)
-     6dc:	dc400117 	ldw	r17,4(sp)
-     6e0:	dc000017 	ldw	r16,0(sp)
-     6e4:	dec00304 	addi	sp,sp,12
-     6e8:	f800283a 	ret
+     b84:	dfc00217 	ldw	ra,8(sp)
+     b88:	dc400117 	ldw	r17,4(sp)
+     b8c:	dc000017 	ldw	r16,0(sp)
+     b90:	dec00304 	addi	sp,sp,12
+     b94:	f800283a 	ret
 
-000006ec <main>:
+00000b98 <main>:
 
 int main(void) {
-    alt_putstr("=== Audio Player (Buttons + 7seg) ===\n");
-     6ec:	01000034 	movhi	r4,0
-    }
-
-    prev_button_state = button_state;
-}
-
-int main(void) {
-     6f0:	defffd04 	addi	sp,sp,-12
-    alt_putstr("=== Audio Player (Buttons + 7seg) ===\n");
-     6f4:	2104a604 	addi	r4,r4,4760
+    alt_putstr("=== FPGA Audio Player - On-Chip Memory v2.3 ===\n");
+     b98:	01000034 	movhi	r4,0
     }
 
     prev_button_state = button_state;
 }
 
 int main(void) {
-     6f8:	dfc00215 	stw	ra,8(sp)
-     6fc:	dc000115 	stw	r16,4(sp)
-    alt_putstr("=== Audio Player (Buttons + 7seg) ===\n");
-     700:	0000ce00 	call	ce0 <alt_putstr>
+     b9c:	defffc04 	addi	sp,sp,-16
+    alt_putstr("=== FPGA Audio Player - On-Chip Memory v2.3 ===\n");
+     ba0:	2106df04 	addi	r4,r4,7036
+    }
 
-    // Inicializar audio usando el driver de Altera
-    audio_dev = alt_up_audio_open_dev("/dev/AUDIO");
-     704:	01000034 	movhi	r4,0
-     708:	2104b004 	addi	r4,r4,4800
-     70c:	0000da80 	call	da8 <alt_up_audio_open_dev>
-     710:	d0a04d15 	stw	r2,-32460(gp)
+    prev_button_state = button_state;
+}
+
+int main(void) {
+     ba4:	dfc00315 	stw	ra,12(sp)
+     ba8:	dc400215 	stw	r17,8(sp)
+     bac:	dc000115 	stw	r16,4(sp)
+    alt_putstr("=== FPGA Audio Player - On-Chip Memory v2.3 ===\n");
+     bb0:	00015ac0 	call	15ac <alt_putstr>
+    alt_printf("Shared memory: 0x%x, Size: %d bytes\n", 0x40000, sizeof(shared_control_t));
+     bb4:	01000034 	movhi	r4,0
+     bb8:	01802404 	movi	r6,144
+     bbc:	01400134 	movhi	r5,4
+     bc0:	2106ec04 	addi	r4,r4,7088
+     bc4:	00013f40 	call	13f4 <alt_printf>
+
+    // Inicializar audio
+    audio_dev = alt_up_audio_open_dev(AUDIO_NAME);
+     bc8:	01000034 	movhi	r4,0
+     bcc:	2106f604 	addi	r4,r4,7128
+     bd0:	00016740 	call	1674 <alt_up_audio_open_dev>
+     bd4:	d0a04a15 	stw	r2,-32472(gp)
     if (audio_dev == NULL) {
-     714:	10002726 	beq	r2,zero,7b4 <main+0xc8>
-        alt_printf("Error: No se pudo abrir el dispositivo de audio\n");
+     bd8:	10011e26 	beq	r2,zero,1054 <main+0x4bc>
+        alt_printf("ERROR: Cannot open audio device\n");
         return -1;
-    } else {
-        alt_printf("Dispositivo de audio abierto correctamente\n");
-     718:	01000034 	movhi	r4,0
-     71c:	2104c004 	addi	r4,r4,4864
-     720:	0000b280 	call	b28 <alt_printf>
+    }
+    alt_printf("Audio device OK\n");
+     bdc:	01000034 	movhi	r4,0
+     be0:	21070204 	addi	r4,r4,7176
+     be4:	00013f40 	call	13f4 <alt_printf>
+
+    // Limpiar memoria compartida
+    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+     be8:	d0a00217 	ldw	r2,-32760(gp)
+     bec:	1007883a 	mov	r3,r2
+     bf0:	11002404 	addi	r4,r2,144
+        return -1;
+    }
+    alt_printf("Audio device OK\n");
+
+    // Limpiar memoria compartida
+    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+     bf4:	19000326 	beq	r3,r4,c04 <main+0x6c>
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+     bf8:	18000015 	stw	zero,0(r3)
+     bfc:	18c00104 	addi	r3,r3,4
+     c00:	003ffc06 	br	bf4 <__alt_mem_SHARED_MEMORY+0xfffc0bf4>
     }
 
-    // --- Registra interrupciones ---
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+     c04:	10c00f03 	ldbu	r3,60(r2)
+    shared_ctrl->version = 0x00020003;
+     c08:	04000084 	movi	r16,2
+    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+    }
+
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+     c0c:	00c00944 	movi	r3,37
+     c10:	10c00f05 	stb	r3,60(r2)
+     c14:	10c00f43 	ldbu	r3,61(r2)
+    shared_ctrl->song_id = 0;
+    shared_ctrl->command = CMD_NONE;
+    shared_ctrl->status = STATUS_READY;
+
+    // Registrar interrupciones - SIGNATURAS CORREGIDAS
     alt_irq_register(TIMER_IRQ, NULL, timer_isr);
-     724:	01800034 	movhi	r6,0
-     728:	31810604 	addi	r6,r6,1048
-     72c:	000b883a 	mov	r5,zero
-     730:	0009883a 	mov	r4,zero
-     734:	00009880 	call	988 <alt_irq_register>
-    // Comentar la interrupción de audio si usas polling
-    alt_irq_register(AUDIO_IRQ, NULL, audio_isr);
-     738:	01800034 	movhi	r6,0
-     73c:	31806f04 	addi	r6,r6,444
-     740:	000b883a 	mov	r5,zero
-     744:	01000084 	movi	r4,2
-     748:	00009880 	call	988 <alt_irq_register>
+     c18:	01800034 	movhi	r6,0
+    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+    }
 
-    // --- Configurar Timer ---
-    volatile unsigned int* timer_control = (unsigned int*)(TIMER_BASE + 4);
-    *timer_control = 0x7; // START | CONT | ITO
-     74c:	00c001c4 	movi	r3,7
-     750:	00a20914 	movui	r2,34852
-     754:	10c00015 	stw	r3,0(r2)
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+     c1c:	00c00804 	movi	r3,32
+     c20:	10c00f45 	stb	r3,61(r2)
+     c24:	10c00f83 	ldbu	r3,62(r2)
+    shared_ctrl->song_id = 0;
+    shared_ctrl->command = CMD_NONE;
+    shared_ctrl->status = STATUS_READY;
 
-    // Inicialización de variables
-    is_playing = 0;
-     758:	d0204c15 	stw	zero,-32464(gp)
-    current_track = 1;
-     75c:	00800044 	movi	r2,1
-     760:	d0a00415 	stw	r2,-32752(gp)
-    current_freq = 440;
-     764:	00806e04 	movi	r2,440
-     768:	d0a00315 	stw	r2,-32756(gp)
-    elapsed_ms = 0;
-     76c:	d0204b15 	stw	zero,-32468(gp)
-    elapsed_seconds = 0;
-     770:	d0204a15 	stw	zero,-32472(gp)
-    elapsed_minutes = 0;
-     774:	d0204915 	stw	zero,-32476(gp)
-    sample_index = 0;
-     778:	d0204815 	stw	zero,-32480(gp)
+    // Registrar interrupciones - SIGNATURAS CORREGIDAS
+    alt_irq_register(TIMER_IRQ, NULL, timer_isr);
+     c28:	3181e104 	addi	r6,r6,1924
+    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+    }
 
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+     c2c:	00fff344 	movi	r3,-51
+     c30:	10c00f85 	stb	r3,62(r2)
+     c34:	10c00fc3 	ldbu	r3,63(r2)
+    shared_ctrl->song_id = 0;
+    shared_ctrl->command = CMD_NONE;
+    shared_ctrl->status = STATUS_READY;
+
+    // Registrar interrupciones - SIGNATURAS CORREGIDAS
+    alt_irq_register(TIMER_IRQ, NULL, timer_isr);
+     c38:	000b883a 	mov	r5,zero
+    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+    }
+
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+     c3c:	00ffeac4 	movi	r3,-85
+     c40:	10c00fc5 	stb	r3,63(r2)
+    shared_ctrl->version = 0x00020003;
+     c44:	10c01003 	ldbu	r3,64(r2)
+    shared_ctrl->song_id = 0;
+    shared_ctrl->command = CMD_NONE;
+    shared_ctrl->status = STATUS_READY;
+
+    // Registrar interrupciones - SIGNATURAS CORREGIDAS
+    alt_irq_register(TIMER_IRQ, NULL, timer_isr);
+     c48:	0009883a 	mov	r4,zero
+        ((volatile uint32_t*)shared_ctrl)[i] = 0;
+    }
+
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+    shared_ctrl->version = 0x00020003;
+     c4c:	00c000c4 	movi	r3,3
+     c50:	10c01005 	stb	r3,64(r2)
+     c54:	10c01043 	ldbu	r3,65(r2)
+     c58:	10001045 	stb	zero,65(r2)
+     c5c:	10c01083 	ldbu	r3,66(r2)
+     c60:	14001085 	stb	r16,66(r2)
+     c64:	10c010c3 	ldbu	r3,67(r2)
+     c68:	100010c5 	stb	zero,67(r2)
+    shared_ctrl->fpga_ready = 1;
+     c6c:	10c01203 	ldbu	r3,72(r2)
     update_seven_segment_display();
-     77c:	00003480 	call	348 <update_seven_segment_display>
-    alt_putstr("Controles: KEY0 Play/Pause | KEY1 Next | KEY2 Prev\n");
-     780:	01000034 	movhi	r4,0
-     784:	2104cb04 	addi	r4,r4,4908
-     788:	0000ce00 	call	ce0 <alt_putstr>
-
-        // Generar audio usando polling (más confiable que interrupciones)
-        generate_audio_samples();
-
-        // Pequeño delay para evitar saturar el CPU
-        for (volatile int i = 0; i < 10000; i++);
-     78c:	0409c3c4 	movi	r16,9999
-    update_seven_segment_display();
-    alt_putstr("Controles: KEY0 Play/Pause | KEY1 Next | KEY2 Prev\n");
+    alt_putstr("Controls: KEY0=Play/Pause | KEY1=Next | KEY2=Previous\n");
+    alt_putstr("Waiting for HPS...\n\n");
 
     // Loop principal
+    uint32_t loop_counter = 0;
+     c70:	0023883a 	mov	r17,zero
+    }
+
+    // Inicializar memoria compartida
+    shared_ctrl->magic = 0xABCD2025;
+    shared_ctrl->version = 0x00020003;
+    shared_ctrl->fpga_ready = 1;
+     c74:	00c00044 	movi	r3,1
+     c78:	10c01205 	stb	r3,72(r2)
+     c7c:	10c01243 	ldbu	r3,73(r2)
+     c80:	10001245 	stb	zero,73(r2)
+     c84:	10c01283 	ldbu	r3,74(r2)
+     c88:	10001285 	stb	zero,74(r2)
+     c8c:	10c012c3 	ldbu	r3,75(r2)
+     c90:	100012c5 	stb	zero,75(r2)
+    shared_ctrl->sample_rate = SAMPLE_RATE;
+     c94:	10c01403 	ldbu	r3,80(r2)
+     c98:	00ffe004 	movi	r3,-128
+     c9c:	10c01405 	stb	r3,80(r2)
+     ca0:	10c01443 	ldbu	r3,81(r2)
+     ca4:	00ffeec4 	movi	r3,-69
+     ca8:	10c01445 	stb	r3,81(r2)
+     cac:	10c01483 	ldbu	r3,82(r2)
+     cb0:	10001485 	stb	zero,82(r2)
+     cb4:	10c014c3 	ldbu	r3,83(r2)
+     cb8:	100014c5 	stb	zero,83(r2)
+    shared_ctrl->channels = 2;
+     cbc:	10c01503 	ldbu	r3,84(r2)
+     cc0:	14001505 	stb	r16,84(r2)
+     cc4:	10c01543 	ldbu	r3,85(r2)
+     cc8:	10001545 	stb	zero,85(r2)
+     ccc:	10c01583 	ldbu	r3,86(r2)
+     cd0:	10001585 	stb	zero,86(r2)
+     cd4:	10c015c3 	ldbu	r3,87(r2)
+     cd8:	100015c5 	stb	zero,87(r2)
+    shared_ctrl->bits_per_sample = 16;
+     cdc:	10c01603 	ldbu	r3,88(r2)
+     ce0:	00c00404 	movi	r3,16
+     ce4:	10c01605 	stb	r3,88(r2)
+     ce8:	10c01643 	ldbu	r3,89(r2)
+     cec:	10001645 	stb	zero,89(r2)
+     cf0:	10c01683 	ldbu	r3,90(r2)
+     cf4:	10001685 	stb	zero,90(r2)
+     cf8:	10c016c3 	ldbu	r3,91(r2)
+     cfc:	100016c5 	stb	zero,91(r2)
+    shared_ctrl->song_id = 0;
+     d00:	10c00203 	ldbu	r3,8(r2)
+     d04:	10000205 	stb	zero,8(r2)
+     d08:	10c00243 	ldbu	r3,9(r2)
+     d0c:	10000245 	stb	zero,9(r2)
+     d10:	10c00283 	ldbu	r3,10(r2)
+     d14:	10000285 	stb	zero,10(r2)
+     d18:	10c002c3 	ldbu	r3,11(r2)
+     d1c:	100002c5 	stb	zero,11(r2)
+    shared_ctrl->command = CMD_NONE;
+     d20:	10c00003 	ldbu	r3,0(r2)
+     d24:	10000005 	stb	zero,0(r2)
+     d28:	10c00043 	ldbu	r3,1(r2)
+     d2c:	10000045 	stb	zero,1(r2)
+     d30:	10c00083 	ldbu	r3,2(r2)
+     d34:	10000085 	stb	zero,2(r2)
+     d38:	10c000c3 	ldbu	r3,3(r2)
+     d3c:	100000c5 	stb	zero,3(r2)
+    shared_ctrl->status = STATUS_READY;
+     d40:	10c00103 	ldbu	r3,4(r2)
+     d44:	10000105 	stb	zero,4(r2)
+     d48:	10c00143 	ldbu	r3,5(r2)
+     d4c:	10000145 	stb	zero,5(r2)
+     d50:	10c00183 	ldbu	r3,6(r2)
+     d54:	10000185 	stb	zero,6(r2)
+     d58:	10c001c3 	ldbu	r3,7(r2)
+     d5c:	100001c5 	stb	zero,7(r2)
+
+    // Registrar interrupciones - SIGNATURAS CORREGIDAS
+    alt_irq_register(TIMER_IRQ, NULL, timer_isr);
+     d60:	00012540 	call	1254 <alt_irq_register>
+    alt_irq_register(AUDIO_IRQ, NULL, audio_isr);
+     d64:	01800034 	movhi	r6,0
+     d68:	31817404 	addi	r6,r6,1488
+     d6c:	000b883a 	mov	r5,zero
+     d70:	8009883a 	mov	r4,r16
+     d74:	00012540 	call	1254 <alt_irq_register>
+
+    // Configurar Timer para 500ms
+    volatile unsigned int* timer_control = (unsigned int*)(TIMER_BASE + 4);
+    *timer_control = 0x7;
+     d78:	00c001c4 	movi	r3,7
+     d7c:	00a20914 	movui	r2,34852
+     d80:	10c00015 	stw	r3,0(r2)
+
+    // Inicialización
+    is_playing = 0;
+     d84:	d0204915 	stw	zero,-32476(gp)
+    elapsed_ms = 0;
+     d88:	d0204815 	stw	zero,-32480(gp)
+    elapsed_seconds = 0;
+     d8c:	d0204715 	stw	zero,-32484(gp)
+    elapsed_minutes = 0;
+     d90:	d0204615 	stw	zero,-32488(gp)
+    audio_read_ptr = 0;
+     d94:	d0204515 	stw	zero,-32492(gp)
+    system_uptime_ms = 0;
+     d98:	d0204415 	stw	zero,-32496(gp)
+
+    update_seven_segment_display();
+     d9c:	00006b40 	call	6b4 <update_seven_segment_display>
+    alt_putstr("Controls: KEY0=Play/Pause | KEY1=Next | KEY2=Previous\n");
+     da0:	01000034 	movhi	r4,0
+     da4:	21070704 	addi	r4,r4,7196
+     da8:	00015ac0 	call	15ac <alt_putstr>
+    alt_putstr("Waiting for HPS...\n\n");
+     dac:	01000034 	movhi	r4,0
+     db0:	21071504 	addi	r4,r4,7252
+     db4:	00015ac0 	call	15ac <alt_putstr>
+
+    // Loop principal
+    uint32_t loop_counter = 0;
+    uint32_t last_connected = 0;
+     db8:	0021883a 	mov	r16,zero
+
     while (1) {
         handle_buttons();
-     790:	00004840 	call	484 <handle_buttons>
+     dbc:	00009580 	call	958 <handle_buttons>
 
-        // Generar audio usando polling (más confiable que interrupciones)
-        generate_audio_samples();
-     794:	00002740 	call	274 <generate_audio_samples>
+        // Procesar audio
+        if (is_playing && shared_ctrl->hps_connected) {
+     dc0:	d0a04917 	ldw	r2,-32476(gp)
+     dc4:	10001026 	beq	r2,zero,e08 <main+0x270>
+     dc8:	d1a00217 	ldw	r6,-32760(gp)
+     dcc:	31000d03 	ldbu	r4,52(r6)
+     dd0:	30c00d43 	ldbu	r3,53(r6)
+     dd4:	30800d83 	ldbu	r2,54(r6)
+     dd8:	21403fcc 	andi	r5,r4,255
+     ddc:	18c03fcc 	andi	r3,r3,255
+     de0:	1806923a 	slli	r3,r3,8
+     de4:	10803fcc 	andi	r2,r2,255
+     de8:	1004943a 	slli	r2,r2,16
+     dec:	1948b03a 	or	r4,r3,r5
+     df0:	1106b03a 	or	r3,r2,r4
+     df4:	30800dc3 	ldbu	r2,55(r6)
+     df8:	1004963a 	slli	r2,r2,24
+     dfc:	10c4b03a 	or	r2,r2,r3
+     e00:	10000126 	beq	r2,zero,e08 <main+0x270>
+            process_audio_data();
+     e04:	00003040 	call	304 <process_audio_data>
+        }
 
-        // Pequeño delay para evitar saturar el CPU
-        for (volatile int i = 0; i < 10000; i++);
-     798:	d8000015 	stw	zero,0(sp)
-     79c:	d8800017 	ldw	r2,0(sp)
-     7a0:	80bffb16 	blt	r16,r2,790 <_gp+0xffff734c>
-     7a4:	d8800017 	ldw	r2,0(sp)
-     7a8:	10800044 	addi	r2,r2,1
-     7ac:	d8800015 	stw	r2,0(sp)
-     7b0:	003ffa06 	br	79c <_gp+0xffff7358>
-    alt_putstr("=== Audio Player (Buttons + 7seg) ===\n");
+        // Debug cada 10 segundos
+        if ((loop_counter % 100000) == 0) {
+     e08:	014000b4 	movhi	r5,2
+     e0c:	2961a804 	addi	r5,r5,-31072
+     e10:	8809883a 	mov	r4,r17
+     e14:	00011d40 	call	11d4 <__umodsi3>
+     e18:	1000521e 	bne	r2,zero,f64 <main+0x3cc>
+            alt_printf("=== STATUS ===\n");
+     e1c:	01000034 	movhi	r4,0
+     e20:	21071b04 	addi	r4,r4,7276
+     e24:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("HPS Connected: %d\n", shared_ctrl->hps_connected);
+     e28:	d1600217 	ldw	r5,-32760(gp)
+     e2c:	28c00d03 	ldbu	r3,52(r5)
+     e30:	28800d43 	ldbu	r2,53(r5)
+     e34:	19003fcc 	andi	r4,r3,255
+     e38:	10803fcc 	andi	r2,r2,255
+     e3c:	1004923a 	slli	r2,r2,8
+     e40:	1106b03a 	or	r3,r2,r4
+     e44:	28800d83 	ldbu	r2,54(r5)
+     e48:	29400dc3 	ldbu	r5,55(r5)
+     e4c:	01000034 	movhi	r4,0
+     e50:	10803fcc 	andi	r2,r2,255
+     e54:	1004943a 	slli	r2,r2,16
+     e58:	280a963a 	slli	r5,r5,24
+     e5c:	21071f04 	addi	r4,r4,7292
+     e60:	10c4b03a 	or	r2,r2,r3
+     e64:	288ab03a 	or	r5,r5,r2
+     e68:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("Magic: 0x%x\n", shared_ctrl->magic);
+     e6c:	d1600217 	ldw	r5,-32760(gp)
+     e70:	28c00f03 	ldbu	r3,60(r5)
+     e74:	28800f43 	ldbu	r2,61(r5)
+     e78:	19003fcc 	andi	r4,r3,255
+     e7c:	10803fcc 	andi	r2,r2,255
+     e80:	1004923a 	slli	r2,r2,8
+     e84:	1106b03a 	or	r3,r2,r4
+     e88:	28800f83 	ldbu	r2,62(r5)
+     e8c:	29400fc3 	ldbu	r5,63(r5)
+     e90:	01000034 	movhi	r4,0
+     e94:	10803fcc 	andi	r2,r2,255
+     e98:	1004943a 	slli	r2,r2,16
+     e9c:	280a963a 	slli	r5,r5,24
+     ea0:	21072404 	addi	r4,r4,7312
+     ea4:	10c4b03a 	or	r2,r2,r3
+     ea8:	288ab03a 	or	r5,r5,r2
+     eac:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("Chunk Ready: %d\n", shared_ctrl->chunk_ready);
+     eb0:	d1600217 	ldw	r5,-32760(gp)
+     eb4:	28c00a03 	ldbu	r3,40(r5)
+     eb8:	28800a43 	ldbu	r2,41(r5)
+     ebc:	19003fcc 	andi	r4,r3,255
+     ec0:	10803fcc 	andi	r2,r2,255
+     ec4:	1004923a 	slli	r2,r2,8
+     ec8:	1106b03a 	or	r3,r2,r4
+     ecc:	28800a83 	ldbu	r2,42(r5)
+     ed0:	29400ac3 	ldbu	r5,43(r5)
+     ed4:	01000034 	movhi	r4,0
+     ed8:	10803fcc 	andi	r2,r2,255
+     edc:	1004943a 	slli	r2,r2,16
+     ee0:	280a963a 	slli	r5,r5,24
+     ee4:	21072804 	addi	r4,r4,7328
+     ee8:	10c4b03a 	or	r2,r2,r3
+     eec:	288ab03a 	or	r5,r5,r2
+     ef0:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("Chunk Size: %d\n", shared_ctrl->chunk_size);
+     ef4:	d1600217 	ldw	r5,-32760(gp)
+     ef8:	28c00503 	ldbu	r3,20(r5)
+     efc:	28800543 	ldbu	r2,21(r5)
+     f00:	19003fcc 	andi	r4,r3,255
+     f04:	10803fcc 	andi	r2,r2,255
+     f08:	1004923a 	slli	r2,r2,8
+     f0c:	1106b03a 	or	r3,r2,r4
+     f10:	28800583 	ldbu	r2,22(r5)
+     f14:	294005c3 	ldbu	r5,23(r5)
+     f18:	01000034 	movhi	r4,0
+     f1c:	10803fcc 	andi	r2,r2,255
+     f20:	1004943a 	slli	r2,r2,16
+     f24:	280a963a 	slli	r5,r5,24
+     f28:	21072d04 	addi	r4,r4,7348
+     f2c:	10c4b03a 	or	r2,r2,r3
+     f30:	288ab03a 	or	r5,r5,r2
+     f34:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("Playing: %d\n", is_playing);
+     f38:	d1604917 	ldw	r5,-32476(gp)
+     f3c:	01000034 	movhi	r4,0
+     f40:	21073104 	addi	r4,r4,7364
+     f44:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("Shared Memory: 0x%x\n", 0x40000);
+     f48:	01000034 	movhi	r4,0
+     f4c:	21073504 	addi	r4,r4,7380
+     f50:	01400134 	movhi	r5,4
+     f54:	00013f40 	call	13f4 <alt_printf>
+            alt_printf("==============\n");
+     f58:	01000034 	movhi	r4,0
+     f5c:	21073b04 	addi	r4,r4,7404
+     f60:	00013f40 	call	13f4 <alt_printf>
+        }
 
-    // Inicializar audio usando el driver de Altera
-    audio_dev = alt_up_audio_open_dev("/dev/AUDIO");
+        // Detectar cambios de conexión
+        if (shared_ctrl->hps_connected != last_connected) {
+     f64:	d1a00217 	ldw	r6,-32760(gp)
+     f68:	31000d03 	ldbu	r4,52(r6)
+     f6c:	30c00d43 	ldbu	r3,53(r6)
+     f70:	30800d83 	ldbu	r2,54(r6)
+     f74:	21403fcc 	andi	r5,r4,255
+     f78:	18c03fcc 	andi	r3,r3,255
+     f7c:	1806923a 	slli	r3,r3,8
+     f80:	10803fcc 	andi	r2,r2,255
+     f84:	1004943a 	slli	r2,r2,16
+     f88:	1948b03a 	or	r4,r3,r5
+     f8c:	1106b03a 	or	r3,r2,r4
+     f90:	30800dc3 	ldbu	r2,55(r6)
+     f94:	1004963a 	slli	r2,r2,24
+     f98:	10c4b03a 	or	r2,r2,r3
+     f9c:	80802426 	beq	r16,r2,1030 <main+0x498>
+            if (shared_ctrl->hps_connected) {
+     fa0:	31000d03 	ldbu	r4,52(r6)
+     fa4:	30c00d43 	ldbu	r3,53(r6)
+     fa8:	30800d83 	ldbu	r2,54(r6)
+     fac:	21403fcc 	andi	r5,r4,255
+     fb0:	18c03fcc 	andi	r3,r3,255
+     fb4:	1806923a 	slli	r3,r3,8
+     fb8:	10803fcc 	andi	r2,r2,255
+     fbc:	1004943a 	slli	r2,r2,16
+     fc0:	1948b03a 	or	r4,r3,r5
+     fc4:	1106b03a 	or	r3,r2,r4
+     fc8:	30800dc3 	ldbu	r2,55(r6)
+     fcc:	1004963a 	slli	r2,r2,24
+     fd0:	10c4b03a 	or	r2,r2,r3
+     fd4:	10000426 	beq	r2,zero,fe8 <main+0x450>
+                alt_printf("*** HPS CONNECTED ***\n");
+     fd8:	01000034 	movhi	r4,0
+     fdc:	21073f04 	addi	r4,r4,7420
+     fe0:	00013f40 	call	13f4 <alt_printf>
+     fe4:	00000406 	br	ff8 <main+0x460>
+            } else {
+                alt_printf("*** HPS DISCONNECTED ***\n");
+     fe8:	01000034 	movhi	r4,0
+     fec:	21074504 	addi	r4,r4,7444
+     ff0:	00013f40 	call	13f4 <alt_printf>
+                is_playing = 0;
+     ff4:	d0204915 	stw	zero,-32476(gp)
+            }
+            last_connected = shared_ctrl->hps_connected;
+     ff8:	d1600217 	ldw	r5,-32760(gp)
+     ffc:	28c00d03 	ldbu	r3,52(r5)
+    1000:	28800d43 	ldbu	r2,53(r5)
+    1004:	2c000d83 	ldbu	r16,54(r5)
+    1008:	19003fcc 	andi	r4,r3,255
+    100c:	10803fcc 	andi	r2,r2,255
+    1010:	1004923a 	slli	r2,r2,8
+    1014:	84003fcc 	andi	r16,r16,255
+    1018:	8020943a 	slli	r16,r16,16
+    101c:	1106b03a 	or	r3,r2,r4
+    1020:	80c4b03a 	or	r2,r16,r3
+    1024:	2c000dc3 	ldbu	r16,55(r5)
+    1028:	8020963a 	slli	r16,r16,24
+    102c:	80a0b03a 	or	r16,r16,r2
+        }
+
+        loop_counter++;
+    1030:	8c400044 	addi	r17,r17,1
+        for (volatile int i = 0; i < 500; i++); // Small delay
+    1034:	d8000015 	stw	zero,0(sp)
+    1038:	00c07cc4 	movi	r3,499
+    103c:	d8800017 	ldw	r2,0(sp)
+    1040:	18bf5e16 	blt	r3,r2,dbc <__alt_mem_SHARED_MEMORY+0xfffc0dbc>
+    1044:	d8800017 	ldw	r2,0(sp)
+    1048:	10800044 	addi	r2,r2,1
+    104c:	d8800015 	stw	r2,0(sp)
+    1050:	003ffa06 	br	103c <__alt_mem_SHARED_MEMORY+0xfffc103c>
+    alt_printf("Shared memory: 0x%x, Size: %d bytes\n", 0x40000, sizeof(shared_control_t));
+
+    // Inicializar audio
+    audio_dev = alt_up_audio_open_dev(AUDIO_NAME);
     if (audio_dev == NULL) {
-        alt_printf("Error: No se pudo abrir el dispositivo de audio\n");
-     7b4:	01000034 	movhi	r4,0
-     7b8:	2104b304 	addi	r4,r4,4812
-     7bc:	0000b280 	call	b28 <alt_printf>
-        // Pequeño delay para evitar saturar el CPU
-        for (volatile int i = 0; i < 10000; i++);
+        alt_printf("ERROR: Cannot open audio device\n");
+    1054:	01000034 	movhi	r4,0
+    1058:	2106f904 	addi	r4,r4,7140
+    105c:	00013f40 	call	13f4 <alt_printf>
+        loop_counter++;
+        for (volatile int i = 0; i < 500; i++); // Small delay
     }
 
     return 0;
 }
-     7c0:	00bfffc4 	movi	r2,-1
-     7c4:	dfc00217 	ldw	ra,8(sp)
-     7c8:	dc000117 	ldw	r16,4(sp)
-     7cc:	dec00304 	addi	sp,sp,12
-     7d0:	f800283a 	ret
+    1060:	00bfffc4 	movi	r2,-1
+    1064:	dfc00317 	ldw	ra,12(sp)
+    1068:	dc400217 	ldw	r17,8(sp)
+    106c:	dc000117 	ldw	r16,4(sp)
+    1070:	dec00404 	addi	sp,sp,16
+    1074:	f800283a 	ret
 
-000007d4 <__divsi3>:
-     7d4:	20001b16 	blt	r4,zero,844 <__divsi3+0x70>
-     7d8:	000f883a 	mov	r7,zero
-     7dc:	28001616 	blt	r5,zero,838 <__divsi3+0x64>
-     7e0:	200d883a 	mov	r6,r4
-     7e4:	29001a2e 	bgeu	r5,r4,850 <__divsi3+0x7c>
-     7e8:	00800804 	movi	r2,32
-     7ec:	00c00044 	movi	r3,1
-     7f0:	00000106 	br	7f8 <__divsi3+0x24>
-     7f4:	10000d26 	beq	r2,zero,82c <__divsi3+0x58>
-     7f8:	294b883a 	add	r5,r5,r5
-     7fc:	10bfffc4 	addi	r2,r2,-1
-     800:	18c7883a 	add	r3,r3,r3
-     804:	293ffb36 	bltu	r5,r4,7f4 <_gp+0xffff73b0>
-     808:	0005883a 	mov	r2,zero
-     80c:	18000726 	beq	r3,zero,82c <__divsi3+0x58>
-     810:	0005883a 	mov	r2,zero
-     814:	31400236 	bltu	r6,r5,820 <__divsi3+0x4c>
-     818:	314dc83a 	sub	r6,r6,r5
-     81c:	10c4b03a 	or	r2,r2,r3
-     820:	1806d07a 	srli	r3,r3,1
-     824:	280ad07a 	srli	r5,r5,1
-     828:	183ffa1e 	bne	r3,zero,814 <_gp+0xffff73d0>
-     82c:	38000126 	beq	r7,zero,834 <__divsi3+0x60>
-     830:	0085c83a 	sub	r2,zero,r2
-     834:	f800283a 	ret
-     838:	014bc83a 	sub	r5,zero,r5
-     83c:	39c0005c 	xori	r7,r7,1
-     840:	003fe706 	br	7e0 <_gp+0xffff739c>
-     844:	0109c83a 	sub	r4,zero,r4
-     848:	01c00044 	movi	r7,1
-     84c:	003fe306 	br	7dc <_gp+0xffff7398>
-     850:	00c00044 	movi	r3,1
-     854:	003fee06 	br	810 <_gp+0xffff73cc>
+00001078 <__divsi3>:
+    1078:	20001b16 	blt	r4,zero,10e8 <__divsi3+0x70>
+    107c:	000f883a 	mov	r7,zero
+    1080:	28001616 	blt	r5,zero,10dc <__divsi3+0x64>
+    1084:	200d883a 	mov	r6,r4
+    1088:	29001a2e 	bgeu	r5,r4,10f4 <__divsi3+0x7c>
+    108c:	00800804 	movi	r2,32
+    1090:	00c00044 	movi	r3,1
+    1094:	00000106 	br	109c <__divsi3+0x24>
+    1098:	10000d26 	beq	r2,zero,10d0 <__divsi3+0x58>
+    109c:	294b883a 	add	r5,r5,r5
+    10a0:	10bfffc4 	addi	r2,r2,-1
+    10a4:	18c7883a 	add	r3,r3,r3
+    10a8:	293ffb36 	bltu	r5,r4,1098 <__alt_mem_SHARED_MEMORY+0xfffc1098>
+    10ac:	0005883a 	mov	r2,zero
+    10b0:	18000726 	beq	r3,zero,10d0 <__divsi3+0x58>
+    10b4:	0005883a 	mov	r2,zero
+    10b8:	31400236 	bltu	r6,r5,10c4 <__divsi3+0x4c>
+    10bc:	314dc83a 	sub	r6,r6,r5
+    10c0:	10c4b03a 	or	r2,r2,r3
+    10c4:	1806d07a 	srli	r3,r3,1
+    10c8:	280ad07a 	srli	r5,r5,1
+    10cc:	183ffa1e 	bne	r3,zero,10b8 <__alt_mem_SHARED_MEMORY+0xfffc10b8>
+    10d0:	38000126 	beq	r7,zero,10d8 <__divsi3+0x60>
+    10d4:	0085c83a 	sub	r2,zero,r2
+    10d8:	f800283a 	ret
+    10dc:	014bc83a 	sub	r5,zero,r5
+    10e0:	39c0005c 	xori	r7,r7,1
+    10e4:	003fe706 	br	1084 <__alt_mem_SHARED_MEMORY+0xfffc1084>
+    10e8:	0109c83a 	sub	r4,zero,r4
+    10ec:	01c00044 	movi	r7,1
+    10f0:	003fe306 	br	1080 <__alt_mem_SHARED_MEMORY+0xfffc1080>
+    10f4:	00c00044 	movi	r3,1
+    10f8:	003fee06 	br	10b4 <__alt_mem_SHARED_MEMORY+0xfffc10b4>
 
-00000858 <__modsi3>:
-     858:	20001716 	blt	r4,zero,8b8 <__modsi3+0x60>
-     85c:	000f883a 	mov	r7,zero
-     860:	2005883a 	mov	r2,r4
-     864:	28001216 	blt	r5,zero,8b0 <__modsi3+0x58>
-     868:	2900162e 	bgeu	r5,r4,8c4 <__modsi3+0x6c>
-     86c:	01800804 	movi	r6,32
-     870:	00c00044 	movi	r3,1
-     874:	00000106 	br	87c <__modsi3+0x24>
-     878:	30000a26 	beq	r6,zero,8a4 <__modsi3+0x4c>
-     87c:	294b883a 	add	r5,r5,r5
-     880:	31bfffc4 	addi	r6,r6,-1
-     884:	18c7883a 	add	r3,r3,r3
-     888:	293ffb36 	bltu	r5,r4,878 <_gp+0xffff7434>
-     88c:	18000526 	beq	r3,zero,8a4 <__modsi3+0x4c>
-     890:	1806d07a 	srli	r3,r3,1
-     894:	11400136 	bltu	r2,r5,89c <__modsi3+0x44>
-     898:	1145c83a 	sub	r2,r2,r5
-     89c:	280ad07a 	srli	r5,r5,1
-     8a0:	183ffb1e 	bne	r3,zero,890 <_gp+0xffff744c>
-     8a4:	38000126 	beq	r7,zero,8ac <__modsi3+0x54>
-     8a8:	0085c83a 	sub	r2,zero,r2
-     8ac:	f800283a 	ret
-     8b0:	014bc83a 	sub	r5,zero,r5
-     8b4:	003fec06 	br	868 <_gp+0xffff7424>
-     8b8:	0109c83a 	sub	r4,zero,r4
-     8bc:	01c00044 	movi	r7,1
-     8c0:	003fe706 	br	860 <_gp+0xffff741c>
-     8c4:	00c00044 	movi	r3,1
-     8c8:	003ff106 	br	890 <_gp+0xffff744c>
+000010fc <__modsi3>:
+    10fc:	20001716 	blt	r4,zero,115c <__modsi3+0x60>
+    1100:	000f883a 	mov	r7,zero
+    1104:	2005883a 	mov	r2,r4
+    1108:	28001216 	blt	r5,zero,1154 <__modsi3+0x58>
+    110c:	2900162e 	bgeu	r5,r4,1168 <__modsi3+0x6c>
+    1110:	01800804 	movi	r6,32
+    1114:	00c00044 	movi	r3,1
+    1118:	00000106 	br	1120 <__modsi3+0x24>
+    111c:	30000a26 	beq	r6,zero,1148 <__modsi3+0x4c>
+    1120:	294b883a 	add	r5,r5,r5
+    1124:	31bfffc4 	addi	r6,r6,-1
+    1128:	18c7883a 	add	r3,r3,r3
+    112c:	293ffb36 	bltu	r5,r4,111c <__alt_mem_SHARED_MEMORY+0xfffc111c>
+    1130:	18000526 	beq	r3,zero,1148 <__modsi3+0x4c>
+    1134:	1806d07a 	srli	r3,r3,1
+    1138:	11400136 	bltu	r2,r5,1140 <__modsi3+0x44>
+    113c:	1145c83a 	sub	r2,r2,r5
+    1140:	280ad07a 	srli	r5,r5,1
+    1144:	183ffb1e 	bne	r3,zero,1134 <__alt_mem_SHARED_MEMORY+0xfffc1134>
+    1148:	38000126 	beq	r7,zero,1150 <__modsi3+0x54>
+    114c:	0085c83a 	sub	r2,zero,r2
+    1150:	f800283a 	ret
+    1154:	014bc83a 	sub	r5,zero,r5
+    1158:	003fec06 	br	110c <__alt_mem_SHARED_MEMORY+0xfffc110c>
+    115c:	0109c83a 	sub	r4,zero,r4
+    1160:	01c00044 	movi	r7,1
+    1164:	003fe706 	br	1104 <__alt_mem_SHARED_MEMORY+0xfffc1104>
+    1168:	00c00044 	movi	r3,1
+    116c:	003ff106 	br	1134 <__alt_mem_SHARED_MEMORY+0xfffc1134>
 
-000008cc <__udivsi3>:
-     8cc:	200d883a 	mov	r6,r4
-     8d0:	2900152e 	bgeu	r5,r4,928 <__udivsi3+0x5c>
-     8d4:	28001416 	blt	r5,zero,928 <__udivsi3+0x5c>
-     8d8:	00800804 	movi	r2,32
-     8dc:	00c00044 	movi	r3,1
-     8e0:	00000206 	br	8ec <__udivsi3+0x20>
-     8e4:	10000e26 	beq	r2,zero,920 <__udivsi3+0x54>
-     8e8:	28000516 	blt	r5,zero,900 <__udivsi3+0x34>
-     8ec:	294b883a 	add	r5,r5,r5
-     8f0:	10bfffc4 	addi	r2,r2,-1
-     8f4:	18c7883a 	add	r3,r3,r3
-     8f8:	293ffa36 	bltu	r5,r4,8e4 <_gp+0xffff74a0>
-     8fc:	18000826 	beq	r3,zero,920 <__udivsi3+0x54>
-     900:	0005883a 	mov	r2,zero
-     904:	31400236 	bltu	r6,r5,910 <__udivsi3+0x44>
-     908:	314dc83a 	sub	r6,r6,r5
-     90c:	10c4b03a 	or	r2,r2,r3
-     910:	1806d07a 	srli	r3,r3,1
-     914:	280ad07a 	srli	r5,r5,1
-     918:	183ffa1e 	bne	r3,zero,904 <_gp+0xffff74c0>
-     91c:	f800283a 	ret
-     920:	0005883a 	mov	r2,zero
-     924:	f800283a 	ret
-     928:	00c00044 	movi	r3,1
-     92c:	003ff406 	br	900 <_gp+0xffff74bc>
+00001170 <__udivsi3>:
+    1170:	200d883a 	mov	r6,r4
+    1174:	2900152e 	bgeu	r5,r4,11cc <__udivsi3+0x5c>
+    1178:	28001416 	blt	r5,zero,11cc <__udivsi3+0x5c>
+    117c:	00800804 	movi	r2,32
+    1180:	00c00044 	movi	r3,1
+    1184:	00000206 	br	1190 <__udivsi3+0x20>
+    1188:	10000e26 	beq	r2,zero,11c4 <__udivsi3+0x54>
+    118c:	28000516 	blt	r5,zero,11a4 <__udivsi3+0x34>
+    1190:	294b883a 	add	r5,r5,r5
+    1194:	10bfffc4 	addi	r2,r2,-1
+    1198:	18c7883a 	add	r3,r3,r3
+    119c:	293ffa36 	bltu	r5,r4,1188 <__alt_mem_SHARED_MEMORY+0xfffc1188>
+    11a0:	18000826 	beq	r3,zero,11c4 <__udivsi3+0x54>
+    11a4:	0005883a 	mov	r2,zero
+    11a8:	31400236 	bltu	r6,r5,11b4 <__udivsi3+0x44>
+    11ac:	314dc83a 	sub	r6,r6,r5
+    11b0:	10c4b03a 	or	r2,r2,r3
+    11b4:	1806d07a 	srli	r3,r3,1
+    11b8:	280ad07a 	srli	r5,r5,1
+    11bc:	183ffa1e 	bne	r3,zero,11a8 <__alt_mem_SHARED_MEMORY+0xfffc11a8>
+    11c0:	f800283a 	ret
+    11c4:	0005883a 	mov	r2,zero
+    11c8:	f800283a 	ret
+    11cc:	00c00044 	movi	r3,1
+    11d0:	003ff406 	br	11a4 <__alt_mem_SHARED_MEMORY+0xfffc11a4>
 
-00000930 <__umodsi3>:
-     930:	2005883a 	mov	r2,r4
-     934:	2900122e 	bgeu	r5,r4,980 <__umodsi3+0x50>
-     938:	28001116 	blt	r5,zero,980 <__umodsi3+0x50>
-     93c:	01800804 	movi	r6,32
-     940:	00c00044 	movi	r3,1
-     944:	00000206 	br	950 <__umodsi3+0x20>
-     948:	30000c26 	beq	r6,zero,97c <__umodsi3+0x4c>
-     94c:	28000516 	blt	r5,zero,964 <__umodsi3+0x34>
-     950:	294b883a 	add	r5,r5,r5
-     954:	31bfffc4 	addi	r6,r6,-1
-     958:	18c7883a 	add	r3,r3,r3
-     95c:	293ffa36 	bltu	r5,r4,948 <_gp+0xffff7504>
-     960:	18000626 	beq	r3,zero,97c <__umodsi3+0x4c>
-     964:	1806d07a 	srli	r3,r3,1
-     968:	11400136 	bltu	r2,r5,970 <__umodsi3+0x40>
-     96c:	1145c83a 	sub	r2,r2,r5
-     970:	280ad07a 	srli	r5,r5,1
-     974:	183ffb1e 	bne	r3,zero,964 <_gp+0xffff7520>
-     978:	f800283a 	ret
-     97c:	f800283a 	ret
-     980:	00c00044 	movi	r3,1
-     984:	003ff706 	br	964 <_gp+0xffff7520>
+000011d4 <__umodsi3>:
+    11d4:	2005883a 	mov	r2,r4
+    11d8:	2900122e 	bgeu	r5,r4,1224 <__umodsi3+0x50>
+    11dc:	28001116 	blt	r5,zero,1224 <__umodsi3+0x50>
+    11e0:	01800804 	movi	r6,32
+    11e4:	00c00044 	movi	r3,1
+    11e8:	00000206 	br	11f4 <__umodsi3+0x20>
+    11ec:	30000c26 	beq	r6,zero,1220 <__umodsi3+0x4c>
+    11f0:	28000516 	blt	r5,zero,1208 <__umodsi3+0x34>
+    11f4:	294b883a 	add	r5,r5,r5
+    11f8:	31bfffc4 	addi	r6,r6,-1
+    11fc:	18c7883a 	add	r3,r3,r3
+    1200:	293ffa36 	bltu	r5,r4,11ec <__alt_mem_SHARED_MEMORY+0xfffc11ec>
+    1204:	18000626 	beq	r3,zero,1220 <__umodsi3+0x4c>
+    1208:	1806d07a 	srli	r3,r3,1
+    120c:	11400136 	bltu	r2,r5,1214 <__umodsi3+0x40>
+    1210:	1145c83a 	sub	r2,r2,r5
+    1214:	280ad07a 	srli	r5,r5,1
+    1218:	183ffb1e 	bne	r3,zero,1208 <__alt_mem_SHARED_MEMORY+0xfffc1208>
+    121c:	f800283a 	ret
+    1220:	f800283a 	ret
+    1224:	00c00044 	movi	r3,1
+    1228:	003ff706 	br	1208 <__alt_mem_SHARED_MEMORY+0xfffc1208>
 
-00000988 <alt_irq_register>:
+0000122c <__mulsi3>:
+    122c:	0005883a 	mov	r2,zero
+    1230:	20000726 	beq	r4,zero,1250 <__mulsi3+0x24>
+    1234:	20c0004c 	andi	r3,r4,1
+    1238:	2008d07a 	srli	r4,r4,1
+    123c:	18000126 	beq	r3,zero,1244 <__mulsi3+0x18>
+    1240:	1145883a 	add	r2,r2,r5
+    1244:	294b883a 	add	r5,r5,r5
+    1248:	203ffa1e 	bne	r4,zero,1234 <__alt_mem_SHARED_MEMORY+0xfffc1234>
+    124c:	f800283a 	ret
+    1250:	f800283a 	ret
+
+00001254 <alt_irq_register>:
                       alt_isr_func handler)
 {
   int rc = -EINVAL;  
   alt_irq_context status;
 
   if (id < ALT_NIRQ)
-     988:	008007c4 	movi	r2,31
-     98c:	11002136 	bltu	r2,r4,a14 <alt_irq_register+0x8c>
+    1254:	008007c4 	movi	r2,31
+    1258:	11002136 	bltu	r2,r4,12e0 <alt_irq_register+0x8c>
 static ALT_INLINE alt_irq_context ALT_ALWAYS_INLINE 
        alt_irq_disable_all (void)
 {
   alt_irq_context context;
 
   NIOS2_READ_STATUS (context);
-     990:	000f303a 	rdctl	r7,status
+    125c:	000f303a 	rdctl	r7,status
 
   NIOS2_WRITE_STATUS (context & ~NIOS2_STATUS_PIE_MSK);
-     994:	00ffff84 	movi	r3,-2
-     998:	38c4703a 	and	r2,r7,r3
-     99c:	1001703a 	wrctl	status,r2
+    1260:	00ffff84 	movi	r3,-2
+    1264:	38c4703a 	and	r2,r7,r3
+    1268:	1001703a 	wrctl	status,r2
      * state.
      */
 
     status = alt_irq_disable_all ();
 
     alt_irq[id].handler = handler;
-     9a0:	200490fa 	slli	r2,r4,3
-     9a4:	02000034 	movhi	r8,0
-     9a8:	42056504 	addi	r8,r8,5524
-     9ac:	4085883a 	add	r2,r8,r2
-     9b0:	11800015 	stw	r6,0(r2)
+    126c:	200490fa 	slli	r2,r4,3
+    1270:	02000034 	movhi	r8,0
+    1274:	4207d504 	addi	r8,r8,8020
+    1278:	4085883a 	add	r2,r8,r2
+    127c:	11800015 	stw	r6,0(r2)
     alt_irq[id].context = context;
-     9b4:	11400115 	stw	r5,4(r2)
-     9b8:	00800044 	movi	r2,1
+    1280:	11400115 	stw	r5,4(r2)
+    1284:	00800044 	movi	r2,1
 
     rc = (handler) ? alt_irq_enable (id): alt_irq_disable (id);
-     9bc:	30000726 	beq	r6,zero,9dc <alt_irq_register+0x54>
+    1288:	30000726 	beq	r6,zero,12a8 <alt_irq_register+0x54>
 static ALT_INLINE alt_irq_context ALT_ALWAYS_INLINE 
        alt_irq_disable_all (void)
 {
   alt_irq_context context;
 
   NIOS2_READ_STATUS (context);
-     9c0:	000b303a 	rdctl	r5,status
+    128c:	000b303a 	rdctl	r5,status
 
   NIOS2_WRITE_STATUS (context & ~NIOS2_STATUS_PIE_MSK);
-     9c4:	28c6703a 	and	r3,r5,r3
-     9c8:	1801703a 	wrctl	status,r3
+    1290:	28c6703a 	and	r3,r5,r3
+    1294:	1801703a 	wrctl	status,r3
   alt_irq_context  status;
   extern volatile alt_u32 alt_irq_active;
 
   status = alt_irq_disable_all ();
 
   alt_irq_active |= (1 << id);
-     9cc:	d0e04e17 	ldw	r3,-32456(gp)
-     9d0:	1104983a 	sll	r2,r2,r4
-     9d4:	10c4b03a 	or	r2,r2,r3
-     9d8:	00000706 	br	9f8 <alt_irq_register+0x70>
+    1298:	d0e04b17 	ldw	r3,-32468(gp)
+    129c:	1104983a 	sll	r2,r2,r4
+    12a0:	10c4b03a 	or	r2,r2,r3
+    12a4:	00000706 	br	12c4 <alt_irq_register+0x70>
 static ALT_INLINE alt_irq_context ALT_ALWAYS_INLINE 
        alt_irq_disable_all (void)
 {
   alt_irq_context context;
 
   NIOS2_READ_STATUS (context);
-     9dc:	000b303a 	rdctl	r5,status
+    12a8:	000b303a 	rdctl	r5,status
 
   NIOS2_WRITE_STATUS (context & ~NIOS2_STATUS_PIE_MSK);
-     9e0:	28c6703a 	and	r3,r5,r3
-     9e4:	1801703a 	wrctl	status,r3
+    12ac:	28c6703a 	and	r3,r5,r3
+    12b0:	1801703a 	wrctl	status,r3
   alt_irq_context  status;
   extern volatile alt_u32 alt_irq_active;
 
   status = alt_irq_disable_all ();
 
   alt_irq_active &= ~(1 << id);
-     9e8:	1104983a 	sll	r2,r2,r4
-     9ec:	d0e04e17 	ldw	r3,-32456(gp)
-     9f0:	0084303a 	nor	r2,zero,r2
-     9f4:	10c4703a 	and	r2,r2,r3
-     9f8:	d0a04e15 	stw	r2,-32456(gp)
+    12b4:	1104983a 	sll	r2,r2,r4
+    12b8:	d0e04b17 	ldw	r3,-32468(gp)
+    12bc:	0084303a 	nor	r2,zero,r2
+    12c0:	10c4703a 	and	r2,r2,r3
+    12c4:	d0a04b15 	stw	r2,-32468(gp)
   NIOS2_WRITE_IENABLE (alt_irq_active);
-     9fc:	d0a04e17 	ldw	r2,-32456(gp)
-     a00:	100170fa 	wrctl	ienable,r2
+    12c8:	d0a04b17 	ldw	r2,-32468(gp)
+    12cc:	100170fa 	wrctl	ienable,r2
   status &= ~NIOS2_STATUS_PIE_MSK;
   status |= (context & NIOS2_STATUS_PIE_MSK);
   
   NIOS2_WRITE_STATUS (status);
 #else
   NIOS2_WRITE_STATUS (context);
-     a04:	2801703a 	wrctl	status,r5
-     a08:	3801703a 	wrctl	status,r7
-     a0c:	0005883a 	mov	r2,zero
-     a10:	f800283a 	ret
+    12d0:	2801703a 	wrctl	status,r5
+    12d4:	3801703a 	wrctl	status,r7
+    12d8:	0005883a 	mov	r2,zero
+    12dc:	f800283a 	ret
  
 int alt_irq_register (alt_u32 id, 
                       void* context, 
                       alt_isr_func handler)
 {
   int rc = -EINVAL;  
-     a14:	00bffa84 	movi	r2,-22
+    12e0:	00bffa84 	movi	r2,-22
     rc = (handler) ? alt_irq_enable (id): alt_irq_disable (id);
 
     alt_irq_enable_all(status);
   }
   return rc; 
 }
-     a18:	f800283a 	ret
+    12e4:	f800283a 	ret
 
-00000a1c <alt_load>:
+000012e8 <alt_load>:
  * there is no bootloader, so this application is responsible for loading to
  * RAM any sections that are required.
  */  
 
 void alt_load (void)
 {
-     a1c:	deffff04 	addi	sp,sp,-4
-     a20:	01000034 	movhi	r4,0
-     a24:	01400034 	movhi	r5,0
-     a28:	dfc00015 	stw	ra,0(sp)
-     a2c:	2104e304 	addi	r4,r4,5004
-     a30:	29451e04 	addi	r5,r5,5240
+    12e8:	deffff04 	addi	sp,sp,-4
+    12ec:	01000034 	movhi	r4,0
+    12f0:	01400034 	movhi	r5,0
+    12f4:	dfc00015 	stw	ra,0(sp)
+    12f8:	21075604 	addi	r4,r4,7512
+    12fc:	29478f04 	addi	r5,r5,7740
 
 static void ALT_INLINE alt_load_section (alt_u32* from, 
                                          alt_u32* to, 
                                          alt_u32* end)
 {
   if (to != from)
-     a34:	2140061e 	bne	r4,r5,a50 <alt_load+0x34>
-     a38:	01000034 	movhi	r4,0
-     a3c:	01400034 	movhi	r5,0
-     a40:	21000804 	addi	r4,r4,32
-     a44:	29400804 	addi	r5,r5,32
-     a48:	2140121e 	bne	r4,r5,a94 <alt_load+0x78>
-     a4c:	00000b06 	br	a7c <alt_load+0x60>
-     a50:	00c00034 	movhi	r3,0
-     a54:	18c51e04 	addi	r3,r3,5240
-     a58:	1907c83a 	sub	r3,r3,r4
-     a5c:	0005883a 	mov	r2,zero
+    1300:	2140061e 	bne	r4,r5,131c <alt_load+0x34>
+    1304:	01000034 	movhi	r4,0
+    1308:	01400034 	movhi	r5,0
+    130c:	21000804 	addi	r4,r4,32
+    1310:	29400804 	addi	r5,r5,32
+    1314:	2140121e 	bne	r4,r5,1360 <alt_load+0x78>
+    1318:	00000b06 	br	1348 <alt_load+0x60>
+    131c:	00c00034 	movhi	r3,0
+    1320:	18c78f04 	addi	r3,r3,7740
+    1324:	1907c83a 	sub	r3,r3,r4
+    1328:	0005883a 	mov	r2,zero
   {
     while( to != end )
-     a60:	10fff526 	beq	r2,r3,a38 <_gp+0xffff75f4>
+    132c:	10fff526 	beq	r2,r3,1304 <__alt_mem_SHARED_MEMORY+0xfffc1304>
     {
       *to++ = *from++;
-     a64:	114f883a 	add	r7,r2,r5
-     a68:	39c00017 	ldw	r7,0(r7)
-     a6c:	110d883a 	add	r6,r2,r4
-     a70:	10800104 	addi	r2,r2,4
-     a74:	31c00015 	stw	r7,0(r6)
-     a78:	003ff906 	br	a60 <_gp+0xffff761c>
-     a7c:	01000034 	movhi	r4,0
-     a80:	01400034 	movhi	r5,0
-     a84:	21048c04 	addi	r4,r4,4656
-     a88:	29448c04 	addi	r5,r5,4656
+    1330:	114f883a 	add	r7,r2,r5
+    1334:	39c00017 	ldw	r7,0(r7)
+    1338:	110d883a 	add	r6,r2,r4
+    133c:	10800104 	addi	r2,r2,4
+    1340:	31c00015 	stw	r7,0(r6)
+    1344:	003ff906 	br	132c <__alt_mem_SHARED_MEMORY+0xfffc132c>
+    1348:	01000034 	movhi	r4,0
+    134c:	01400034 	movhi	r5,0
+    1350:	2106bf04 	addi	r4,r4,6908
+    1354:	2946bf04 	addi	r5,r5,6908
 
 static void ALT_INLINE alt_load_section (alt_u32* from, 
                                          alt_u32* to, 
                                          alt_u32* end)
 {
   if (to != from)
-     a8c:	2140101e 	bne	r4,r5,ad0 <alt_load+0xb4>
-     a90:	00000b06 	br	ac0 <alt_load+0xa4>
-     a94:	00c00034 	movhi	r3,0
-     a98:	18c06004 	addi	r3,r3,384
-     a9c:	1907c83a 	sub	r3,r3,r4
-     aa0:	0005883a 	mov	r2,zero
+    1358:	2140101e 	bne	r4,r5,139c <alt_load+0xb4>
+    135c:	00000b06 	br	138c <alt_load+0xa4>
+    1360:	00c00034 	movhi	r3,0
+    1364:	18c06004 	addi	r3,r3,384
+    1368:	1907c83a 	sub	r3,r3,r4
+    136c:	0005883a 	mov	r2,zero
   {
     while( to != end )
-     aa4:	10fff526 	beq	r2,r3,a7c <_gp+0xffff7638>
+    1370:	10fff526 	beq	r2,r3,1348 <__alt_mem_SHARED_MEMORY+0xfffc1348>
     {
       *to++ = *from++;
-     aa8:	114f883a 	add	r7,r2,r5
-     aac:	39c00017 	ldw	r7,0(r7)
-     ab0:	110d883a 	add	r6,r2,r4
-     ab4:	10800104 	addi	r2,r2,4
-     ab8:	31c00015 	stw	r7,0(r6)
-     abc:	003ff906 	br	aa4 <_gp+0xffff7660>
+    1374:	114f883a 	add	r7,r2,r5
+    1378:	39c00017 	ldw	r7,0(r7)
+    137c:	110d883a 	add	r6,r2,r4
+    1380:	10800104 	addi	r2,r2,4
+    1384:	31c00015 	stw	r7,0(r6)
+    1388:	003ff906 	br	1370 <__alt_mem_SHARED_MEMORY+0xfffc1370>
   
   /*
    * Now ensure that the caches are in synch.
    */
   
   alt_dcache_flush_all();
-     ac0:	00010780 	call	1078 <alt_dcache_flush_all>
+    138c:	00019440 	call	1944 <alt_dcache_flush_all>
   alt_icache_flush_all();
 }
-     ac4:	dfc00017 	ldw	ra,0(sp)
-     ac8:	dec00104 	addi	sp,sp,4
+    1390:	dfc00017 	ldw	ra,0(sp)
+    1394:	dec00104 	addi	sp,sp,4
   /*
    * Now ensure that the caches are in synch.
    */
   
   alt_dcache_flush_all();
   alt_icache_flush_all();
-     acc:	00011641 	jmpi	1164 <alt_icache_flush_all>
-     ad0:	00c00034 	movhi	r3,0
-     ad4:	18c4e304 	addi	r3,r3,5004
-     ad8:	1907c83a 	sub	r3,r3,r4
+    1398:	0001a301 	jmpi	1a30 <alt_icache_flush_all>
+    139c:	00c00034 	movhi	r3,0
+    13a0:	18c75604 	addi	r3,r3,7512
+    13a4:	1907c83a 	sub	r3,r3,r4
 
 static void ALT_INLINE alt_load_section (alt_u32* from, 
                                          alt_u32* to, 
                                          alt_u32* end)
 {
   if (to != from)
-     adc:	0005883a 	mov	r2,zero
+    13a8:	0005883a 	mov	r2,zero
   {
     while( to != end )
-     ae0:	18bff726 	beq	r3,r2,ac0 <_gp+0xffff767c>
+    13ac:	18bff726 	beq	r3,r2,138c <__alt_mem_SHARED_MEMORY+0xfffc138c>
     {
       *to++ = *from++;
-     ae4:	114f883a 	add	r7,r2,r5
-     ae8:	39c00017 	ldw	r7,0(r7)
-     aec:	110d883a 	add	r6,r2,r4
-     af0:	10800104 	addi	r2,r2,4
-     af4:	31c00015 	stw	r7,0(r6)
-     af8:	003ff906 	br	ae0 <_gp+0xffff769c>
+    13b0:	114f883a 	add	r7,r2,r5
+    13b4:	39c00017 	ldw	r7,0(r7)
+    13b8:	110d883a 	add	r6,r2,r4
+    13bc:	10800104 	addi	r2,r2,4
+    13c0:	31c00015 	stw	r7,0(r6)
+    13c4:	003ff906 	br	13ac <__alt_mem_SHARED_MEMORY+0xfffc13ac>
 
-00000afc <alt_main>:
+000013c8 <alt_main>:
  * devices/filesystems/components in the system; and call the entry point for
  * the users application, i.e. main().
  */
 
 void alt_main (void)
 {
-     afc:	deffff04 	addi	sp,sp,-4
+    13c8:	deffff04 	addi	sp,sp,-4
 #endif
 
   /* ALT LOG - please see HAL/sys/alt_log_printf.h for details */
   ALT_LOG_PRINT_BOOT("[alt_main.c] Entering alt_main, calling alt_irq_init.\r\n");
   /* Initialize the interrupt controller. */
   alt_irq_init (NULL);
-     b00:	0009883a 	mov	r4,zero
+    13cc:	0009883a 	mov	r4,zero
  * devices/filesystems/components in the system; and call the entry point for
  * the users application, i.e. main().
  */
 
 void alt_main (void)
 {
-     b04:	dfc00015 	stw	ra,0(sp)
+    13d0:	dfc00015 	stw	ra,0(sp)
 #endif
 
   /* ALT LOG - please see HAL/sys/alt_log_printf.h for details */
   ALT_LOG_PRINT_BOOT("[alt_main.c] Entering alt_main, calling alt_irq_init.\r\n");
   /* Initialize the interrupt controller. */
   alt_irq_init (NULL);
-     b08:	0000d180 	call	d18 <alt_irq_init>
+    13d4:	00015e40 	call	15e4 <alt_irq_init>
   ALT_LOG_PRINT_BOOT("[alt_main.c] Done OS Init, calling alt_sem_create.\r\n");
   ALT_SEM_CREATE (&alt_fd_list_lock, 1);
 
   /* Initialize the device drivers/software components. */
   ALT_LOG_PRINT_BOOT("[alt_main.c] Calling alt_sys_init.\r\n");
   alt_sys_init();
-     b0c:	0000d380 	call	d38 <alt_sys_init>
+    13d8:	00016040 	call	1604 <alt_sys_init>
    */
 
   ALT_LOG_PRINT_BOOT("[alt_main.c] Calling main.\r\n");
 
 #ifdef ALT_NO_EXIT
   main (alt_argc, alt_argv, alt_envp);
-     b10:	d1a04f17 	ldw	r6,-32452(gp)
-     b14:	d1605017 	ldw	r5,-32448(gp)
-     b18:	d1205117 	ldw	r4,-32444(gp)
+    13dc:	d1a04c17 	ldw	r6,-32464(gp)
+    13e0:	d1604d17 	ldw	r5,-32460(gp)
+    13e4:	d1204e17 	ldw	r4,-32456(gp)
   close(STDOUT_FILENO);
   exit (result);
 #endif
 
   ALT_LOG_PRINT_BOOT("[alt_main.c] After main - we should not be here?.\r\n");
 }
-     b1c:	dfc00017 	ldw	ra,0(sp)
-     b20:	dec00104 	addi	sp,sp,4
+    13e8:	dfc00017 	ldw	ra,0(sp)
+    13ec:	dec00104 	addi	sp,sp,4
    */
 
   ALT_LOG_PRINT_BOOT("[alt_main.c] Calling main.\r\n");
 
 #ifdef ALT_NO_EXIT
   main (alt_argc, alt_argv, alt_envp);
-     b24:	00006ec1 	jmpi	6ec <main>
+    13f0:	0000b981 	jmpi	b98 <main>
 
-00000b28 <alt_printf>:
+000013f4 <alt_printf>:
 /* 
  * ALT printf function 
  */
 void 
 alt_printf(const char* fmt, ... )
 {
-     b28:	defff204 	addi	sp,sp,-56
-     b2c:	2005883a 	mov	r2,r4
-     b30:	dfc00a15 	stw	ra,40(sp)
-     b34:	df000915 	stw	fp,36(sp)
-     b38:	ddc00815 	stw	r23,32(sp)
-     b3c:	dd800715 	stw	r22,28(sp)
-     b40:	dd400615 	stw	r21,24(sp)
-     b44:	dd000515 	stw	r20,20(sp)
-     b48:	dcc00415 	stw	r19,16(sp)
-     b4c:	dc800315 	stw	r18,12(sp)
-     b50:	dc400215 	stw	r17,8(sp)
-     b54:	dc000115 	stw	r16,4(sp)
-     b58:	d9400b15 	stw	r5,44(sp)
-     b5c:	d9800c15 	stw	r6,48(sp)
-     b60:	d9c00d15 	stw	r7,52(sp)
+    13f4:	defff204 	addi	sp,sp,-56
+    13f8:	2005883a 	mov	r2,r4
+    13fc:	dfc00a15 	stw	ra,40(sp)
+    1400:	df000915 	stw	fp,36(sp)
+    1404:	ddc00815 	stw	r23,32(sp)
+    1408:	dd800715 	stw	r22,28(sp)
+    140c:	dd400615 	stw	r21,24(sp)
+    1410:	dd000515 	stw	r20,20(sp)
+    1414:	dcc00415 	stw	r19,16(sp)
+    1418:	dc800315 	stw	r18,12(sp)
+    141c:	dc400215 	stw	r17,8(sp)
+    1420:	dc000115 	stw	r16,4(sp)
+    1424:	d9400b15 	stw	r5,44(sp)
+    1428:	d9800c15 	stw	r6,48(sp)
+    142c:	d9c00d15 	stw	r7,52(sp)
     w = fmt;
     while ((c = *w++) != 0)
     {
         /* If not a format escape character, just print  */
         /* character.  Otherwise, process format string. */
         if (c != '%')
-     b64:	04000944 	movi	r16,37
+    1430:	04000944 	movi	r16,37
  */
 void 
 alt_printf(const char* fmt, ... )
 {
 	va_list args;
 	va_start(args, fmt);
-     b68:	dd400b04 	addi	r21,sp,44
+    1434:	dd400b04 	addi	r21,sp,44
                 if (c == '%')
                 {
                     /* Process "%" escape sequence. */
                     alt_putchar(c);
                 } 
                 else if (c == 'c')
-     b6c:	048018c4 	movi	r18,99
+    1438:	048018c4 	movi	r18,99
                 {
                     int v = va_arg(args, int);
                     alt_putchar(v);
                 }
                 else if (c == 'x')
-     b70:	04c01e04 	movi	r19,120
+    143c:	04c01e04 	movi	r19,120
                         else
                             c = 'a' + digit - 10;
                         alt_putchar(c);
                     }
                 }
                 else if (c == 's')
-     b74:	05001cc4 	movi	r20,115
+    1440:	05001cc4 	movi	r20,115
     const char *w;
     char c;
 
     /* Process format string. */
     w = fmt;
     while ((c = *w++) != 0)
-     b78:	11000007 	ldb	r4,0(r2)
-     b7c:	20003a26 	beq	r4,zero,c68 <alt_printf+0x140>
+    1444:	11000007 	ldb	r4,0(r2)
+    1448:	20003a26 	beq	r4,zero,1534 <alt_printf+0x140>
     {
         /* If not a format escape character, just print  */
         /* character.  Otherwise, process format string. */
         if (c != '%')
-     b80:	24000226 	beq	r4,r16,b8c <alt_printf+0x64>
+    144c:	24000226 	beq	r4,r16,1458 <alt_printf+0x64>
     const char *w;
     char c;
 
     /* Process format string. */
     w = fmt;
     while ((c = *w++) != 0)
-     b84:	14400044 	addi	r17,r2,1
-     b88:	00001406 	br	bdc <alt_printf+0xb4>
+    1450:	14400044 	addi	r17,r2,1
+    1454:	00001406 	br	14a8 <alt_printf+0xb4>
         }
         else
         {
             /* Get format character.  If none     */
             /* available, processing is complete. */
             if ((c = *w++) != 0)
-     b8c:	14400084 	addi	r17,r2,2
-     b90:	10800047 	ldb	r2,1(r2)
-     b94:	10003426 	beq	r2,zero,c68 <alt_printf+0x140>
+    1458:	14400084 	addi	r17,r2,2
+    145c:	10800047 	ldb	r2,1(r2)
+    1460:	10003426 	beq	r2,zero,1534 <alt_printf+0x140>
             {
                 if (c == '%')
-     b98:	1400021e 	bne	r2,r16,ba4 <alt_printf+0x7c>
+    1464:	1400021e 	bne	r2,r16,1470 <alt_printf+0x7c>
                 {
                     /* Process "%" escape sequence. */
                     alt_putchar(c);
-     b9c:	8009883a 	mov	r4,r16
-     ba0:	00000e06 	br	bdc <alt_printf+0xb4>
+    1468:	8009883a 	mov	r4,r16
+    146c:	00000e06 	br	14a8 <alt_printf+0xb4>
                 } 
                 else if (c == 'c')
-     ba4:	1480051e 	bne	r2,r18,bbc <alt_printf+0x94>
+    1470:	1480051e 	bne	r2,r18,1488 <alt_printf+0x94>
                 {
                     int v = va_arg(args, int);
                     alt_putchar(v);
-     ba8:	a9000017 	ldw	r4,0(r21)
+    1474:	a9000017 	ldw	r4,0(r21)
                     /* Process "%" escape sequence. */
                     alt_putchar(c);
                 } 
                 else if (c == 'c')
                 {
                     int v = va_arg(args, int);
-     bac:	ad800104 	addi	r22,r21,4
-     bb0:	b02b883a 	mov	r21,r22
+    1478:	ad800104 	addi	r22,r21,4
+    147c:	b02b883a 	mov	r21,r22
                     alt_putchar(v);
-     bb4:	0000c980 	call	c98 <alt_putchar>
-     bb8:	00002906 	br	c60 <alt_printf+0x138>
+    1480:	00015640 	call	1564 <alt_putchar>
+    1484:	00002906 	br	152c <alt_printf+0x138>
                 }
                 else if (c == 'x')
-     bbc:	14c0201e 	bne	r2,r19,c40 <alt_printf+0x118>
+    1488:	14c0201e 	bne	r2,r19,150c <alt_printf+0x118>
                 {
                     /* Process hexadecimal number format. */
                     unsigned long v = va_arg(args, unsigned long);
-     bc0:	adc00017 	ldw	r23,0(r21)
-     bc4:	ad400104 	addi	r21,r21,4
+    148c:	adc00017 	ldw	r23,0(r21)
+    1490:	ad400104 	addi	r21,r21,4
                     unsigned long digit;
                     int digit_shift;
 
                     /* If the number value is zero, just print and continue. */
                     if (v == 0)
-     bc8:	b8000326 	beq	r23,zero,bd8 <alt_printf+0xb0>
-     bcc:	05800704 	movi	r22,28
+    1494:	b8000326 	beq	r23,zero,14a4 <alt_printf+0xb0>
+    1498:	05800704 	movi	r22,28
                         continue;
                     }
 
                     /* Find first non-zero digit. */
                     digit_shift = 28;
                     while (!(v & (0xF << digit_shift)))
-     bd0:	00c003c4 	movi	r3,15
-     bd4:	00000306 	br	be4 <alt_printf+0xbc>
+    149c:	00c003c4 	movi	r3,15
+    14a0:	00000306 	br	14b0 <alt_printf+0xbc>
                     int digit_shift;
 
                     /* If the number value is zero, just print and continue. */
                     if (v == 0)
                     {
                         alt_putchar('0');
-     bd8:	01000c04 	movi	r4,48
-     bdc:	0000c980 	call	c98 <alt_putchar>
+    14a4:	01000c04 	movi	r4,48
+    14a8:	00015640 	call	1564 <alt_putchar>
                         continue;
-     be0:	00001f06 	br	c60 <alt_printf+0x138>
+    14ac:	00001f06 	br	152c <alt_printf+0x138>
                     }
 
                     /* Find first non-zero digit. */
                     digit_shift = 28;
                     while (!(v & (0xF << digit_shift)))
-     be4:	1d84983a 	sll	r2,r3,r22
-     be8:	15c4703a 	and	r2,r2,r23
-     bec:	1000021e 	bne	r2,zero,bf8 <alt_printf+0xd0>
+    14b0:	1d84983a 	sll	r2,r3,r22
+    14b4:	15c4703a 	and	r2,r2,r23
+    14b8:	1000021e 	bne	r2,zero,14c4 <alt_printf+0xd0>
                         digit_shift -= 4;
-     bf0:	b5bfff04 	addi	r22,r22,-4
-     bf4:	003ffb06 	br	be4 <_gp+0xffff77a0>
+    14bc:	b5bfff04 	addi	r22,r22,-4
+    14c0:	003ffb06 	br	14b0 <__alt_mem_SHARED_MEMORY+0xfffc14b0>
 
                     /* Print digits. */
                     for (; digit_shift >= 0; digit_shift -= 4)
                     {
                         digit = (v & (0xF << digit_shift)) >> digit_shift;
-     bf8:	070003c4 	movi	fp,15
+    14c4:	070003c4 	movi	fp,15
                         if (digit <= 9)
-     bfc:	00c00244 	movi	r3,9
+    14c8:	00c00244 	movi	r3,9
                     digit_shift = 28;
                     while (!(v & (0xF << digit_shift)))
                         digit_shift -= 4;
 
                     /* Print digits. */
                     for (; digit_shift >= 0; digit_shift -= 4)
-     c00:	b0001716 	blt	r22,zero,c60 <alt_printf+0x138>
+    14cc:	b0001716 	blt	r22,zero,152c <alt_printf+0x138>
                     {
                         digit = (v & (0xF << digit_shift)) >> digit_shift;
-     c04:	e588983a 	sll	r4,fp,r22
-     c08:	25c8703a 	and	r4,r4,r23
-     c0c:	2588d83a 	srl	r4,r4,r22
+    14d0:	e588983a 	sll	r4,fp,r22
+    14d4:	25c8703a 	and	r4,r4,r23
+    14d8:	2588d83a 	srl	r4,r4,r22
                         if (digit <= 9)
-     c10:	19000236 	bltu	r3,r4,c1c <alt_printf+0xf4>
+    14dc:	19000236 	bltu	r3,r4,14e8 <alt_printf+0xf4>
                             c = '0' + digit;
-     c14:	21000c04 	addi	r4,r4,48
-     c18:	00000106 	br	c20 <alt_printf+0xf8>
+    14e0:	21000c04 	addi	r4,r4,48
+    14e4:	00000106 	br	14ec <alt_printf+0xf8>
                         else
                             c = 'a' + digit - 10;
-     c1c:	210015c4 	addi	r4,r4,87
+    14e8:	210015c4 	addi	r4,r4,87
                         alt_putchar(c);
-     c20:	21003fcc 	andi	r4,r4,255
-     c24:	2100201c 	xori	r4,r4,128
-     c28:	213fe004 	addi	r4,r4,-128
-     c2c:	d8c00015 	stw	r3,0(sp)
-     c30:	0000c980 	call	c98 <alt_putchar>
+    14ec:	21003fcc 	andi	r4,r4,255
+    14f0:	2100201c 	xori	r4,r4,128
+    14f4:	213fe004 	addi	r4,r4,-128
+    14f8:	d8c00015 	stw	r3,0(sp)
+    14fc:	00015640 	call	1564 <alt_putchar>
                     digit_shift = 28;
                     while (!(v & (0xF << digit_shift)))
                         digit_shift -= 4;
 
                     /* Print digits. */
                     for (; digit_shift >= 0; digit_shift -= 4)
-     c34:	b5bfff04 	addi	r22,r22,-4
-     c38:	d8c00017 	ldw	r3,0(sp)
-     c3c:	003ff006 	br	c00 <_gp+0xffff77bc>
+    1500:	b5bfff04 	addi	r22,r22,-4
+    1504:	d8c00017 	ldw	r3,0(sp)
+    1508:	003ff006 	br	14cc <__alt_mem_SHARED_MEMORY+0xfffc14cc>
                         else
                             c = 'a' + digit - 10;
                         alt_putchar(c);
                     }
                 }
                 else if (c == 's')
-     c40:	1500071e 	bne	r2,r20,c60 <alt_printf+0x138>
+    150c:	1500071e 	bne	r2,r20,152c <alt_printf+0x138>
                 {
                     /* Process string format. */
                     char *s = va_arg(args, char *);
-     c44:	ad800017 	ldw	r22,0(r21)
-     c48:	ad400104 	addi	r21,r21,4
+    1510:	ad800017 	ldw	r22,0(r21)
+    1514:	ad400104 	addi	r21,r21,4
 
                     while(*s)
-     c4c:	b1000007 	ldb	r4,0(r22)
-     c50:	20000326 	beq	r4,zero,c60 <alt_printf+0x138>
+    1518:	b1000007 	ldb	r4,0(r22)
+    151c:	20000326 	beq	r4,zero,152c <alt_printf+0x138>
                       alt_putchar(*s++);
-     c54:	b5800044 	addi	r22,r22,1
-     c58:	0000c980 	call	c98 <alt_putchar>
-     c5c:	003ffb06 	br	c4c <_gp+0xffff7808>
+    1520:	b5800044 	addi	r22,r22,1
+    1524:	00015640 	call	1564 <alt_putchar>
+    1528:	003ffb06 	br	1518 <__alt_mem_SHARED_MEMORY+0xfffc1518>
                     /* Process "%" escape sequence. */
                     alt_putchar(c);
                 } 
                 else if (c == 'c')
                 {
                     int v = va_arg(args, int);
-     c60:	8805883a 	mov	r2,r17
-     c64:	003fc406 	br	b78 <_gp+0xffff7734>
+    152c:	8805883a 	mov	r2,r17
+    1530:	003fc406 	br	1444 <__alt_mem_SHARED_MEMORY+0xfffc1444>
         }
     }
 #ifdef ALT_SEMIHOSTING
     alt_putbufflush();
 #endif
 }
-     c68:	dfc00a17 	ldw	ra,40(sp)
-     c6c:	df000917 	ldw	fp,36(sp)
-     c70:	ddc00817 	ldw	r23,32(sp)
-     c74:	dd800717 	ldw	r22,28(sp)
-     c78:	dd400617 	ldw	r21,24(sp)
-     c7c:	dd000517 	ldw	r20,20(sp)
-     c80:	dcc00417 	ldw	r19,16(sp)
-     c84:	dc800317 	ldw	r18,12(sp)
-     c88:	dc400217 	ldw	r17,8(sp)
-     c8c:	dc000117 	ldw	r16,4(sp)
-     c90:	dec00e04 	addi	sp,sp,56
-     c94:	f800283a 	ret
+    1534:	dfc00a17 	ldw	ra,40(sp)
+    1538:	df000917 	ldw	fp,36(sp)
+    153c:	ddc00817 	ldw	r23,32(sp)
+    1540:	dd800717 	ldw	r22,28(sp)
+    1544:	dd400617 	ldw	r21,24(sp)
+    1548:	dd000517 	ldw	r20,20(sp)
+    154c:	dcc00417 	ldw	r19,16(sp)
+    1550:	dc800317 	ldw	r18,12(sp)
+    1554:	dc400217 	ldw	r17,8(sp)
+    1558:	dc000117 	ldw	r16,4(sp)
+    155c:	dec00e04 	addi	sp,sp,56
+    1560:	f800283a 	ret
 
-00000c98 <alt_putchar>:
+00001564 <alt_putchar>:
  * Uses the ALT_DRIVER_WRITE() macro to call directly to driver if available.
  * Otherwise, uses newlib provided putchar() routine.
  */
 int 
 alt_putchar(int c)
 {
-     c98:	defffd04 	addi	sp,sp,-12
-     c9c:	dc000115 	stw	r16,4(sp)
+    1564:	defffd04 	addi	sp,sp,-12
+    1568:	dc000115 	stw	r16,4(sp)
 	char        c1 = (char)(c & 0xff);
     return write(STDOUT_FILENO,&c1,1);
 #else
 #ifdef ALT_USE_DIRECT_DRIVERS
     ALT_DRIVER_WRITE_EXTERNS(ALT_STDOUT_DEV);
     char        c1 = (char)(c & 0xff);
-     ca0:	d9000005 	stb	r4,0(sp)
+    156c:	d9000005 	stb	r4,0(sp)
  * Uses the ALT_DRIVER_WRITE() macro to call directly to driver if available.
  * Otherwise, uses newlib provided putchar() routine.
  */
 int 
 alt_putchar(int c)
 {
-     ca4:	2021883a 	mov	r16,r4
+    1570:	2021883a 	mov	r16,r4
 #else
 #ifdef ALT_USE_DIRECT_DRIVERS
     ALT_DRIVER_WRITE_EXTERNS(ALT_STDOUT_DEV);
     char        c1 = (char)(c & 0xff);
 
     if (ALT_DRIVER_WRITE(ALT_STDOUT_DEV, &c1, 1, 0) == -1) {
-     ca8:	01000034 	movhi	r4,0
-     cac:	000f883a 	mov	r7,zero
-     cb0:	01800044 	movi	r6,1
-     cb4:	d80b883a 	mov	r5,sp
-     cb8:	21051704 	addi	r4,r4,5212
+    1574:	01000034 	movhi	r4,0
+    1578:	000f883a 	mov	r7,zero
+    157c:	01800044 	movi	r6,1
+    1580:	d80b883a 	mov	r5,sp
+    1584:	21078804 	addi	r4,r4,7712
  * Uses the ALT_DRIVER_WRITE() macro to call directly to driver if available.
  * Otherwise, uses newlib provided putchar() routine.
  */
 int 
 alt_putchar(int c)
 {
-     cbc:	dfc00215 	stw	ra,8(sp)
+    1588:	dfc00215 	stw	ra,8(sp)
 #else
 #ifdef ALT_USE_DIRECT_DRIVERS
     ALT_DRIVER_WRITE_EXTERNS(ALT_STDOUT_DEV);
     char        c1 = (char)(c & 0xff);
 
     if (ALT_DRIVER_WRITE(ALT_STDOUT_DEV, &c1, 1, 0) == -1) {
-     cc0:	0000d740 	call	d74 <altera_avalon_jtag_uart_write>
-     cc4:	00ffffc4 	movi	r3,-1
-     cc8:	10c00126 	beq	r2,r3,cd0 <alt_putchar+0x38>
+    158c:	00016400 	call	1640 <altera_avalon_jtag_uart_write>
+    1590:	00ffffc4 	movi	r3,-1
+    1594:	10c00126 	beq	r2,r3,159c <alt_putchar+0x38>
         return -1;
     }
     return c;
-     ccc:	8005883a 	mov	r2,r16
+    1598:	8005883a 	mov	r2,r16
 #else
     return putchar(c);
 #endif
 #endif
 }
-     cd0:	dfc00217 	ldw	ra,8(sp)
-     cd4:	dc000117 	ldw	r16,4(sp)
-     cd8:	dec00304 	addi	sp,sp,12
-     cdc:	f800283a 	ret
+    159c:	dfc00217 	ldw	ra,8(sp)
+    15a0:	dc000117 	ldw	r16,4(sp)
+    15a4:	dec00304 	addi	sp,sp,12
+    15a8:	f800283a 	ret
 
-00000ce0 <alt_putstr>:
+000015ac <alt_putstr>:
  * Uses the ALT_DRIVER_WRITE() macro to call directly to driver if available.
  * Otherwise, uses newlib provided fputs() routine.
  */
 int 
 alt_putstr(const char* str)
 {
-     ce0:	defffe04 	addi	sp,sp,-8
-     ce4:	dc000015 	stw	r16,0(sp)
-     ce8:	dfc00115 	stw	ra,4(sp)
-     cec:	2021883a 	mov	r16,r4
+    15ac:	defffe04 	addi	sp,sp,-8
+    15b0:	dc000015 	stw	r16,0(sp)
+    15b4:	dfc00115 	stw	ra,4(sp)
+    15b8:	2021883a 	mov	r16,r4
 #ifdef ALT_SEMIHOSTING
     return write(STDOUT_FILENO,str,strlen(str));
 #else
 #ifdef ALT_USE_DIRECT_DRIVERS
     ALT_DRIVER_WRITE_EXTERNS(ALT_STDOUT_DEV);
     return ALT_DRIVER_WRITE(ALT_STDOUT_DEV, str, strlen(str), 0);
-     cf0:	00012140 	call	1214 <strlen>
-     cf4:	01000034 	movhi	r4,0
-     cf8:	000f883a 	mov	r7,zero
-     cfc:	100d883a 	mov	r6,r2
-     d00:	800b883a 	mov	r5,r16
-     d04:	21051704 	addi	r4,r4,5212
+    15bc:	0001ae00 	call	1ae0 <strlen>
+    15c0:	01000034 	movhi	r4,0
+    15c4:	000f883a 	mov	r7,zero
+    15c8:	100d883a 	mov	r6,r2
+    15cc:	800b883a 	mov	r5,r16
+    15d0:	21078804 	addi	r4,r4,7712
 #else
     return fputs(str, stdout);
 #endif
 #endif
 }
-     d08:	dfc00117 	ldw	ra,4(sp)
-     d0c:	dc000017 	ldw	r16,0(sp)
-     d10:	dec00204 	addi	sp,sp,8
+    15d4:	dfc00117 	ldw	ra,4(sp)
+    15d8:	dc000017 	ldw	r16,0(sp)
+    15dc:	dec00204 	addi	sp,sp,8
 #ifdef ALT_SEMIHOSTING
     return write(STDOUT_FILENO,str,strlen(str));
 #else
 #ifdef ALT_USE_DIRECT_DRIVERS
     ALT_DRIVER_WRITE_EXTERNS(ALT_STDOUT_DEV);
     return ALT_DRIVER_WRITE(ALT_STDOUT_DEV, str, strlen(str), 0);
-     d14:	0000d741 	jmpi	d74 <altera_avalon_jtag_uart_write>
+    15e0:	00016401 	jmpi	1640 <altera_avalon_jtag_uart_write>
 
-00000d18 <alt_irq_init>:
+000015e4 <alt_irq_init>:
  * The "base" parameter is ignored and only
  * present for backwards-compatibility.
  */
 
 void alt_irq_init ( const void* base )
 {
-     d18:	deffff04 	addi	sp,sp,-4
-     d1c:	dfc00015 	stw	ra,0(sp)
+    15e4:	deffff04 	addi	sp,sp,-4
+    15e8:	dfc00015 	stw	ra,0(sp)
     ALTERA_NIOS2_GEN2_IRQ_INIT ( NIOSII, NIOSII);
-     d20:	00011680 	call	1168 <altera_nios2_gen2_irq_init>
+    15ec:	0001a340 	call	1a34 <altera_nios2_gen2_irq_init>
  * alt_irq_cpu_enable_interrupts() enables the CPU to start taking interrupts.
  */
 static ALT_INLINE void ALT_ALWAYS_INLINE 
        alt_irq_cpu_enable_interrupts (void)
 {
     NIOS2_WRITE_STATUS(NIOS2_STATUS_PIE_MSK
-     d24:	00800044 	movi	r2,1
-     d28:	1001703a 	wrctl	status,r2
+    15f0:	00800044 	movi	r2,1
+    15f4:	1001703a 	wrctl	status,r2
     alt_irq_cpu_enable_interrupts();
 }
-     d2c:	dfc00017 	ldw	ra,0(sp)
-     d30:	dec00104 	addi	sp,sp,4
-     d34:	f800283a 	ret
+    15f8:	dfc00017 	ldw	ra,0(sp)
+    15fc:	dec00104 	addi	sp,sp,4
+    1600:	f800283a 	ret
 
-00000d38 <alt_sys_init>:
+00001604 <alt_sys_init>:
  * Initialize the non-interrupt controller devices.
  * Called after alt_irq_init().
  */
 
 void alt_sys_init( void )
 {
-     d38:	defffe04 	addi	sp,sp,-8
-     d3c:	dc000015 	stw	r16,0(sp)
+    1604:	defffe04 	addi	sp,sp,-8
+    1608:	dc000015 	stw	r16,0(sp)
 
 static ALT_INLINE int alt_dev_reg (alt_dev* dev)
 {
   extern alt_llist alt_dev_list;
 
   return alt_dev_llist_insert ((alt_dev_llist*) dev, &alt_dev_list);
-     d40:	01000034 	movhi	r4,0
-     d44:	d4200804 	addi	r16,gp,-32736
-     d48:	800b883a 	mov	r5,r16
-     d4c:	2104ef04 	addi	r4,r4,5052
-     d50:	dfc00115 	stw	ra,4(sp)
-     d54:	00010840 	call	1084 <alt_dev_llist_insert>
-     d58:	01000034 	movhi	r4,0
-     d5c:	800b883a 	mov	r5,r16
-     d60:	2104e304 	addi	r4,r4,5004
+    160c:	01000034 	movhi	r4,0
+    1610:	d4200604 	addi	r16,gp,-32744
+    1614:	800b883a 	mov	r5,r16
+    1618:	21076204 	addi	r4,r4,7560
+    161c:	dfc00115 	stw	ra,4(sp)
+    1620:	00019500 	call	1950 <alt_dev_llist_insert>
+    1624:	01000034 	movhi	r4,0
+    1628:	800b883a 	mov	r5,r16
+    162c:	21075604 	addi	r4,r4,7512
     ALTERA_AVALON_TIMER_INIT ( TIMER, TIMER);
     ALTERA_AVALON_JTAG_UART_INIT ( JTAG_UART, JTAG_UART);
     ALTERA_UP_AVALON_AUDIO_AND_VIDEO_CONFIG_INIT ( AUDIO_CONFIG, AUDIO_CONFIG);
     ALTERA_UP_AVALON_AUDIO_INIT ( AUDIO, AUDIO);
 }
-     d64:	dfc00117 	ldw	ra,4(sp)
-     d68:	dc000017 	ldw	r16,0(sp)
-     d6c:	dec00204 	addi	sp,sp,8
-     d70:	00010841 	jmpi	1084 <alt_dev_llist_insert>
+    1630:	dfc00117 	ldw	ra,4(sp)
+    1634:	dc000017 	ldw	r16,0(sp)
+    1638:	dec00204 	addi	sp,sp,8
+    163c:	00019501 	jmpi	1950 <alt_dev_llist_insert>
 
-00000d74 <altera_avalon_jtag_uart_write>:
+00001640 <altera_avalon_jtag_uart_write>:
  */
 
 int altera_avalon_jtag_uart_write(altera_avalon_jtag_uart_state* sp, 
   const char * ptr, int count, int flags)
 {
   unsigned int base = sp->base;
-     d74:	21000017 	ldw	r4,0(r4)
+    1640:	21000017 	ldw	r4,0(r4)
  * one FIFOs worth of data.  But you said you didn't want to use interrupts :-)
  */
 
 int altera_avalon_jtag_uart_write(altera_avalon_jtag_uart_state* sp, 
   const char * ptr, int count, int flags)
 {
-     d78:	3005883a 	mov	r2,r6
+    1644:	3005883a 	mov	r2,r6
   unsigned int base = sp->base;
 
   const char * end = ptr + count;
-     d7c:	298d883a 	add	r6,r5,r6
+    1648:	298d883a 	add	r6,r5,r6
 
   while (ptr < end)
     if ((IORD_ALTERA_AVALON_JTAG_UART_CONTROL(base) & ALTERA_AVALON_JTAG_UART_CONTROL_WSPACE_MSK) != 0)
-     d80:	21c00104 	addi	r7,r4,4
+    164c:	21c00104 	addi	r7,r4,4
 {
   unsigned int base = sp->base;
 
   const char * end = ptr + count;
 
   while (ptr < end)
-     d84:	2980072e 	bgeu	r5,r6,da4 <altera_avalon_jtag_uart_write+0x30>
+    1650:	2980072e 	bgeu	r5,r6,1670 <altera_avalon_jtag_uart_write+0x30>
     if ((IORD_ALTERA_AVALON_JTAG_UART_CONTROL(base) & ALTERA_AVALON_JTAG_UART_CONTROL_WSPACE_MSK) != 0)
-     d88:	38c00037 	ldwio	r3,0(r7)
-     d8c:	18ffffec 	andhi	r3,r3,65535
-     d90:	183ffc26 	beq	r3,zero,d84 <_gp+0xffff7940>
+    1654:	38c00037 	ldwio	r3,0(r7)
+    1658:	18ffffec 	andhi	r3,r3,65535
+    165c:	183ffc26 	beq	r3,zero,1650 <__alt_mem_SHARED_MEMORY+0xfffc1650>
       IOWR_ALTERA_AVALON_JTAG_UART_DATA(base, *ptr++);
-     d94:	28c00007 	ldb	r3,0(r5)
-     d98:	20c00035 	stwio	r3,0(r4)
-     d9c:	29400044 	addi	r5,r5,1
-     da0:	003ff806 	br	d84 <_gp+0xffff7940>
+    1660:	28c00007 	ldb	r3,0(r5)
+    1664:	20c00035 	stwio	r3,0(r4)
+    1668:	29400044 	addi	r5,r5,1
+    166c:	003ff806 	br	1650 <__alt_mem_SHARED_MEMORY+0xfffc1650>
 
   return count;
 }
-     da4:	f800283a 	ret
+    1670:	f800283a 	ret
 
-00000da8 <alt_up_audio_open_dev>:
+00001674 <alt_up_audio_open_dev>:
 {
   // find the device from the device list 
   // (see altera_hal/HAL/inc/priv/alt_file.h 
   // and altera_hal/HAL/src/alt_find_dev.c 
   // for details)
   alt_up_audio_dev *dev = (alt_up_audio_dev*)alt_find_dev(name, &alt_dev_list);
-     da8:	d1600804 	addi	r5,gp,-32736
-     dac:	00010f01 	jmpi	10f0 <alt_find_dev>
+    1674:	d1600604 	addi	r5,gp,-32744
+    1678:	00019bc1 	jmpi	19bc <alt_find_dev>
 
-00000db0 <alt_up_audio_enable_read_interrupt>:
+0000167c <alt_up_audio_enable_read_interrupt>:
 }
 
 void alt_up_audio_enable_read_interrupt(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     db0:	20c00a17 	ldw	r3,40(r4)
-     db4:	18800037 	ldwio	r2,0(r3)
+    167c:	20c00a17 	ldw	r3,40(r4)
+    1680:	18800037 	ldwio	r2,0(r3)
 	// set RE to 1 while maintaining other bits the same
 	ctrl_reg |= ALT_UP_AUDIO_CONTROL_RE_MSK;
 	IOWR_ALT_UP_AUDIO_CONTROL(audio->base, ctrl_reg);
-     db8:	10800054 	ori	r2,r2,1
-     dbc:	18800035 	stwio	r2,0(r3)
-     dc0:	f800283a 	ret
+    1684:	10800054 	ori	r2,r2,1
+    1688:	18800035 	stwio	r2,0(r3)
+    168c:	f800283a 	ret
 
-00000dc4 <alt_up_audio_disable_read_interrupt>:
+00001690 <alt_up_audio_disable_read_interrupt>:
 }
 
 void alt_up_audio_disable_read_interrupt(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     dc4:	20c00a17 	ldw	r3,40(r4)
-     dc8:	19000037 	ldwio	r4,0(r3)
+    1690:	20c00a17 	ldw	r3,40(r4)
+    1694:	19000037 	ldwio	r4,0(r3)
 	// set RE to 0 while maintaining other bits the same
 	ctrl_reg &= ~ALT_UP_AUDIO_CONTROL_RE_MSK;
 	IOWR_ALT_UP_AUDIO_CONTROL(audio->base, ctrl_reg);
-     dcc:	00bfff84 	movi	r2,-2
-     dd0:	2084703a 	and	r2,r4,r2
-     dd4:	18800035 	stwio	r2,0(r3)
-     dd8:	f800283a 	ret
+    1698:	00bfff84 	movi	r2,-2
+    169c:	2084703a 	and	r2,r4,r2
+    16a0:	18800035 	stwio	r2,0(r3)
+    16a4:	f800283a 	ret
 
-00000ddc <alt_up_audio_enable_write_interrupt>:
+000016a8 <alt_up_audio_enable_write_interrupt>:
 }
 
 void alt_up_audio_enable_write_interrupt(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     ddc:	20c00a17 	ldw	r3,40(r4)
-     de0:	18800037 	ldwio	r2,0(r3)
+    16a8:	20c00a17 	ldw	r3,40(r4)
+    16ac:	18800037 	ldwio	r2,0(r3)
 	// set WE to 1 while maintaining other bits the same
 	ctrl_reg |= ALT_UP_AUDIO_CONTROL_WE_MSK;
 	IOWR_ALT_UP_AUDIO_CONTROL(audio->base, ctrl_reg);
-     de4:	10800094 	ori	r2,r2,2
-     de8:	18800035 	stwio	r2,0(r3)
-     dec:	f800283a 	ret
+    16b0:	10800094 	ori	r2,r2,2
+    16b4:	18800035 	stwio	r2,0(r3)
+    16b8:	f800283a 	ret
 
-00000df0 <alt_up_audio_disable_write_interrupt>:
+000016bc <alt_up_audio_disable_write_interrupt>:
 }
 
 void alt_up_audio_disable_write_interrupt(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     df0:	20c00a17 	ldw	r3,40(r4)
-     df4:	19000037 	ldwio	r4,0(r3)
+    16bc:	20c00a17 	ldw	r3,40(r4)
+    16c0:	19000037 	ldwio	r4,0(r3)
 	// set WE to 0 while maintaining other bits the same
 	ctrl_reg &= ~ALT_UP_AUDIO_CONTROL_WE_MSK;
 	IOWR_ALT_UP_AUDIO_CONTROL(audio->base, ctrl_reg);
-     df8:	00bfff44 	movi	r2,-3
-     dfc:	2084703a 	and	r2,r4,r2
-     e00:	18800035 	stwio	r2,0(r3)
-     e04:	f800283a 	ret
+    16c4:	00bfff44 	movi	r2,-3
+    16c8:	2084703a 	and	r2,r4,r2
+    16cc:	18800035 	stwio	r2,0(r3)
+    16d0:	f800283a 	ret
 
-00000e08 <alt_up_audio_read_interrupt_pending>:
+000016d4 <alt_up_audio_read_interrupt_pending>:
 }
 
 int alt_up_audio_read_interrupt_pending(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     e08:	20800a17 	ldw	r2,40(r4)
-     e0c:	10800037 	ldwio	r2,0(r2)
+    16d4:	20800a17 	ldw	r2,40(r4)
+    16d8:	10800037 	ldwio	r2,0(r2)
 	// return 1 if RI is set to 1
 	return ( (ctrl_reg & ALT_UP_AUDIO_CONTROL_RI_MSK) ? 1 : 0 );
-     e10:	1004d23a 	srli	r2,r2,8
+    16dc:	1004d23a 	srli	r2,r2,8
 }
-     e14:	1080004c 	andi	r2,r2,1
-     e18:	f800283a 	ret
+    16e0:	1080004c 	andi	r2,r2,1
+    16e4:	f800283a 	ret
 
-00000e1c <alt_up_audio_write_interrupt_pending>:
+000016e8 <alt_up_audio_write_interrupt_pending>:
 
 int alt_up_audio_write_interrupt_pending(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     e1c:	20800a17 	ldw	r2,40(r4)
-     e20:	10800037 	ldwio	r2,0(r2)
+    16e8:	20800a17 	ldw	r2,40(r4)
+    16ec:	10800037 	ldwio	r2,0(r2)
 	// return the WI value
 	return ( (ctrl_reg & ALT_UP_AUDIO_CONTROL_WI_MSK) ? 1 : 0 );
-     e24:	1004d27a 	srli	r2,r2,9
+    16f0:	1004d27a 	srli	r2,r2,9
 }
-     e28:	1080004c 	andi	r2,r2,1
-     e2c:	f800283a 	ret
+    16f4:	1080004c 	andi	r2,r2,1
+    16f8:	f800283a 	ret
 
-00000e30 <alt_up_audio_reset_audio_core>:
+000016fc <alt_up_audio_reset_audio_core>:
 
 void alt_up_audio_reset_audio_core(alt_up_audio_dev *audio)
 {
 	unsigned int ctrl_reg;
 	ctrl_reg = IORD_ALT_UP_AUDIO_CONTROL(audio->base); 
-     e30:	20800a17 	ldw	r2,40(r4)
-     e34:	10c00037 	ldwio	r3,0(r2)
+    16fc:	20800a17 	ldw	r2,40(r4)
+    1700:	10c00037 	ldwio	r3,0(r2)
 	// set CR and CW to 1 while maintaining other bits the same
 	ctrl_reg |= ALT_UP_AUDIO_CONTROL_CR_MSK;
 	ctrl_reg |= ALT_UP_AUDIO_CONTROL_CW_MSK;
 	IOWR_ALT_UP_AUDIO_CONTROL(audio->base, ctrl_reg);
-     e38:	19400314 	ori	r5,r3,12
-     e3c:	11400035 	stwio	r5,0(r2)
+    1704:	19400314 	ori	r5,r3,12
+    1708:	11400035 	stwio	r5,0(r2)
 	// set CR and CW to 0 while maintaining other bits the same
 	ctrl_reg &= ~ALT_UP_AUDIO_CONTROL_CR_MSK;
 	ctrl_reg &= ~ALT_UP_AUDIO_CONTROL_CW_MSK;
 	IOWR_ALT_UP_AUDIO_CONTROL(audio->base, ctrl_reg);
-     e40:	00bffcc4 	movi	r2,-13
-     e44:	1884703a 	and	r2,r3,r2
-     e48:	20c00a17 	ldw	r3,40(r4)
-     e4c:	18800035 	stwio	r2,0(r3)
-     e50:	f800283a 	ret
+    170c:	00bffcc4 	movi	r2,-13
+    1710:	1884703a 	and	r2,r3,r2
+    1714:	20c00a17 	ldw	r3,40(r4)
+    1718:	18800035 	stwio	r2,0(r3)
+    171c:	f800283a 	ret
 
-00000e54 <alt_up_audio_read_fifo_avail>:
+00001720 <alt_up_audio_read_fifo_avail>:
 /* Provides number of words of data available in the incoming FIFO: RALC or RARC */
 unsigned int alt_up_audio_read_fifo_avail(alt_up_audio_dev *audio, int channel)
 {
 	unsigned int fifospace;
 	// read the whole fifospace register
 	fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
-     e54:	20800a17 	ldw	r2,40(r4)
-     e58:	10800137 	ldwio	r2,4(r2)
+    1720:	20800a17 	ldw	r2,40(r4)
+    1724:	10800137 	ldwio	r2,4(r2)
 	// extract the part for proper Channel Read Space
 	fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 		(fifospace & ALT_UP_AUDIO_FIFOSPACE_RALC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RALC_OFST :
-     e5c:	2800031e 	bne	r5,zero,e6c <alt_up_audio_read_fifo_avail+0x18>
-     e60:	10bfc00c 	andi	r2,r2,65280
-     e64:	1004d23a 	srli	r2,r2,8
-     e68:	f800283a 	ret
-     e6c:	10803fcc 	andi	r2,r2,255
+    1728:	2800031e 	bne	r5,zero,1738 <alt_up_audio_read_fifo_avail+0x18>
+    172c:	10bfc00c 	andi	r2,r2,65280
+    1730:	1004d23a 	srli	r2,r2,8
+    1734:	f800283a 	ret
+    1738:	10803fcc 	andi	r2,r2,255
 		(fifospace & ALT_UP_AUDIO_FIFOSPACE_RARC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RARC_OFST;
 	return (fifospace);
 }
-     e70:	f800283a 	ret
+    173c:	f800283a 	ret
 
-00000e74 <alt_up_audio_write_fifo_space>:
+00001740 <alt_up_audio_write_fifo_space>:
 /* Provides the amount of empty space available in the outgoing FIFO: WSLC or WSRC */
 unsigned int alt_up_audio_write_fifo_space(alt_up_audio_dev *audio, int channel)
 {
 	unsigned int fifospace;
 	// read the whole fifospace register
 	fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
-     e74:	20800a17 	ldw	r2,40(r4)
-     e78:	10800137 	ldwio	r2,4(r2)
+    1740:	20800a17 	ldw	r2,40(r4)
+    1744:	10800137 	ldwio	r2,4(r2)
 	// extract the part for proper Channel Read Space
 	fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 		(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSLC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSLC_OFST :
-     e7c:	2800021e 	bne	r5,zero,e88 <alt_up_audio_write_fifo_space+0x14>
-     e80:	1004d63a 	srli	r2,r2,24
-     e84:	f800283a 	ret
+    1748:	2800021e 	bne	r5,zero,1754 <alt_up_audio_write_fifo_space+0x14>
+    174c:	1004d63a 	srli	r2,r2,24
+    1750:	f800283a 	ret
 		(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSRC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSRC_OFST;
-     e88:	10803fec 	andhi	r2,r2,255
+    1754:	10803fec 	andhi	r2,r2,255
 	unsigned int fifospace;
 	// read the whole fifospace register
 	fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
 	// extract the part for proper Channel Read Space
 	fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 		(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSLC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSLC_OFST :
-     e8c:	1004d43a 	srli	r2,r2,16
+    1758:	1004d43a 	srli	r2,r2,16
 		(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSRC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSRC_OFST;
 	return (fifospace);
 }
-     e90:	f800283a 	ret
+    175c:	f800283a 	ret
 
-00000e94 <alt_up_audio_read_fifo>:
+00001760 <alt_up_audio_read_fifo>:
 }
 
 int alt_up_audio_read_fifo(alt_up_audio_dev *audio, unsigned int *buf, int len, int channel)
 {
 	unsigned int fifospace;
 	int count = 0;
-     e94:	0005883a 	mov	r2,zero
+    1760:	0005883a 	mov	r2,zero
 	while ( count < len ) 
-     e98:	1180090e 	bge	r2,r6,ec0 <alt_up_audio_read_fifo+0x2c>
+    1764:	1180090e 	bge	r2,r6,178c <alt_up_audio_read_fifo+0x2c>
 	{
 		// read the whole fifospace register
 		fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
-     e9c:	22000a17 	ldw	r8,40(r4)
-     ea0:	40c00137 	ldwio	r3,4(r8)
+    1768:	22000a17 	ldw	r8,40(r4)
+    176c:	40c00137 	ldwio	r3,4(r8)
 		// extract the part for proper Channel Read Space
 		fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_RALC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RALC_OFST 
 			:
-     ea4:	3800031e 	bne	r7,zero,eb4 <alt_up_audio_read_fifo+0x20>
+    1770:	3800031e 	bne	r7,zero,1780 <alt_up_audio_read_fifo+0x20>
 	{
 		// read the whole fifospace register
 		fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
 		// extract the part for proper Channel Read Space
 		fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_RALC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RALC_OFST 
-     ea8:	18ffc00c 	andi	r3,r3,65280
+    1774:	18ffc00c 	andi	r3,r3,65280
 			:
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_RARC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RARC_OFST;
 		if (fifospace > 0) 
-     eac:	1800051e 	bne	r3,zero,ec4 <alt_up_audio_read_fifo+0x30>
-     eb0:	f800283a 	ret
-     eb4:	18c03fcc 	andi	r3,r3,255
-     eb8:	1800071e 	bne	r3,zero,ed8 <alt_up_audio_read_fifo+0x44>
-     ebc:	f800283a 	ret
-     ec0:	f800283a 	ret
+    1778:	1800051e 	bne	r3,zero,1790 <alt_up_audio_read_fifo+0x30>
+    177c:	f800283a 	ret
+    1780:	18c03fcc 	andi	r3,r3,255
+    1784:	1800071e 	bne	r3,zero,17a4 <alt_up_audio_read_fifo+0x44>
+    1788:	f800283a 	ret
+    178c:	f800283a 	ret
 		{
 			buf[count] = (channel == ALT_UP_AUDIO_LEFT) ? 
 				IORD_ALT_UP_AUDIO_LEFTDATA(audio->base) :
-     ec4:	40c00237 	ldwio	r3,8(r8)
+    1790:	40c00237 	ldwio	r3,8(r8)
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_RALC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RALC_OFST 
 			:
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_RARC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RARC_OFST;
 		if (fifospace > 0) 
 		{
 			buf[count] = (channel == ALT_UP_AUDIO_LEFT) ? 
-     ec8:	28c00015 	stw	r3,0(r5)
+    1794:	28c00015 	stw	r3,0(r5)
 				IORD_ALT_UP_AUDIO_LEFTDATA(audio->base) :
 				IORD_ALT_UP_AUDIO_RIGHTDATA(audio->base);
 			count ++;
-     ecc:	10800044 	addi	r2,r2,1
-     ed0:	29400104 	addi	r5,r5,4
-     ed4:	003ff006 	br	e98 <_gp+0xffff7a54>
+    1798:	10800044 	addi	r2,r2,1
+    179c:	29400104 	addi	r5,r5,4
+    17a0:	003ff006 	br	1764 <__alt_mem_SHARED_MEMORY+0xfffc1764>
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_RARC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_RARC_OFST;
 		if (fifospace > 0) 
 		{
 			buf[count] = (channel == ALT_UP_AUDIO_LEFT) ? 
 				IORD_ALT_UP_AUDIO_LEFTDATA(audio->base) :
 				IORD_ALT_UP_AUDIO_RIGHTDATA(audio->base);
-     ed8:	40c00337 	ldwio	r3,12(r8)
-     edc:	003ffa06 	br	ec8 <_gp+0xffff7a84>
+    17a4:	40c00337 	ldwio	r3,12(r8)
+    17a8:	003ffa06 	br	1794 <__alt_mem_SHARED_MEMORY+0xfffc1794>
 
-00000ee0 <alt_up_audio_record_r>:
+000017ac <alt_up_audio_record_r>:
 /* Provides number of words of data available in the incoming FIFO: RALC or RARC */
 unsigned int alt_up_audio_read_fifo_avail(alt_up_audio_dev *audio, int channel)
 {
 	unsigned int fifospace;
 	// read the whole fifospace register
 	fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
-     ee0:	20800a17 	ldw	r2,40(r4)
-     ee4:	10800137 	ldwio	r2,4(r2)
+    17ac:	20800a17 	ldw	r2,40(r4)
+    17b0:	10800137 	ldwio	r2,4(r2)
  * FIFO up to a maximum of len words, and stored into buf.
  */
 unsigned int alt_up_audio_record_r(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
 	unsigned int data_words = alt_up_audio_read_fifo_avail (audio, ALT_UP_AUDIO_RIGHT);
 	if (data_words <= BUF_THRESHOLD)
-     ee8:	00c01804 	movi	r3,96
-     eec:	10803fcc 	andi	r2,r2,255
-     ef0:	1880022e 	bgeu	r3,r2,efc <alt_up_audio_record_r+0x1c>
+    17b4:	00c01804 	movi	r3,96
+    17b8:	10803fcc 	andi	r2,r2,255
+    17bc:	1880022e 	bgeu	r3,r2,17c8 <alt_up_audio_record_r+0x1c>
 		return 0;
 	else
 		return (alt_up_audio_read_fifo(audio, buf, len, ALT_UP_AUDIO_RIGHT));
-     ef4:	01c00044 	movi	r7,1
-     ef8:	0000e941 	jmpi	e94 <alt_up_audio_read_fifo>
+    17c0:	01c00044 	movi	r7,1
+    17c4:	00017601 	jmpi	1760 <alt_up_audio_read_fifo>
 }
-     efc:	0005883a 	mov	r2,zero
-     f00:	f800283a 	ret
+    17c8:	0005883a 	mov	r2,zero
+    17cc:	f800283a 	ret
 
-00000f04 <alt_up_audio_record_l>:
+000017d0 <alt_up_audio_record_l>:
 /* Checks if the read FIFO for the left channel has at least BUF_THRESHOLD data words 
  * available. If it doesn't, then just returns 0. If it does, then data is read from the
  * FIFO up to a maximum of len words, and stored into buf.
  */
 unsigned int alt_up_audio_record_l(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
-     f04:	defffc04 	addi	sp,sp,-16
-     f08:	dc400215 	stw	r17,8(sp)
-     f0c:	2823883a 	mov	r17,r5
+    17d0:	defffc04 	addi	sp,sp,-16
+    17d4:	dc400215 	stw	r17,8(sp)
+    17d8:	2823883a 	mov	r17,r5
 	unsigned int data_words = alt_up_audio_read_fifo_avail (audio, ALT_UP_AUDIO_LEFT);
-     f10:	000b883a 	mov	r5,zero
+    17dc:	000b883a 	mov	r5,zero
 /* Checks if the read FIFO for the left channel has at least BUF_THRESHOLD data words 
  * available. If it doesn't, then just returns 0. If it does, then data is read from the
  * FIFO up to a maximum of len words, and stored into buf.
  */
 unsigned int alt_up_audio_record_l(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
-     f14:	dc000115 	stw	r16,4(sp)
+    17e0:	dc000115 	stw	r16,4(sp)
 	unsigned int data_words = alt_up_audio_read_fifo_avail (audio, ALT_UP_AUDIO_LEFT);
-     f18:	d9800015 	stw	r6,0(sp)
+    17e4:	d9800015 	stw	r6,0(sp)
 /* Checks if the read FIFO for the left channel has at least BUF_THRESHOLD data words 
  * available. If it doesn't, then just returns 0. If it does, then data is read from the
  * FIFO up to a maximum of len words, and stored into buf.
  */
 unsigned int alt_up_audio_record_l(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
-     f1c:	dfc00315 	stw	ra,12(sp)
-     f20:	2021883a 	mov	r16,r4
+    17e8:	dfc00315 	stw	ra,12(sp)
+    17ec:	2021883a 	mov	r16,r4
 	unsigned int data_words = alt_up_audio_read_fifo_avail (audio, ALT_UP_AUDIO_LEFT);
-     f24:	0000e540 	call	e54 <alt_up_audio_read_fifo_avail>
+    17f0:	00017200 	call	1720 <alt_up_audio_read_fifo_avail>
 	if (data_words <= BUF_THRESHOLD)
-     f28:	00c01804 	movi	r3,96
-     f2c:	d9800017 	ldw	r6,0(sp)
-     f30:	1880082e 	bgeu	r3,r2,f54 <alt_up_audio_record_l+0x50>
+    17f4:	00c01804 	movi	r3,96
+    17f8:	d9800017 	ldw	r6,0(sp)
+    17fc:	1880082e 	bgeu	r3,r2,1820 <alt_up_audio_record_l+0x50>
 		return 0;
 	else
 		return (alt_up_audio_read_fifo(audio, buf, len, ALT_UP_AUDIO_LEFT));
-     f34:	000f883a 	mov	r7,zero
-     f38:	880b883a 	mov	r5,r17
-     f3c:	8009883a 	mov	r4,r16
+    1800:	000f883a 	mov	r7,zero
+    1804:	880b883a 	mov	r5,r17
+    1808:	8009883a 	mov	r4,r16
 }
-     f40:	dfc00317 	ldw	ra,12(sp)
-     f44:	dc400217 	ldw	r17,8(sp)
-     f48:	dc000117 	ldw	r16,4(sp)
-     f4c:	dec00404 	addi	sp,sp,16
+    180c:	dfc00317 	ldw	ra,12(sp)
+    1810:	dc400217 	ldw	r17,8(sp)
+    1814:	dc000117 	ldw	r16,4(sp)
+    1818:	dec00404 	addi	sp,sp,16
 {
 	unsigned int data_words = alt_up_audio_read_fifo_avail (audio, ALT_UP_AUDIO_LEFT);
 	if (data_words <= BUF_THRESHOLD)
 		return 0;
 	else
 		return (alt_up_audio_read_fifo(audio, buf, len, ALT_UP_AUDIO_LEFT));
-     f50:	0000e941 	jmpi	e94 <alt_up_audio_read_fifo>
+    181c:	00017601 	jmpi	1760 <alt_up_audio_read_fifo>
 }
-     f54:	0005883a 	mov	r2,zero
-     f58:	dfc00317 	ldw	ra,12(sp)
-     f5c:	dc400217 	ldw	r17,8(sp)
-     f60:	dc000117 	ldw	r16,4(sp)
-     f64:	dec00404 	addi	sp,sp,16
-     f68:	f800283a 	ret
+    1820:	0005883a 	mov	r2,zero
+    1824:	dfc00317 	ldw	ra,12(sp)
+    1828:	dc400217 	ldw	r17,8(sp)
+    182c:	dc000117 	ldw	r16,4(sp)
+    1830:	dec00404 	addi	sp,sp,16
+    1834:	f800283a 	ret
 
-00000f6c <alt_up_audio_write_fifo>:
+00001838 <alt_up_audio_write_fifo>:
 
 int alt_up_audio_write_fifo(alt_up_audio_dev *audio, unsigned int *buf, int len, int channel)
 {
 	unsigned int fifospace;
 	int count = 0;
 	while ( count < len ) 
-     f6c:	0005883a 	mov	r2,zero
-     f70:	1180110e 	bge	r2,r6,fb8 <alt_up_audio_write_fifo+0x4c>
+    1838:	0005883a 	mov	r2,zero
+    183c:	1180110e 	bge	r2,r6,1884 <alt_up_audio_write_fifo+0x4c>
 	{
 		// read the whole fifospace register
 		fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
-     f74:	22000a17 	ldw	r8,40(r4)
-     f78:	40c00137 	ldwio	r3,4(r8)
+    1840:	22000a17 	ldw	r8,40(r4)
+    1844:	40c00137 	ldwio	r3,4(r8)
 		// extract the part for Left Channel Write Space 
 		fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSLC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSLC_OFST :
-     f7c:	3800031e 	bne	r7,zero,f8c <alt_up_audio_write_fifo+0x20>
+    1848:	3800031e 	bne	r7,zero,1858 <alt_up_audio_write_fifo+0x20>
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSRC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSRC_OFST;
 		if (fifospace > 0) 
-     f80:	1806d63a 	srli	r3,r3,24
-     f84:	1800041e 	bne	r3,zero,f98 <alt_up_audio_write_fifo+0x2c>
-     f88:	f800283a 	ret
+    184c:	1806d63a 	srli	r3,r3,24
+    1850:	1800041e 	bne	r3,zero,1864 <alt_up_audio_write_fifo+0x2c>
+    1854:	f800283a 	ret
 		// read the whole fifospace register
 		fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
 		// extract the part for Left Channel Write Space 
 		fifospace = (channel == ALT_UP_AUDIO_LEFT) ? 
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSLC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSLC_OFST :
 			(fifospace & ALT_UP_AUDIO_FIFOSPACE_WSRC_MSK) >> ALT_UP_AUDIO_FIFOSPACE_WSRC_OFST;
-     f8c:	18c03fec 	andhi	r3,r3,255
+    1858:	18c03fec 	andhi	r3,r3,255
 		if (fifospace > 0) 
-     f90:	1800041e 	bne	r3,zero,fa4 <alt_up_audio_write_fifo+0x38>
-     f94:	f800283a 	ret
+    185c:	1800041e 	bne	r3,zero,1870 <alt_up_audio_write_fifo+0x38>
+    1860:	f800283a 	ret
 		{
 			if (channel == ALT_UP_AUDIO_LEFT) 
 				IOWR_ALT_UP_AUDIO_LEFTDATA(audio->base, buf[count++]);
-     f98:	28c00017 	ldw	r3,0(r5)
-     f9c:	40c00235 	stwio	r3,8(r8)
-     fa0:	00000206 	br	fac <alt_up_audio_write_fifo+0x40>
+    1864:	28c00017 	ldw	r3,0(r5)
+    1868:	40c00235 	stwio	r3,8(r8)
+    186c:	00000206 	br	1878 <alt_up_audio_write_fifo+0x40>
 			else
 				IOWR_ALT_UP_AUDIO_RIGHTDATA(audio->base, buf[count++]);
-     fa4:	28c00017 	ldw	r3,0(r5)
-     fa8:	40c00335 	stwio	r3,12(r8)
-     fac:	10800044 	addi	r2,r2,1
-     fb0:	29400104 	addi	r5,r5,4
-     fb4:	003fee06 	br	f70 <_gp+0xffff7b2c>
+    1870:	28c00017 	ldw	r3,0(r5)
+    1874:	40c00335 	stwio	r3,12(r8)
+    1878:	10800044 	addi	r2,r2,1
+    187c:	29400104 	addi	r5,r5,4
+    1880:	003fee06 	br	183c <__alt_mem_SHARED_MEMORY+0xfffc183c>
 			// no more space to write
 			break;
 		}
 	}
 	return count;
 }
-     fb8:	f800283a 	ret
+    1884:	f800283a 	ret
 
-00000fbc <alt_up_audio_play_r>:
+00001888 <alt_up_audio_play_r>:
 /* Checks if the write FIFO for the right channel has at least BUF_THRESHOLD space available.
  * If it doesn't, then just returns 0. If it does, then data from buf is written into the 
  * FIFO, up to a maximum of len words.
  */
 unsigned int alt_up_audio_play_r(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
-     fbc:	defffc04 	addi	sp,sp,-16
-     fc0:	dc400215 	stw	r17,8(sp)
-     fc4:	2823883a 	mov	r17,r5
+    1888:	defffc04 	addi	sp,sp,-16
+    188c:	dc400215 	stw	r17,8(sp)
+    1890:	2823883a 	mov	r17,r5
 	unsigned int space = alt_up_audio_write_fifo_space (audio, ALT_UP_AUDIO_RIGHT);
-     fc8:	01400044 	movi	r5,1
+    1894:	01400044 	movi	r5,1
 /* Checks if the write FIFO for the right channel has at least BUF_THRESHOLD space available.
  * If it doesn't, then just returns 0. If it does, then data from buf is written into the 
  * FIFO, up to a maximum of len words.
  */
 unsigned int alt_up_audio_play_r(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
-     fcc:	dc000115 	stw	r16,4(sp)
+    1898:	dc000115 	stw	r16,4(sp)
 	unsigned int space = alt_up_audio_write_fifo_space (audio, ALT_UP_AUDIO_RIGHT);
-     fd0:	d9800015 	stw	r6,0(sp)
+    189c:	d9800015 	stw	r6,0(sp)
 /* Checks if the write FIFO for the right channel has at least BUF_THRESHOLD space available.
  * If it doesn't, then just returns 0. If it does, then data from buf is written into the 
  * FIFO, up to a maximum of len words.
  */
 unsigned int alt_up_audio_play_r(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
-     fd4:	dfc00315 	stw	ra,12(sp)
-     fd8:	2021883a 	mov	r16,r4
+    18a0:	dfc00315 	stw	ra,12(sp)
+    18a4:	2021883a 	mov	r16,r4
 	unsigned int space = alt_up_audio_write_fifo_space (audio, ALT_UP_AUDIO_RIGHT);
-     fdc:	0000e740 	call	e74 <alt_up_audio_write_fifo_space>
+    18a8:	00017400 	call	1740 <alt_up_audio_write_fifo_space>
 	if (space <= BUF_THRESHOLD)
-     fe0:	00c01804 	movi	r3,96
-     fe4:	d9800017 	ldw	r6,0(sp)
-     fe8:	1880082e 	bgeu	r3,r2,100c <alt_up_audio_play_r+0x50>
+    18ac:	00c01804 	movi	r3,96
+    18b0:	d9800017 	ldw	r6,0(sp)
+    18b4:	1880082e 	bgeu	r3,r2,18d8 <alt_up_audio_play_r+0x50>
 		return 0;
 	else
 		return (alt_up_audio_write_fifo(audio, buf, len, ALT_UP_AUDIO_RIGHT));
-     fec:	01c00044 	movi	r7,1
-     ff0:	880b883a 	mov	r5,r17
-     ff4:	8009883a 	mov	r4,r16
+    18b8:	01c00044 	movi	r7,1
+    18bc:	880b883a 	mov	r5,r17
+    18c0:	8009883a 	mov	r4,r16
 }
-     ff8:	dfc00317 	ldw	ra,12(sp)
-     ffc:	dc400217 	ldw	r17,8(sp)
-    1000:	dc000117 	ldw	r16,4(sp)
-    1004:	dec00404 	addi	sp,sp,16
+    18c4:	dfc00317 	ldw	ra,12(sp)
+    18c8:	dc400217 	ldw	r17,8(sp)
+    18cc:	dc000117 	ldw	r16,4(sp)
+    18d0:	dec00404 	addi	sp,sp,16
 {
 	unsigned int space = alt_up_audio_write_fifo_space (audio, ALT_UP_AUDIO_RIGHT);
 	if (space <= BUF_THRESHOLD)
 		return 0;
 	else
 		return (alt_up_audio_write_fifo(audio, buf, len, ALT_UP_AUDIO_RIGHT));
-    1008:	0000f6c1 	jmpi	f6c <alt_up_audio_write_fifo>
+    18d4:	00018381 	jmpi	1838 <alt_up_audio_write_fifo>
 }
-    100c:	0005883a 	mov	r2,zero
-    1010:	dfc00317 	ldw	ra,12(sp)
-    1014:	dc400217 	ldw	r17,8(sp)
-    1018:	dc000117 	ldw	r16,4(sp)
-    101c:	dec00404 	addi	sp,sp,16
-    1020:	f800283a 	ret
+    18d8:	0005883a 	mov	r2,zero
+    18dc:	dfc00317 	ldw	ra,12(sp)
+    18e0:	dc400217 	ldw	r17,8(sp)
+    18e4:	dc000117 	ldw	r16,4(sp)
+    18e8:	dec00404 	addi	sp,sp,16
+    18ec:	f800283a 	ret
 
-00001024 <alt_up_audio_play_l>:
+000018f0 <alt_up_audio_play_l>:
 /* Provides the amount of empty space available in the outgoing FIFO: WSLC or WSRC */
 unsigned int alt_up_audio_write_fifo_space(alt_up_audio_dev *audio, int channel)
 {
 	unsigned int fifospace;
 	// read the whole fifospace register
 	fifospace = IORD_ALT_UP_AUDIO_FIFOSPACE(audio->base);
-    1024:	20800a17 	ldw	r2,40(r4)
-    1028:	10800137 	ldwio	r2,4(r2)
+    18f0:	20800a17 	ldw	r2,40(r4)
+    18f4:	10800137 	ldwio	r2,4(r2)
  * FIFO, up to a maximum of len words.
  */
 unsigned int alt_up_audio_play_l(alt_up_audio_dev *audio, unsigned int *buf, int len)
 {
 	unsigned int space = alt_up_audio_write_fifo_space (audio, ALT_UP_AUDIO_LEFT);
 	if (space <= BUF_THRESHOLD)
-    102c:	00c01804 	movi	r3,96
-    1030:	1004d63a 	srli	r2,r2,24
-    1034:	1880022e 	bgeu	r3,r2,1040 <alt_up_audio_play_l+0x1c>
+    18f8:	00c01804 	movi	r3,96
+    18fc:	1004d63a 	srli	r2,r2,24
+    1900:	1880022e 	bgeu	r3,r2,190c <alt_up_audio_play_l+0x1c>
 		return 0;
 	else
 		return (alt_up_audio_write_fifo(audio, buf, len, ALT_UP_AUDIO_LEFT));
-    1038:	000f883a 	mov	r7,zero
-    103c:	0000f6c1 	jmpi	f6c <alt_up_audio_write_fifo>
+    1904:	000f883a 	mov	r7,zero
+    1908:	00018381 	jmpi	1838 <alt_up_audio_write_fifo>
 }
-    1040:	0005883a 	mov	r2,zero
-    1044:	f800283a 	ret
+    190c:	0005883a 	mov	r2,zero
+    1910:	f800283a 	ret
 
-00001048 <alt_up_audio_read_fifo_head>:
+00001914 <alt_up_audio_read_fifo_head>:
 	}
 	return count;
 }
 
 unsigned int alt_up_audio_read_fifo_head(alt_up_audio_dev *audio, int channel)
 {
-    1048:	20800a17 	ldw	r2,40(r4)
+    1914:	20800a17 	ldw	r2,40(r4)
 	return ( (channel == ALT_UP_AUDIO_LEFT) ?  IORD_ALT_UP_AUDIO_LEFTDATA(audio->base) :
-    104c:	2800021e 	bne	r5,zero,1058 <alt_up_audio_read_fifo_head+0x10>
-    1050:	10800237 	ldwio	r2,8(r2)
-    1054:	f800283a 	ret
+    1918:	2800021e 	bne	r5,zero,1924 <alt_up_audio_read_fifo_head+0x10>
+    191c:	10800237 	ldwio	r2,8(r2)
+    1920:	f800283a 	ret
 				IORD_ALT_UP_AUDIO_RIGHTDATA(audio->base) );
-    1058:	10800337 	ldwio	r2,12(r2)
+    1924:	10800337 	ldwio	r2,12(r2)
 }
-    105c:	f800283a 	ret
+    1928:	f800283a 	ret
 
-00001060 <alt_up_audio_write_fifo_head>:
+0000192c <alt_up_audio_write_fifo_head>:
 
 void alt_up_audio_write_fifo_head(alt_up_audio_dev *audio, unsigned int data, int channel)
 {
-    1060:	20800a17 	ldw	r2,40(r4)
+    192c:	20800a17 	ldw	r2,40(r4)
 	if (channel == ALT_UP_AUDIO_LEFT) 
-    1064:	3000021e 	bne	r6,zero,1070 <alt_up_audio_write_fifo_head+0x10>
+    1930:	3000021e 	bne	r6,zero,193c <alt_up_audio_write_fifo_head+0x10>
 		IOWR_ALT_UP_AUDIO_LEFTDATA(audio->base, data);
-    1068:	11400235 	stwio	r5,8(r2)
-    106c:	f800283a 	ret
+    1934:	11400235 	stwio	r5,8(r2)
+    1938:	f800283a 	ret
 	else
 		IOWR_ALT_UP_AUDIO_RIGHTDATA(audio->base, data);
-    1070:	11400335 	stwio	r5,12(r2)
-    1074:	f800283a 	ret
+    193c:	11400335 	stwio	r5,12(r2)
+    1940:	f800283a 	ret
 
-00001078 <alt_dcache_flush_all>:
+00001944 <alt_dcache_flush_all>:
 /*
  * alt_dcache_flush_all() is called to flush the entire data cache.
  */
 
 void alt_dcache_flush_all (void)
 {
-    1078:	f800283a 	ret
+    1944:	f800283a 	ret
 
-0000107c <alt_dev_null_write>:
+00001948 <alt_dev_null_write>:
  */
 
 static int alt_dev_null_write (alt_fd* fd, const char* ptr, int len)
 {
   return len;
 }
-    107c:	3005883a 	mov	r2,r6
-    1080:	f800283a 	ret
+    1948:	3005883a 	mov	r2,r6
+    194c:	f800283a 	ret
 
-00001084 <alt_dev_llist_insert>:
+00001950 <alt_dev_llist_insert>:
 {
   /*
    * check that the device exists, and that it has a valid name.
    */
 
   if (!dev || !dev->name)
-    1084:	20000226 	beq	r4,zero,1090 <alt_dev_llist_insert+0xc>
-    1088:	20800217 	ldw	r2,8(r4)
-    108c:	1000101e 	bne	r2,zero,10d0 <alt_dev_llist_insert+0x4c>
+    1950:	20000226 	beq	r4,zero,195c <alt_dev_llist_insert+0xc>
+    1954:	20800217 	ldw	r2,8(r4)
+    1958:	1000101e 	bne	r2,zero,199c <alt_dev_llist_insert+0x4c>
 
 extern int errno;
 
 static ALT_INLINE int* alt_get_errno(void)
 {
   return ((alt_errno) ? alt_errno() : &errno);
-    1090:	d0a00c17 	ldw	r2,-32720(gp)
-    1094:	10000926 	beq	r2,zero,10bc <alt_dev_llist_insert+0x38>
+    195c:	d0a00a17 	ldw	r2,-32728(gp)
+    1960:	10000926 	beq	r2,zero,1988 <alt_dev_llist_insert+0x38>
 /*
  *
  */
 
 int alt_dev_llist_insert (alt_dev_llist* dev, alt_llist* list)
 {
-    1098:	deffff04 	addi	sp,sp,-4
-    109c:	dfc00015 	stw	ra,0(sp)
-    10a0:	103ee83a 	callr	r2
+    1964:	deffff04 	addi	sp,sp,-4
+    1968:	dfc00015 	stw	ra,0(sp)
+    196c:	103ee83a 	callr	r2
    * check that the device exists, and that it has a valid name.
    */
 
   if (!dev || !dev->name)
   {
     ALT_ERRNO = EINVAL;
-    10a4:	00c00584 	movi	r3,22
-    10a8:	10c00015 	stw	r3,0(r2)
+    1970:	00c00584 	movi	r3,22
+    1974:	10c00015 	stw	r3,0(r2)
     return -EINVAL;
-    10ac:	00bffa84 	movi	r2,-22
+    1978:	00bffa84 	movi	r2,-22
    */
   
   alt_llist_insert(list, &dev->llist);
 
   return 0;  
 }
-    10b0:	dfc00017 	ldw	ra,0(sp)
-    10b4:	dec00104 	addi	sp,sp,4
-    10b8:	f800283a 	ret
-    10bc:	d0a05304 	addi	r2,gp,-32436
+    197c:	dfc00017 	ldw	ra,0(sp)
+    1980:	dec00104 	addi	sp,sp,4
+    1984:	f800283a 	ret
+    1988:	d0a05004 	addi	r2,gp,-32448
    * check that the device exists, and that it has a valid name.
    */
 
   if (!dev || !dev->name)
   {
     ALT_ERRNO = EINVAL;
-    10c0:	00c00584 	movi	r3,22
-    10c4:	10c00015 	stw	r3,0(r2)
+    198c:	00c00584 	movi	r3,22
+    1990:	10c00015 	stw	r3,0(r2)
     return -EINVAL;
-    10c8:	00bffa84 	movi	r2,-22
+    1994:	00bffa84 	movi	r2,-22
    */
   
   alt_llist_insert(list, &dev->llist);
 
   return 0;  
 }
-    10cc:	f800283a 	ret
+    1998:	f800283a 	ret
 
 static ALT_INLINE void ALT_ALWAYS_INLINE alt_llist_insert(alt_llist* list, 
                 alt_llist* entry)
 {
   entry->previous = list;
   entry->next     = list->next;
-    10d0:	28800017 	ldw	r2,0(r5)
+    199c:	28800017 	ldw	r2,0(r5)
  */
 
 static ALT_INLINE void ALT_ALWAYS_INLINE alt_llist_insert(alt_llist* list, 
                 alt_llist* entry)
 {
   entry->previous = list;
-    10d4:	21400115 	stw	r5,4(r4)
+    19a0:	21400115 	stw	r5,4(r4)
   entry->next     = list->next;
-    10d8:	20800015 	stw	r2,0(r4)
+    19a4:	20800015 	stw	r2,0(r4)
 
   list->next->previous = entry;
-    10dc:	28800017 	ldw	r2,0(r5)
-    10e0:	11000115 	stw	r4,4(r2)
+    19a8:	28800017 	ldw	r2,0(r5)
+    19ac:	11000115 	stw	r4,4(r2)
   list->next           = entry;
-    10e4:	29000015 	stw	r4,0(r5)
+    19b0:	29000015 	stw	r4,0(r5)
    * register the device.
    */
   
   alt_llist_insert(list, &dev->llist);
 
   return 0;  
-    10e8:	0005883a 	mov	r2,zero
-    10ec:	f800283a 	ret
+    19b4:	0005883a 	mov	r2,zero
+    19b8:	f800283a 	ret
 
-000010f0 <alt_find_dev>:
+000019bc <alt_find_dev>:
  * "name" must be an exact match for the devices registered name for a match to
  * be found.
  */
  
 alt_dev* alt_find_dev(const char* name, alt_llist* llist)
 {
-    10f0:	defffb04 	addi	sp,sp,-20
-    10f4:	dcc00315 	stw	r19,12(sp)
-    10f8:	dc800215 	stw	r18,8(sp)
-    10fc:	dc400115 	stw	r17,4(sp)
-    1100:	dc000015 	stw	r16,0(sp)
-    1104:	dfc00415 	stw	ra,16(sp)
-    1108:	2027883a 	mov	r19,r4
-    110c:	2823883a 	mov	r17,r5
+    19bc:	defffb04 	addi	sp,sp,-20
+    19c0:	dcc00315 	stw	r19,12(sp)
+    19c4:	dc800215 	stw	r18,8(sp)
+    19c8:	dc400115 	stw	r17,4(sp)
+    19cc:	dc000015 	stw	r16,0(sp)
+    19d0:	dfc00415 	stw	ra,16(sp)
+    19d4:	2027883a 	mov	r19,r4
+    19d8:	2823883a 	mov	r17,r5
   alt_dev* next = (alt_dev*) llist->next;
-    1110:	2c000017 	ldw	r16,0(r5)
+    19dc:	2c000017 	ldw	r16,0(r5)
   alt_32 len;
 
   len  = strlen(name) + 1;
-    1114:	00012140 	call	1214 <strlen>
-    1118:	14800044 	addi	r18,r2,1
+    19e0:	0001ae00 	call	1ae0 <strlen>
+    19e4:	14800044 	addi	r18,r2,1
   /*
    * Check each list entry in turn, until a match is found, or we reach the
    * end of the list (i.e. next winds up pointing back to the list head).
    */ 
 
   while (next != (alt_dev*) llist)
-    111c:	84400726 	beq	r16,r17,113c <alt_find_dev+0x4c>
+    19e8:	84400726 	beq	r16,r17,1a08 <alt_find_dev+0x4c>
     /* 
      * memcmp() is used here rather than strcmp() in order to reduce the size
      * of the executable.
      */
 
     if (!memcmp (next->name, name, len))
-    1120:	81000217 	ldw	r4,8(r16)
-    1124:	900d883a 	mov	r6,r18
-    1128:	980b883a 	mov	r5,r19
-    112c:	00011e40 	call	11e4 <memcmp>
-    1130:	10000426 	beq	r2,zero,1144 <alt_find_dev+0x54>
+    19ec:	81000217 	ldw	r4,8(r16)
+    19f0:	900d883a 	mov	r6,r18
+    19f4:	980b883a 	mov	r5,r19
+    19f8:	0001ab00 	call	1ab0 <memcmp>
+    19fc:	10000426 	beq	r2,zero,1a10 <alt_find_dev+0x54>
     {
       /* match found */
 
       return next;
     }
     next = (alt_dev*) next->llist.next;
-    1134:	84000017 	ldw	r16,0(r16)
-    1138:	003ff806 	br	111c <_gp+0xffff7cd8>
+    1a00:	84000017 	ldw	r16,0(r16)
+    1a04:	003ff806 	br	19e8 <__alt_mem_SHARED_MEMORY+0xfffc19e8>
   }
   
   /* No match found */
   
   return NULL;
-    113c:	0005883a 	mov	r2,zero
-    1140:	00000106 	br	1148 <alt_find_dev+0x58>
-    1144:	8005883a 	mov	r2,r16
+    1a08:	0005883a 	mov	r2,zero
+    1a0c:	00000106 	br	1a14 <alt_find_dev+0x58>
+    1a10:	8005883a 	mov	r2,r16
 }
-    1148:	dfc00417 	ldw	ra,16(sp)
-    114c:	dcc00317 	ldw	r19,12(sp)
-    1150:	dc800217 	ldw	r18,8(sp)
-    1154:	dc400117 	ldw	r17,4(sp)
-    1158:	dc000017 	ldw	r16,0(sp)
-    115c:	dec00504 	addi	sp,sp,20
-    1160:	f800283a 	ret
+    1a14:	dfc00417 	ldw	ra,16(sp)
+    1a18:	dcc00317 	ldw	r19,12(sp)
+    1a1c:	dc800217 	ldw	r18,8(sp)
+    1a20:	dc400117 	ldw	r17,4(sp)
+    1a24:	dc000017 	ldw	r16,0(sp)
+    1a28:	dec00504 	addi	sp,sp,20
+    1a2c:	f800283a 	ret
 
-00001164 <alt_icache_flush_all>:
+00001a30 <alt_icache_flush_all>:
 /*
  * alt_icache_flush_all() is called to flush the entire instruction cache.
  */
 
 void alt_icache_flush_all (void)
 {
-    1164:	f800283a 	ret
+    1a30:	f800283a 	ret
 
-00001168 <altera_nios2_gen2_irq_init>:
+00001a34 <altera_nios2_gen2_irq_init>:
  * To initialize the internal interrupt controller, just clear the IENABLE
  * register so that all possible IRQs are disabled.
  */
 void altera_nios2_gen2_irq_init(void) 
 {
     NIOS2_WRITE_IENABLE(0);
-    1168:	000170fa 	wrctl	ienable,zero
-    116c:	f800283a 	ret
+    1a34:	000170fa 	wrctl	ienable,zero
+    1a38:	f800283a 	ret
 
-00001170 <alt_exception_cause_generated_bad_addr>:
+00001a3c <alt_exception_cause_generated_bad_addr>:
  *         0: BADADDR is not valid
  */
 int 
 alt_exception_cause_generated_bad_addr(alt_exception_cause cause)
 {
   switch (cause) {
-    1170:	213ffe84 	addi	r4,r4,-6
-    1174:	008003c4 	movi	r2,15
-    1178:	11001636 	bltu	r2,r4,11d4 <alt_exception_cause_generated_bad_addr+0x64>
-    117c:	200890ba 	slli	r4,r4,2
-    1180:	00800034 	movhi	r2,0
-    1184:	10846504 	addi	r2,r2,4500
-    1188:	2089883a 	add	r4,r4,r2
-    118c:	20800017 	ldw	r2,0(r4)
-    1190:	1000683a 	jmp	r2
-    1194:	000011dc 	xori	zero,zero,71
-    1198:	000011dc 	xori	zero,zero,71
-    119c:	000011d4 	movui	zero,71
-    11a0:	000011d4 	movui	zero,71
-    11a4:	000011d4 	movui	zero,71
-    11a8:	000011dc 	xori	zero,zero,71
-    11ac:	000011d4 	movui	zero,71
-    11b0:	000011d4 	movui	zero,71
-    11b4:	000011dc 	xori	zero,zero,71
-    11b8:	000011dc 	xori	zero,zero,71
-    11bc:	000011d4 	movui	zero,71
-    11c0:	000011dc 	xori	zero,zero,71
-    11c4:	000011d4 	movui	zero,71
-    11c8:	000011d4 	movui	zero,71
-    11cc:	000011d4 	movui	zero,71
-    11d0:	000011dc 	xori	zero,zero,71
+    1a3c:	213ffe84 	addi	r4,r4,-6
+    1a40:	008003c4 	movi	r2,15
+    1a44:	11001636 	bltu	r2,r4,1aa0 <alt_exception_cause_generated_bad_addr+0x64>
+    1a48:	200890ba 	slli	r4,r4,2
+    1a4c:	00800034 	movhi	r2,0
+    1a50:	10869804 	addi	r2,r2,6752
+    1a54:	2089883a 	add	r4,r4,r2
+    1a58:	20800017 	ldw	r2,0(r4)
+    1a5c:	1000683a 	jmp	r2
+    1a60:	00001aa8 	cmpgeui	zero,zero,106
+    1a64:	00001aa8 	cmpgeui	zero,zero,106
+    1a68:	00001aa0 	cmpeqi	zero,zero,106
+    1a6c:	00001aa0 	cmpeqi	zero,zero,106
+    1a70:	00001aa0 	cmpeqi	zero,zero,106
+    1a74:	00001aa8 	cmpgeui	zero,zero,106
+    1a78:	00001aa0 	cmpeqi	zero,zero,106
+    1a7c:	00001aa0 	cmpeqi	zero,zero,106
+    1a80:	00001aa8 	cmpgeui	zero,zero,106
+    1a84:	00001aa8 	cmpgeui	zero,zero,106
+    1a88:	00001aa0 	cmpeqi	zero,zero,106
+    1a8c:	00001aa8 	cmpgeui	zero,zero,106
+    1a90:	00001aa0 	cmpeqi	zero,zero,106
+    1a94:	00001aa0 	cmpeqi	zero,zero,106
+    1a98:	00001aa0 	cmpeqi	zero,zero,106
+    1a9c:	00001aa8 	cmpgeui	zero,zero,106
   case NIOS2_EXCEPTION_ECC_DATA_ERR:
     return 1;
 
   case NIOS2_EXCEPTION_TLB_MISS:
   case NIOS2_EXCEPTION_ECC_TLB_ERR:
     return 0;
-    11d4:	0005883a 	mov	r2,zero
-    11d8:	f800283a 	ret
+    1aa0:	0005883a 	mov	r2,zero
+    1aa4:	f800283a 	ret
   case NIOS2_EXCEPTION_MISALIGNED_TARGET_PC:
   case NIOS2_EXCEPTION_TLB_READ_PERM_VIOLATION:
   case NIOS2_EXCEPTION_TLB_WRITE_PERM_VIOLATION:
   case NIOS2_EXCEPTION_MPU_DATA_REGION_VIOLATION:
   case NIOS2_EXCEPTION_ECC_DATA_ERR:
     return 1;
-    11dc:	00800044 	movi	r2,1
+    1aa8:	00800044 	movi	r2,1
     return 0;
 
   default:
     return 0;
   }
 }
-    11e0:	f800283a 	ret
+    1aac:	f800283a 	ret
 
-000011e4 <memcmp>:
-    11e4:	218d883a 	add	r6,r4,r6
-    11e8:	21800826 	beq	r4,r6,120c <memcmp+0x28>
-    11ec:	20800003 	ldbu	r2,0(r4)
-    11f0:	28c00003 	ldbu	r3,0(r5)
-    11f4:	10c00226 	beq	r2,r3,1200 <memcmp+0x1c>
-    11f8:	10c5c83a 	sub	r2,r2,r3
-    11fc:	f800283a 	ret
-    1200:	21000044 	addi	r4,r4,1
-    1204:	29400044 	addi	r5,r5,1
-    1208:	003ff706 	br	11e8 <_gp+0xffff7da4>
-    120c:	0005883a 	mov	r2,zero
-    1210:	f800283a 	ret
+00001ab0 <memcmp>:
+    1ab0:	218d883a 	add	r6,r4,r6
+    1ab4:	21800826 	beq	r4,r6,1ad8 <memcmp+0x28>
+    1ab8:	20800003 	ldbu	r2,0(r4)
+    1abc:	28c00003 	ldbu	r3,0(r5)
+    1ac0:	10c00226 	beq	r2,r3,1acc <memcmp+0x1c>
+    1ac4:	10c5c83a 	sub	r2,r2,r3
+    1ac8:	f800283a 	ret
+    1acc:	21000044 	addi	r4,r4,1
+    1ad0:	29400044 	addi	r5,r5,1
+    1ad4:	003ff706 	br	1ab4 <__alt_mem_SHARED_MEMORY+0xfffc1ab4>
+    1ad8:	0005883a 	mov	r2,zero
+    1adc:	f800283a 	ret
 
-00001214 <strlen>:
-    1214:	2005883a 	mov	r2,r4
-    1218:	10c00007 	ldb	r3,0(r2)
-    121c:	18000226 	beq	r3,zero,1228 <strlen+0x14>
-    1220:	10800044 	addi	r2,r2,1
-    1224:	003ffc06 	br	1218 <_gp+0xffff7dd4>
-    1228:	1105c83a 	sub	r2,r2,r4
-    122c:	f800283a 	ret
+00001ae0 <strlen>:
+    1ae0:	2005883a 	mov	r2,r4
+    1ae4:	10c00007 	ldb	r3,0(r2)
+    1ae8:	18000226 	beq	r3,zero,1af4 <strlen+0x14>
+    1aec:	10800044 	addi	r2,r2,1
+    1af0:	003ffc06 	br	1ae4 <__alt_mem_SHARED_MEMORY+0xfffc1ae4>
+    1af4:	1105c83a 	sub	r2,r2,r4
+    1af8:	f800283a 	ret

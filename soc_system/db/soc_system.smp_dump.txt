@@ -1,4 +1,11 @@
 
+State Machine - |soc_system|soc_system_mm_interconnect_1:mm_interconnect_1|altera_merlin_burst_adapter:shared_memory_s1_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
+
 State Machine - |soc_system|soc_system_NIOSII:niosii|soc_system_NIOSII_cpu:cpu|soc_system_NIOSII_cpu_nios2_oci:the_soc_system_NIOSII_cpu_nios2_oci|soc_system_NIOSII_cpu_debug_slave_wrapper:the_soc_system_NIOSII_cpu_debug_slave_wrapper|soc_system_NIOSII_cpu_debug_slave_tck:the_soc_system_NIOSII_cpu_debug_slave_tck|DRsize
 Name DRsize.101 DRsize.100 DRsize.011 DRsize.010 DRsize.001 DRsize.000 
 DRsize.000 0 0 0 0 0 0 

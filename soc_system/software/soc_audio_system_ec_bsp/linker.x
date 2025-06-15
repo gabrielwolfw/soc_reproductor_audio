@@ -4,7 +4,7 @@
  * Machine generated for CPU 'NIOSII' in SOPC Builder design 'soc_system'
  * SOPC Builder design path: ../../soc_system.sopcinfo
  *
- * Generated: Fri Jun 13 10:55:05 CST 2025
+ * Generated: Fri Jun 13 13:08:34 CST 2025
  */
 
 /*
@@ -52,10 +52,12 @@ MEMORY
 {
     reset : ORIGIN = 0x0, LENGTH = 32
     RAM : ORIGIN = 0x20, LENGTH = 32736
+    SHARED_MEMORY : ORIGIN = 0x40000, LENGTH = 131072
 }
 
 /* Define symbols for each memory base-address */
 __alt_mem_RAM = 0x0;
+__alt_mem_SHARED_MEMORY = 0x40000;
 
 OUTPUT_FORMAT( "elf32-littlenios2",
                "elf32-littlenios2",
@@ -319,6 +321,23 @@ SECTIONS
     } > RAM
 
     PROVIDE (_alt_partition_RAM_load_addr = LOADADDR(.RAM));
+
+    /*
+     *
+     * This section's LMA is set to the .text region.
+     * crt0 will copy to this section's specified mapped region virtual memory address (VMA)
+     *
+     */
+
+    .SHARED_MEMORY : AT ( LOADADDR (.RAM) + SIZEOF (.RAM) )
+    {
+        PROVIDE (_alt_partition_SHARED_MEMORY_start = ABSOLUTE(.));
+        *(.SHARED_MEMORY .SHARED_MEMORY. SHARED_MEMORY.*)
+        . = ALIGN(4);
+        PROVIDE (_alt_partition_SHARED_MEMORY_end = ABSOLUTE(.));
+    } > SHARED_MEMORY
+
+    PROVIDE (_alt_partition_SHARED_MEMORY_load_addr = LOADADDR(.SHARED_MEMORY));
 
     /*
      * Stabs debugging sections.

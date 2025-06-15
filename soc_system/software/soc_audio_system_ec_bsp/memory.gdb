@@ -3,7 +3,7 @@
 # Machine generated for CPU 'NIOSII' in SOPC Builder design 'soc_system'
 # SOPC Builder design path: ../../soc_system.sopcinfo
 #
-# Generated: Fri Jun 13 10:55:05 CST 2025
+# Generated: Fri Jun 13 13:08:34 CST 2025
 
 # DO NOT MODIFY THIS FILE
 #
@@ -48,3 +48,6 @@
 
 # RAM
 memory 0x0 0x8000 cache
+
+# SHARED_MEMORY
+memory 0x40000 0x60000 cache

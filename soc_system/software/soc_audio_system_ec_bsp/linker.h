@@ -4,7 +4,7 @@
  * Machine generated for CPU 'NIOSII' in SOPC Builder design 'soc_system'
  * SOPC Builder design path: ../../soc_system.sopcinfo
  *
- * Generated: Fri Jun 13 10:55:05 CST 2025
+ * Generated: Fri Jun 13 13:08:34 CST 2025
  */
 
 /*
@@ -69,6 +69,8 @@
 #define RAM_REGION_SPAN 32736
 #define RESET_REGION_BASE 0x0
 #define RESET_REGION_SPAN 32
+#define SHARED_MEMORY_REGION_BASE 0x40000
+#define SHARED_MEMORY_REGION_SPAN 131072
 
 
 /*

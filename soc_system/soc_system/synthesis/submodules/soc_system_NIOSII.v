@@ -10,7 +10,7 @@ module soc_system_NIOSII (
 		input  wire        clk,                                 //                       clk.clk
 		input  wire        reset_n,                             //                     reset.reset_n
 		input  wire        reset_req,                           //                          .reset_req
-		output wire [15:0] d_address,                           //               data_master.address
+		output wire [18:0] d_address,                           //               data_master.address
 		output wire [3:0]  d_byteenable,                        //                          .byteenable
 		output wire        d_read,                              //                          .read
 		input  wire [31:0] d_readdata,                          //                          .readdata

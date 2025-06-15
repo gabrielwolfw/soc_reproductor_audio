@@ -2,10 +2,10 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>13/06/2025 10:55:01 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1749833701444</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>14/06/2025 11:38:46 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1749965926954</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>C:\Users\lobok\Desktop\soc_system\software\soc_audio_system_ec_bsp</BspGeneratedLocation>
-        <BspSettingsFile>.\settings.bsp</BspSettingsFile>
+        <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\soc_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>NIOSII</Cpu>
@@ -939,6 +939,12 @@
                 <addressRange>0x00008860 - 0x0000886F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>SHARED_MEMORY</slaveDescriptor>
+                <addressRange>0x00040000 - 0x0005FFFF</addressRange>
+                <addressSpan>131072</addressSpan>
+                <attributes>memory</attributes>
         </MemoryMap>
         <LinkerSection>
                 <sectionName>.text</sectionName>
