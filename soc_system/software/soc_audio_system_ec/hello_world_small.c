@@ -6,72 +6,64 @@
 #include "altera_up_avalon_audio.h"
 
 #define SAMPLE_RATE 48000
-#define CHUNK_SIZE (120 * 1024)
+#define AUDIO_CHUNK_SIZE (30 * 1024)  // 30 KB chunks
 #define CONTROL_OFFSET 0x0000
 #define AUDIO_DATA_OFFSET 0x0400
 
-// *** DEFINIR COMANDOS Y ESTADOS PRIMERO ***
-#define CMD_NONE               0
-#define CMD_PLAY               1
-#define CMD_PAUSE              2
-#define CMD_STOP               3
-#define CMD_NEXT               4
-#define CMD_PREV               5
+// *** COMANDOS Y ESTADOS ***
+#define CMD_NONE    0
+#define CMD_PLAY    1
+#define CMD_PAUSE   2
+#define CMD_STOP    3
+#define CMD_NEXT    4
+#define CMD_PREV    5
 
-#define STATUS_READY           0
-#define STATUS_PLAYING         1
-#define STATUS_PAUSED          2
+#define STATUS_READY    0
+#define STATUS_PLAYING  1
+#define STATUS_PAUSED   2
 
-// *** ESTRUCTURA UNIFICADA - DEBE COINCIDIR EXACTAMENTE CON HPS ***
+// *** ESTRUCTURA EXACTAMENTE IGUAL QUE HPS ***
 typedef struct __attribute__((packed)) {
-    // Campos básicos de comunicación
-    volatile uint32_t command;          // Comando actual
-    volatile uint32_t status;           // Estado del sistema
-    volatile uint32_t song_id;          // ID de canción actual (0-2)
-    
-    // Control de chunks
-    volatile uint32_t current_chunk;    // Chunk actual en reproducción
-    volatile uint32_t total_chunks;     // Total de chunks de la canción
-    volatile uint32_t chunk_size;       // Tamaño del chunk actual en bytes
-    volatile uint32_t chunk_samples;    // Samples en el chunk actual
-    
-    // Información de la canción
-    volatile uint32_t song_total_size;  // Tamaño total de la canción
-    volatile uint32_t song_position;    // Posición actual en bytes
-    volatile uint32_t song_duration;    // Duración en samples
-    
-    // Flags de comunicación - CRÍTICOS
-    volatile uint32_t chunk_ready;      // 1=HPS cargó chunk, 0=FPGA consumió
-    volatile uint32_t request_next;     // 1=FPGA solicita siguiente chunk
-    volatile uint32_t buffer_underrun;  // 1=Buffer vacío (error)
-    
-    // Sistema de conexión
-    volatile uint32_t hps_connected;    // 1=HPS conectado, 0=desconectado
-    volatile uint32_t fpga_heartbeat;   // Solo FPGA heartbeat
-    
-    // Campos de compatibilidad
+    // Identificación y control básico (16 bytes)
     volatile uint32_t magic;           // 0xABCD2025
-    volatile uint32_t version;         // Protocol version
-    volatile uint32_t hps_ready;       // HPS has data ready
-    volatile uint32_t fpga_ready;      // FPGA can receive data
-    volatile uint32_t data_size;       // Audio data size
-    volatile uint32_t sample_rate;     // Current sample rate
-    volatile uint32_t channels;        // Number of channels
-    volatile uint32_t bits_per_sample; // Bits per sample
-    volatile uint32_t current_track;   // Current track
-    volatile uint32_t playback_pos;    // Playback position
-    volatile uint32_t read_ptr;        // FPGA read pointer
-    volatile uint32_t write_ptr;       // HPS write pointer
-    volatile uint32_t buffer_level;    // Buffer fill level
+    volatile uint32_t command;         // HPS → NIOS comandos
+    volatile uint32_t status;          // NIOS → HPS estado
+    volatile uint32_t song_id;         // Canción actual (0-2)
     
-    // Reservado para expansión futura
-    volatile uint32_t reserved[8];
-} shared_control_t;
+    // Control de chunks (16 bytes)
+    volatile uint32_t chunk_ready;     // 1=HPS cargó, 0=NIOS consumió
+    volatile uint32_t chunk_size;      // Tamaño actual en bytes
+    volatile uint32_t request_next;    // 1=NIOS solicita siguiente
+    volatile uint32_t current_chunk;   // Número de chunk actual
+    
+    // Información de canción (16 bytes)
+    volatile uint32_t total_chunks;    // Total chunks de la canción
+    volatile uint32_t song_total_size; // Tamaño total del archivo
+    volatile uint32_t song_position;   // Posición actual en bytes
+    volatile uint32_t duration_sec;    // Duración en segundos
+    
+    // Sistema y comunicación (16 bytes)
+    volatile uint32_t hps_connected;   // 1=HPS activo
+    volatile uint32_t fpga_heartbeat;  // Contador de NIOS
+    volatile uint32_t sample_rate;     // 48000 Hz
+    volatile uint32_t channels;        // 2 (estéreo)
+    
+    // Estado y debugging (16 bytes)
+    volatile uint32_t buffer_level;    // Nivel de buffer (0-100%)
+    volatile uint32_t error_flags;     // Flags de error
+    volatile uint32_t bytes_played;    // Bytes reproducidos total
+    volatile uint32_t chunks_loaded;   // Total de chunks cargados
+    
+    // Reservado para expansión (176 bytes = 256 bytes total)
+    volatile uint32_t reserved[44];
+} compact_shared_control_t;
 
 // *** VARIABLES GLOBALES ***
 alt_up_audio_dev *audio_dev = NULL;
-volatile shared_control_t *shared_ctrl = (shared_control_t*)0x40000;
-volatile uint8_t *shared_data = (uint8_t*)(0x40000 + AUDIO_DATA_OFFSET);
+
+// USAR DIRECCIONES DE TU SYSTEM.H
+volatile compact_shared_control_t *shared_ctrl = (compact_shared_control_t*)SHARED_MEMORY_BASE;
+volatile uint8_t *shared_data = (uint8_t*)(SHARED_MEMORY_BASE + AUDIO_DATA_OFFSET);
 
 volatile int is_playing = 0;
 volatile int elapsed_ms = 0, elapsed_seconds = 0, elapsed_minutes = 0;
@@ -92,12 +84,12 @@ void send_command_to_hps(uint32_t cmd);
 void request_next_chunk(void);
 int check_hps_connection(void);
 
-// --- Verificar conexión SIMPLE ---
+// --- Verificar conexión HPS ---
 int check_hps_connection(void) {
     return (shared_ctrl->magic == 0xABCD2025 && shared_ctrl->hps_connected == 1) ? 1 : 0;
 }
 
-// --- Interrupción Timer (500ms) - SIGNATURA CORREGIDA ---
+// --- Interrupción Timer (500ms) - USAR TU TIMER_IRQ ---
 static void timer_isr(void* context, alt_u32 id) {
     volatile unsigned int* timer_status = (unsigned int*) TIMER_BASE;
     *timer_status = 0; // Limpia TO
@@ -107,12 +99,8 @@ static void timer_isr(void* context, alt_u32 id) {
 
     // Actualizar heartbeat de FPGA
     shared_ctrl->fpga_heartbeat++;
-    shared_ctrl->fpga_ready = 1;
 
-    // Verificar conexión HPS
-    shared_ctrl->hps_connected = check_hps_connection();
-
-    if (is_playing) {
+    if (is_playing && check_hps_connection()) {
         elapsed_ms += 500;
         if (elapsed_ms >= 1000) {
             elapsed_ms = 0;
@@ -125,16 +113,20 @@ static void timer_isr(void* context, alt_u32 id) {
             }
         }
         update_seven_segment_display();
+        
+        // Actualizar bytes reproducidos
+        shared_ctrl->bytes_played += (audio_read_ptr > 0) ? 4 : 0;
     }
 
     // Actualizar posición de reproducción
-    shared_ctrl->playback_pos = (elapsed_minutes * 60 + elapsed_seconds) * 1000 + elapsed_ms;
+    shared_ctrl->song_position = (elapsed_minutes * 60 + elapsed_seconds) * SAMPLE_RATE * 4;
 }
 
 // --- Solicitar siguiente chunk ---
 void request_next_chunk(void) {
     if (!check_hps_connection()) {
-        alt_printf("HPS not connected - cannot request chunk\n");
+        alt_printf("HPS desconectado - no se puede solicitar chunk\n");
+        shared_ctrl->error_flags |= 0x02;
         return;
     }
 
@@ -142,77 +134,74 @@ void request_next_chunk(void) {
     shared_ctrl->chunk_ready = 0;
     audio_read_ptr = 0;
 
-    alt_printf("Requesting next chunk %d/%d\n",
+    alt_printf("Solicitando chunk %d/%d\n",
               shared_ctrl->current_chunk + 1, shared_ctrl->total_chunks);
 }
 
-// --- Procesar datos de audio desde SHARED_MEMORY ---
+// --- Procesar datos de audio ---
 void process_audio_data(void) {
-    // Verificar conexión HPS
     if (!check_hps_connection()) {
+        shared_ctrl->error_flags |= 0x02;
         return;
     }
 
-    // Verificar que hay un chunk listo
     if (shared_ctrl->chunk_ready == 0 || shared_ctrl->chunk_size == 0) {
-        shared_ctrl->buffer_underrun = 1;
+        if (shared_ctrl->chunk_size == 0 && shared_ctrl->total_chunks > 0 && shared_ctrl->request_next == 0) {
+            request_next_chunk();
+        }
+        shared_ctrl->buffer_level = 0;
         return;
     }
 
-    // Verificar espacio disponible en FIFO
+    // Verificar espacio en FIFO
     int write_space_left = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_LEFT);
     int write_space_right = alt_up_audio_write_fifo_space(audio_dev, ALT_UP_AUDIO_RIGHT);
 
     if (write_space_left > 0 && write_space_right > 0) {
-        int samples_to_write = (write_space_left < 16) ? write_space_left : 16;
+        int samples_to_write = (write_space_left < 8) ? write_space_left : 8;
 
         for (int i = 0; i < samples_to_write; i++) {
-            // Verificar si llegamos al final del chunk actual
             if (audio_read_ptr >= shared_ctrl->chunk_size) {
+                alt_printf("Chunk %d completado (%d bytes)\n", 
+                          shared_ctrl->current_chunk, audio_read_ptr);
                 request_next_chunk();
                 break;
             }
 
-            // Verificar que no nos pasemos del tamaño del chunk
             if (audio_read_ptr + 4 > shared_ctrl->chunk_size) {
                 request_next_chunk();
                 break;
             }
 
-            // Leer muestra de 16 bits stereo desde SHARED_MEMORY
+            // Leer muestra stereo de 16 bits
             uint16_t left_sample = *(uint16_t*)(shared_data + audio_read_ptr);
             uint16_t right_sample = *(uint16_t*)(shared_data + audio_read_ptr + 2);
 
-            // Convertir a 32-bit para el codec (sign extend)
+            // Convertir a 32-bit para codec
             int32_t left_32 = (int32_t)((int16_t)left_sample) << 8;
             int32_t right_32 = (int32_t)((int16_t)right_sample) << 8;
 
             // Escribir al codec
             if (alt_up_audio_write_fifo(audio_dev, (unsigned int*)&left_32, 1, ALT_UP_AUDIO_LEFT) == 0 &&
                 alt_up_audio_write_fifo(audio_dev, (unsigned int*)&right_32, 1, ALT_UP_AUDIO_RIGHT) == 0) {
-
                 audio_read_ptr += 4;
             } else {
                 break;
             }
         }
 
-        // Actualizar punteros en memoria compartida
-        shared_ctrl->read_ptr = audio_read_ptr;
-
-        // Calcular progreso del chunk actual
+        // Actualizar estadísticas
         if (shared_ctrl->chunk_size > 0) {
             shared_ctrl->buffer_level = (audio_read_ptr * 100) / shared_ctrl->chunk_size;
         }
         
-        // Limpiar flag de buffer underrun si estamos procesando datos
-        shared_ctrl->buffer_underrun = 0;
+        shared_ctrl->error_flags &= ~0x01; // Limpiar buffer underrun
     }
 }
 
-// --- Interrupción Audio - SIGNATURA CORREGIDA ---
+// --- Interrupción Audio - USAR TU AUDIO_IRQ ---
 static void audio_isr(void* context, alt_u32 id) {
-    if (!is_playing || audio_dev == NULL || !check_hps_connection())
+    if (!is_playing || audio_dev == NULL)
         return;
 
     process_audio_data();
@@ -221,15 +210,15 @@ static void audio_isr(void* context, alt_u32 id) {
 // --- Enviar comando al HPS ---
 void send_command_to_hps(uint32_t cmd) {
     if (!check_hps_connection()) {
-        alt_printf("HPS not connected\n");
+        alt_printf("HPS no conectado\n");
         return;
     }
 
     shared_ctrl->command = cmd;
-    alt_printf("Command sent: %d\n", cmd);
+    alt_printf("Comando enviado: %d\n", cmd);
 }
 
-// --- 7 segmentos MMSS ---
+// --- Display 7 segmentos ---
 void update_seven_segment_display(void) {
     volatile unsigned int * sevenseg = (unsigned int *) SEVEN_SEGMENTS_BASE;
     unsigned char min_tens = elapsed_minutes / 10;
@@ -246,7 +235,7 @@ void update_seven_segment_display(void) {
     *sevenseg = display_value;
 }
 
-// --- Botones: Play/Pause, Next, Prev ---
+// --- Manejar botones - USAR TU BUTTONS_BASE ---
 void handle_buttons(void) {
     static int prev_button_state = 0x7;
     volatile unsigned int * button_ptr = (unsigned int *) BUTTONS_BASE;
@@ -255,26 +244,26 @@ void handle_buttons(void) {
 
     if (button_pressed & 0x1) { // KEY0: Play/Pause
         if (!check_hps_connection()) {
-            alt_printf("HPS not connected\n");
+            alt_printf("HPS no conectado\n");
             return;
         }
 
         if (is_playing) {
             is_playing = 0;
-            shared_ctrl->command = CMD_PAUSE;
             shared_ctrl->status = STATUS_PAUSED;
-            alt_printf("Paused\n");
+            send_command_to_hps(CMD_PAUSE);
+            alt_printf("*** PAUSADO ***\n");
         } else {
             is_playing = 1;
-            shared_ctrl->command = CMD_PLAY;
             shared_ctrl->status = STATUS_PLAYING;
-            alt_printf("Playing song %d\n", shared_ctrl->song_id + 1);
+            send_command_to_hps(CMD_PLAY);
+            alt_printf("*** REPRODUCIENDO canción %d ***\n", shared_ctrl->song_id + 1);
         }
     }
 
     if (button_pressed & 0x2) { // KEY1: Next
         if (!check_hps_connection()) {
-            alt_printf("HPS not connected\n");
+            alt_printf("HPS no conectado\n");
             return;
         }
 
@@ -284,12 +273,12 @@ void handle_buttons(void) {
         elapsed_minutes = 0;
         audio_read_ptr = 0;
         update_seven_segment_display();
-        alt_printf("Next track\n");
+        alt_printf("*** SIGUIENTE ***\n");
     }
 
     if (button_pressed & 0x4) { // KEY2: Previous
         if (!check_hps_connection()) {
-            alt_printf("HPS not connected\n");
+            alt_printf("HPS no conectado\n");
             return;
         }
 
@@ -299,65 +288,86 @@ void handle_buttons(void) {
         elapsed_minutes = 0;
         audio_read_ptr = 0;
         update_seven_segment_display();
-        alt_printf("Previous track\n");
+        alt_printf("*** ANTERIOR ***\n");
     }
 
     prev_button_state = button_state;
 }
 
 int main(void) {
-    alt_putstr("=== FPGA Audio Player - Dual Port Memory v3.0 ===\n");
-    alt_printf("Shared memory: 0x%x, Size: %d bytes\n", 0x40000, sizeof(shared_control_t));
+    alt_putstr("=== FPGA Audio Player - System.h v4.1 ===\n");
+    alt_printf("Shared Memory Base: 0x%x\n", SHARED_MEMORY_BASE);
+    alt_printf("Shared Memory Size: %d bytes (%d KB)\n", SHARED_MEMORY_SIZE_VALUE, SHARED_MEMORY_SIZE_VALUE/1024);
+    alt_printf("Control Structure: %d bytes\n", sizeof(compact_shared_control_t));
+    alt_printf("Audio Offset: 0x%x\n", AUDIO_DATA_OFFSET);
+    alt_printf("Audio Chunk Size: %d KB\n", AUDIO_CHUNK_SIZE/1024);
+    alt_printf("Timer Period: %d ms\n", TIMER_PERIOD);
 
-    // Verificar tamaño de estructura
-    if (sizeof(shared_control_t) > AUDIO_DATA_OFFSET) {
-        alt_printf("ERROR: Structure too large (%d bytes > %d bytes)\n", 
-                  sizeof(shared_control_t), AUDIO_DATA_OFFSET);
+    // Verificar que la estructura cabe
+    if (sizeof(compact_shared_control_t) > AUDIO_DATA_OFFSET) {
+        alt_printf("ERROR: Estructura demasiado grande (%d > %d bytes)\n", 
+                  sizeof(compact_shared_control_t), AUDIO_DATA_OFFSET);
         return -1;
     }
 
-    // Inicializar audio
+    // Inicializar audio usando el nombre correcto del system.h
     audio_dev = alt_up_audio_open_dev(AUDIO_NAME);
     if (audio_dev == NULL) {
-        alt_printf("ERROR: Cannot open audio device\n");
+        alt_printf("ERROR: No se pudo abrir %s\n", AUDIO_NAME);
         return -1;
     }
-    alt_printf("Audio device OK\n");
+    alt_printf("✓ Audio device: %s OK\n", AUDIO_NAME);
 
     // Limpiar memoria compartida
-    for (int i = 0; i < sizeof(shared_control_t)/4; i++) {
+    for (int i = 0; i < sizeof(compact_shared_control_t)/4; i++) {
         ((volatile uint32_t*)shared_ctrl)[i] = 0;
     }
 
-    // Inicializar memoria compartida
+    // Inicializar estructura
     shared_ctrl->magic = 0xABCD2025;
-    shared_ctrl->version = 0x00020003;
-    shared_ctrl->fpga_ready = 1;
-    shared_ctrl->sample_rate = SAMPLE_RATE;
-    shared_ctrl->channels = 2;
-    shared_ctrl->bits_per_sample = 16;
-    shared_ctrl->song_id = 0;
     shared_ctrl->command = CMD_NONE;
     shared_ctrl->status = STATUS_READY;
+    shared_ctrl->song_id = 0;
     shared_ctrl->chunk_ready = 0;
+    shared_ctrl->chunk_size = 0;
     shared_ctrl->request_next = 0;
-    shared_ctrl->buffer_underrun = 0;
+    shared_ctrl->current_chunk = 0;
+    shared_ctrl->total_chunks = 0;
+    shared_ctrl->song_total_size = 0;
+    shared_ctrl->song_position = 0;
+    shared_ctrl->duration_sec = 0;
+    shared_ctrl->hps_connected = 0;
     shared_ctrl->fpga_heartbeat = 0;
+    shared_ctrl->sample_rate = SAMPLE_RATE;
+    shared_ctrl->channels = 2;
+    shared_ctrl->buffer_level = 0;
+    shared_ctrl->error_flags = 0;
+    shared_ctrl->bytes_played = 0;
+    shared_ctrl->chunks_loaded = 0;
 
-    alt_printf("Structure initialized:\n");
+    alt_printf("✓ Estructura inicializada:\n");
     alt_printf("  Magic: 0x%x\n", shared_ctrl->magic);
-    alt_printf("  Version: 0x%x\n", shared_ctrl->version);
-    alt_printf("  Structure size: %d bytes\n", sizeof(shared_control_t));
+    alt_printf("  Sample Rate: %d Hz\n", shared_ctrl->sample_rate);
+    alt_printf("  Channels: %d\n", shared_ctrl->channels);
 
-    // Registrar interrupciones - SIGNATURAS CORREGIDAS
-    alt_irq_register(TIMER_IRQ, NULL, timer_isr);
-    alt_irq_register(AUDIO_IRQ, NULL, audio_isr);
+    // Registrar interrupciones usando valores de system.h
+    if (alt_irq_register(TIMER_IRQ, NULL, timer_isr) != 0) {
+        alt_printf("ERROR: Timer IRQ %d registro falló\n", TIMER_IRQ);
+        return -1;
+    }
+    
+    if (alt_irq_register(AUDIO_IRQ, NULL, audio_isr) != 0) {
+        alt_printf("ERROR: Audio IRQ %d registro falló\n", AUDIO_IRQ);
+        return -1;
+    }
+    alt_printf("✓ IRQs registradas: Timer=%d, Audio=%d\n", TIMER_IRQ, AUDIO_IRQ);
 
-    // Configurar Timer para 500ms
+    // Configurar Timer (ya está configurado para 500ms según system.h)
     volatile unsigned int* timer_control = (unsigned int*)(TIMER_BASE + 4);
-    *timer_control = 0x7;
+    *timer_control = 0x7; // Start, continuous, interrupt enable
+    alt_printf("✓ Timer configurado: Base=0x%x, Period=%dms\n", TIMER_BASE, TIMER_PERIOD);
 
-    // Inicialización
+    // Inicializar variables
     is_playing = 0;
     elapsed_ms = 0;
     elapsed_seconds = 0;
@@ -366,53 +376,80 @@ int main(void) {
     system_uptime_ms = 0;
 
     update_seven_segment_display();
-    alt_putstr("Controls: KEY0=Play/Pause | KEY1=Next | KEY2=Previous\n");
-    alt_putstr("Waiting for HPS...\n\n");
+    
+    alt_putstr("\n=== SISTEMA LISTO ===\n");
+    alt_printf("CPU: %s @ %d Hz\n", ALT_CPU_NAME, ALT_CPU_FREQ);
+    alt_printf("Data Width: %d bits\n", ALT_CPU_DATA_ADDR_WIDTH);
+    alt_putstr("Controles:\n");
+    alt_putstr("  KEY0 = Play/Pause\n");
+    alt_putstr("  KEY1 = Siguiente\n");
+    alt_putstr("  KEY2 = Anterior\n");
+    alt_putstr("Esperando HPS...\n\n");
 
     // Loop principal
     uint32_t loop_counter = 0;
     uint32_t last_connected = 0;
+    uint32_t last_chunk_ready = 0;
 
     while (1) {
         handle_buttons();
 
-        // Procesar audio
         if (is_playing && check_hps_connection()) {
             process_audio_data();
         }
 
         // Debug cada 10 segundos
         if ((loop_counter % 100000) == 0) {
-            alt_printf("=== FPGA STATUS ===\n");
-            alt_printf("HPS Connected: %d\n", shared_ctrl->hps_connected);
-            alt_printf("Magic: 0x%x\n", shared_ctrl->magic);
-            alt_printf("Chunk Ready: %d\n", shared_ctrl->chunk_ready);
-            alt_printf("Chunk Size: %d\n", shared_ctrl->chunk_size);
-            alt_printf("Request Next: %d\n", shared_ctrl->request_next);
-            alt_printf("Playing: %d\n", is_playing);
-            alt_printf("Audio Read Ptr: %d\n", audio_read_ptr);
-            alt_printf("Buffer Level: %d%%\n", shared_ctrl->buffer_level);
-            alt_printf("Heartbeat: %d\n", shared_ctrl->fpga_heartbeat);
-            alt_printf("==================\n");
+            alt_printf("=== ESTADO (loop %d) ===\n", loop_counter);
+            alt_printf("HPS: %d | Magic: 0x%x | Estado: %d\n", 
+                      shared_ctrl->hps_connected, shared_ctrl->magic, shared_ctrl->status);
+            alt_printf("Canción: %d | Chunk: %d/%d | Listo: %d\n", 
+                      shared_ctrl->song_id, shared_ctrl->current_chunk, 
+                      shared_ctrl->total_chunks, shared_ctrl->chunk_ready);
+            alt_printf("Tamaño: %d bytes | Ptr: %d | Nivel: %d%%\n", 
+                      shared_ctrl->chunk_size, audio_read_ptr, shared_ctrl->buffer_level);
+            alt_printf("Heartbeat: %d | Reproduciendo: %d | %02d:%02d\n", 
+                      shared_ctrl->fpga_heartbeat, is_playing, elapsed_minutes, elapsed_seconds);
+            alt_printf("Errores: 0x%x | Bytes: %d\n", 
+                      shared_ctrl->error_flags, shared_ctrl->bytes_played);
+            alt_printf("========================\n");
         }
 
-        // Detectar cambios de conexión
+        // Detectar conexión HPS
         uint32_t current_connected = check_hps_connection();
         if (current_connected != last_connected) {
             if (current_connected) {
-                alt_printf("*** HPS CONNECTED ***\n");
-                alt_printf("Song ID: %d, Total Chunks: %d\n", 
-                          shared_ctrl->song_id, shared_ctrl->total_chunks);
+                alt_printf("*** HPS CONECTADO ***\n");
+                alt_printf("Canción: %d, Chunks: %d, Tamaño: %d\n", 
+                          shared_ctrl->song_id, shared_ctrl->total_chunks, shared_ctrl->song_total_size);
+                
+                audio_read_ptr = 0;
+                elapsed_ms = 0;
+                elapsed_seconds = 0;
+                elapsed_minutes = 0;
+                shared_ctrl->error_flags = 0;
+                update_seven_segment_display();
             } else {
-                alt_printf("*** HPS DISCONNECTED ***\n");
+                alt_printf("*** HPS DESCONECTADO ***\n");
                 is_playing = 0;
                 shared_ctrl->status = STATUS_READY;
+                shared_ctrl->error_flags |= 0x02;
             }
             last_connected = current_connected;
         }
 
+        // Detectar nuevo chunk
+        if (shared_ctrl->chunk_ready != last_chunk_ready) {
+            if (shared_ctrl->chunk_ready) {
+                alt_printf("*** CHUNK NUEVO: %d (%d bytes) ***\n", 
+                          shared_ctrl->current_chunk, shared_ctrl->chunk_size);
+                audio_read_ptr = 0;
+            }
+            last_chunk_ready = shared_ctrl->chunk_ready;
+        }
+
         loop_counter++;
-        for (volatile int i = 0; i < 500; i++); // Small delay
+        for (volatile int i = 0; i < 500; i++); // Pequeño delay
     }
 
     return 0;

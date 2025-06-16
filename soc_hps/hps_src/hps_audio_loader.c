@@ -6,82 +6,80 @@
 #include <stdint.h>
 #include <string.h>
 #include <signal.h>
+#include <errno.h> 
 
-// Direcciones para lwhps2fpga bridge
-#define HW_REGS_BASE    0xff200000
-#define HW_REGS_SPAN    0x00400000
+// Direcciones base del bridge (mismas del ejemplo funcional)
+#define HW_REGS_BASE ( 0xff200000 )
+#define HW_REGS_SPAN ( 0x00200000 )  // 2MB
+#define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
 
-// Offsets en el bridge - Puerto s1 de dual-port memory
-#define SHARED_CTRL_OFFSET    0x20000    // s1 base (0x0002_0000)
-#define SHARED_AUDIO_OFFSET   0x20400    // s1 + 1KB para estructura de control
+// TU NUEVO ADDRESS MAP (128 KB)
+#define SHARED_MEMORY_OFFSET  0x80000     // Tu base: 0x0008_0000
+#define CONTROL_OFFSET        0x0000      // Estructura al inicio
+#define AUDIO_DATA_OFFSET     0x0400      // Audio después de 1KB de control
 
-// Comandos (coincidir EXACTAMENTE con FPGA)
-#define CMD_NONE               0
-#define CMD_PLAY               1
-#define CMD_PAUSE              2
-#define CMD_STOP               3
-#define CMD_NEXT               4
-#define CMD_PREV               5
+// Configuración optimizada para 128 KB
+#define MEMORY_SIZE           0x20000     // 128 KB
+#define AUDIO_CHUNK_SIZE      (30 * 1024) // 30 KB chunks (más pequeños)
+#define CONTROL_SIZE          1024        // 1 KB para control
+#define MAX_AUDIO_SIZE        (120 * 1024) // Máximo 120 KB para audio
 
-#define STATUS_READY           0
-#define STATUS_PLAYING         1
-#define STATUS_PAUSED          2
+// Comandos
+#define CMD_NONE    0
+#define CMD_PLAY    1
+#define CMD_PAUSE   2
+#define CMD_STOP    3
+#define CMD_NEXT    4
+#define CMD_PREV    5
 
-// *** ESTRUCTURA UNIFICADA - DEBE COINCIDIR EXACTAMENTE CON NIOS II ***
+// Estados
+#define STATUS_READY    0
+#define STATUS_PLAYING  1
+#define STATUS_PAUSED   2
+
+// Estructura compacta y optimizada
 typedef struct __attribute__((packed)) {
-    // Campos básicos de comunicación
-    volatile uint32_t command;          // Comando actual
-    volatile uint32_t status;           // Estado del sistema
-    volatile uint32_t song_id;          // ID de canción actual (0-2)
-    
-    // Control de chunks
-    volatile uint32_t current_chunk;    // Chunk actual en reproducción
-    volatile uint32_t total_chunks;     // Total de chunks de la canción
-    volatile uint32_t chunk_size;       // Tamaño del chunk actual en bytes
-    volatile uint32_t chunk_samples;    // Samples en el chunk actual
-    
-    // Información de la canción
-    volatile uint32_t song_total_size;  // Tamaño total de la canción
-    volatile uint32_t song_position;    // Posición actual en bytes
-    volatile uint32_t song_duration;    // Duración en samples
-    
-    // Flags de comunicación - CRÍTICOS
-    volatile uint32_t chunk_ready;      // 1=HPS cargó chunk, 0=FPGA consumió
-    volatile uint32_t request_next;     // 1=FPGA solicita siguiente chunk
-    volatile uint32_t buffer_underrun;  // 1=Buffer vacío (error)
-    
-    // Sistema de conexión
-    volatile uint32_t hps_connected;    // 1=HPS conectado, 0=desconectado
-    volatile uint32_t fpga_heartbeat;   // Solo FPGA heartbeat
-    
-    // Campos de compatibilidad
+    // Identificación y control básico (16 bytes)
     volatile uint32_t magic;           // 0xABCD2025
-    volatile uint32_t version;         // Protocol version
-    volatile uint32_t hps_ready;       // HPS has data ready
-    volatile uint32_t fpga_ready;      // FPGA can receive data
-    volatile uint32_t data_size;       // Audio data size
-    volatile uint32_t sample_rate;     // Current sample rate
-    volatile uint32_t channels;        // Number of channels
-    volatile uint32_t bits_per_sample; // Bits per sample
-    volatile uint32_t current_track;   // Current track
-    volatile uint32_t playback_pos;    // Playback position
-    volatile uint32_t read_ptr;        // FPGA read pointer
-    volatile uint32_t write_ptr;       // HPS write pointer
-    volatile uint32_t buffer_level;    // Buffer fill level
+    volatile uint32_t command;         // HPS → NIOS comandos
+    volatile uint32_t status;          // NIOS → HPS estado
+    volatile uint32_t song_id;         // Canción actual (0-2)
     
-    // Reservado para expansión futura
-    volatile uint32_t reserved[8];
-} shared_control_t;
+    // Control de chunks (16 bytes)
+    volatile uint32_t chunk_ready;     // 1=HPS cargó, 0=NIOS consumió
+    volatile uint32_t chunk_size;      // Tamaño actual en bytes
+    volatile uint32_t request_next;    // 1=NIOS solicita siguiente
+    volatile uint32_t current_chunk;   // Número de chunk actual
+    
+    // Información de canción (16 bytes)
+    volatile uint32_t total_chunks;    // Total chunks de la canción
+    volatile uint32_t song_total_size; // Tamaño total del archivo
+    volatile uint32_t song_position;   // Posición actual en bytes
+    volatile uint32_t duration_sec;    // Duración en segundos
+    
+    // Sistema y comunicación (16 bytes)
+    volatile uint32_t hps_connected;   // 1=HPS activo
+    volatile uint32_t fpga_heartbeat;  // Contador de NIOS
+    volatile uint32_t sample_rate;     // 48000 Hz
+    volatile uint32_t channels;        // 2 (estéreo)
+    
+    // Estado y debugging (16 bytes)
+    volatile uint32_t buffer_level;    // Nivel de buffer (0-100%)
+    volatile uint32_t error_flags;     // Flags de error
+    volatile uint32_t bytes_played;    // Bytes reproducidos total
+    volatile uint32_t chunks_loaded;   // Total de chunks cargados
+    
+    // Reservado para expansión (176 bytes = 256 bytes total)
+    volatile uint32_t reserved[44];
+} compact_shared_control_t;
 
-// Global variables
-int fd_mem = -1;
-void* virtual_base = NULL;
-volatile shared_control_t* shared_ctrl = NULL;
-volatile uint8_t* shared_audio = NULL;
+// Variables globales
+int fd = -1;
+void *virtual_base = NULL;
+volatile compact_shared_control_t *shared_ctrl = NULL;
+volatile uint8_t *shared_audio = NULL;
 
-// Audio configuration
-#define AUDIO_CHUNK_SIZE    (120 * 1024)   // 120KB chunks
-#define MAX_TRACKS          3
+#define MAX_TRACKS 3
 
 typedef struct {
     char filename[256];
@@ -96,72 +94,119 @@ int current_song = 0;
 int current_chunk = 0;
 
 void cleanup_and_exit(int sig) {
-    printf("\nCleaning up...\n");
+    printf("\nLimpiando recursos...\n");
     
     if (shared_ctrl) {
-        shared_ctrl->command = CMD_STOP;
-        shared_ctrl->status = STATUS_READY;
         shared_ctrl->hps_connected = 0;
     }
     
-    // Close file handles
     for (int i = 0; i < MAX_TRACKS; i++) {
         if (songs[i].file_handle) {
             fclose(songs[i].file_handle);
         }
     }
     
-    // Unmap memory
     if (virtual_base != NULL) {
         munmap(virtual_base, HW_REGS_SPAN);
     }
     
-    // Close /dev/mem
-    if (fd_mem != -1) {
-        close(fd_mem);
+    if (fd != -1) {
+        close(fd);
     }
     
     exit(0);
 }
 
-int map_memory() {
-    // Open /dev/mem
-    fd_mem = open("/dev/mem", O_RDWR | O_SYNC);
-    if (fd_mem == -1) {
-        printf("ERROR: Cannot open /dev/mem\n");
+int verify_memory_layout() {
+    printf("=== Verificando Layout de Memoria (128 KB) ===\n");
+    printf("Configuración optimizada:\n");
+    printf("  Base memory: 0x%08x\n", SHARED_MEMORY_OFFSET);
+    printf("  Memory size: %d KB (0x%x bytes)\n", MEMORY_SIZE/1024, MEMORY_SIZE);
+    printf("  Control offset: 0x%08x\n", SHARED_MEMORY_OFFSET + CONTROL_OFFSET);
+    printf("  Audio offset: 0x%08x\n", SHARED_MEMORY_OFFSET + AUDIO_DATA_OFFSET);
+    printf("  Control size: %zu bytes\n", sizeof(compact_shared_control_t));
+    printf("  Max audio size: %d KB\n", MAX_AUDIO_SIZE/1024);
+    printf("  Audio chunk size: %d KB\n", AUDIO_CHUNK_SIZE/1024);
+    
+    // Verificar que todo cabe
+    uint32_t control_end = sizeof(compact_shared_control_t);
+    uint32_t audio_start = AUDIO_DATA_OFFSET;
+    uint32_t audio_end = audio_start + MAX_AUDIO_SIZE;
+    
+    printf("Layout detallado:\n");
+    printf("  Control: 0x0000 - 0x%04x (%zu bytes)\n", control_end, sizeof(compact_shared_control_t));
+    printf("  Gap: 0x%04x - 0x%04x (%d bytes)\n", control_end, audio_start, audio_start - control_end);
+    printf("  Audio: 0x%04x - 0x%04x (%d bytes)\n", audio_start, audio_end, MAX_AUDIO_SIZE);
+    printf("  Total usado: %d bytes de %d disponibles\n", audio_end, MEMORY_SIZE);
+    
+    if (audio_end > MEMORY_SIZE) {
+        printf("ERROR: No cabe en 128 KB!\n");
+        printf("  Necesitas: %d bytes\n", audio_end);
+        printf("  Tienes: %d bytes\n", MEMORY_SIZE);
         return -1;
     }
     
-    // Map lwhps2fpga bridge
-    virtual_base = mmap(NULL, HW_REGS_SPAN, PROT_READ | PROT_WRITE, 
-                       MAP_SHARED, fd_mem, HW_REGS_BASE);
-    
-    if (virtual_base == MAP_FAILED) {
-        printf("ERROR: Cannot map lwhps2fpga bridge\n");
-        close(fd_mem);
+    if (control_end > audio_start) {
+        printf("ERROR: Control structure se superpone con audio!\n");
         return -1;
     }
     
-    printf("lwhps2fpga bridge mapped at virtual address: %p\n", virtual_base);
-    
-    // Calculate pointers to shared memory regions (puerto s1)
-    shared_ctrl = (shared_control_t*)((char*)virtual_base + SHARED_CTRL_OFFSET);
-    shared_audio = (uint8_t*)((char*)virtual_base + SHARED_AUDIO_OFFSET);
-    
-    printf("Shared control at: %p (offset 0x%x)\n", (void*)shared_ctrl, SHARED_CTRL_OFFSET);
-    printf("Shared audio at: %p (offset 0x%x)\n", (void*)shared_audio, SHARED_AUDIO_OFFSET);
-    printf("Structure size: %zu bytes\n", sizeof(shared_control_t));
-    
-    // Verificar que la estructura no sea demasiado grande
-    if (sizeof(shared_control_t) > 1024) { // 1KB para control
-        printf("WARNING: Structure size (%zu bytes) is large\n", sizeof(shared_control_t));
-    }
-    
+    printf("✓ Layout de memoria verificado - todo cabe en 128 KB\n");
     return 0;
 }
 
-int load_song_info() {
-    printf("Loading song information...\n");
+int map_shared_memory() {
+    printf("=== Mapeando Memoria Compartida (128 KB) ===\n");
+    
+    if (verify_memory_layout() != 0) {
+        return -1;
+    }
+    
+    // Abrir /dev/mem
+    if ((fd = open("/dev/mem", (O_RDWR | O_SYNC))) == -1) {
+        printf("ERROR: No se pudo abrir /dev/mem: %s\n", strerror(errno));
+        return -1;
+    }
+    printf("✓ /dev/mem abierto\n");
+    
+    // Mapear memoria
+    virtual_base = mmap(NULL, HW_REGS_SPAN, (PROT_READ | PROT_WRITE),
+                       MAP_SHARED, fd, HW_REGS_BASE);
+    if (virtual_base == MAP_FAILED) {
+        printf("ERROR: mmap() falló: %s\n", strerror(errno));
+        close(fd);
+        return -1;
+    }
+    printf("✓ Memoria mapeada en: %p\n", virtual_base);
+    
+    // Calcular punteros
+    shared_ctrl = (compact_shared_control_t *)(virtual_base + 
+                  ((SHARED_MEMORY_OFFSET + CONTROL_OFFSET) & (HW_REGS_MASK)));
+    shared_audio = (uint8_t *)(virtual_base + 
+                   ((SHARED_MEMORY_OFFSET + AUDIO_DATA_OFFSET) & (HW_REGS_MASK)));
+    
+    printf("Layout mapeado:\n");
+    printf("  Base virtual: %p\n", virtual_base);
+    printf("  Control en: %p\n", (void*)shared_ctrl);
+    printf("  Audio en: %p\n", (void*)shared_audio);
+    printf("  Estructura: %zu bytes\n", sizeof(compact_shared_control_t));
+    
+    // Test de acceso
+    printf("Probando acceso...\n");
+    memset((void*)shared_ctrl, 0, sizeof(compact_shared_control_t));
+    shared_ctrl->magic = 0xABCD2025;
+    
+    if (shared_ctrl->magic == 0xABCD2025) {
+        printf("✓ Acceso verificado\n");
+        return 0;
+    } else {
+        printf("✗ Test falló (magic = 0x%08x)\n", shared_ctrl->magic);
+        return -1;
+    }
+}
+
+int load_songs() {
+    printf("=== Cargando Canciones ===\n");
     
     const char* song_paths[MAX_TRACKS] = {
         "/media/sd/songs/song1.wav",
@@ -169,307 +214,255 @@ int load_song_info() {
         "/media/sd/songs/song3.wav"
     };
     
-    int loaded_count = 0;
+    int loaded = 0;
     
     for (int i = 0; i < MAX_TRACKS; i++) {
-        FILE* file = fopen(song_paths[i], "rb");
-        if (file) {
-            // Get file size
-            fseek(file, 0, SEEK_END);
-            songs[i].file_size = ftell(file);
-            fseek(file, 0, SEEK_SET);
+        songs[i].file_handle = fopen(song_paths[i], "rb");
+        if (songs[i].file_handle) {
+            fseek(songs[i].file_handle, 0, SEEK_END);
+            songs[i].file_size = ftell(songs[i].file_handle);
+            fseek(songs[i].file_handle, 0, SEEK_SET);
             
-            // Calculate chunks and duration
+            // Calcular chunks de 30KB
             songs[i].num_chunks = (songs[i].file_size + AUDIO_CHUNK_SIZE - 1) / AUDIO_CHUNK_SIZE;
-            songs[i].duration_sec = songs[i].file_size / (48000 * 2 * 2); // Approximate
-            
+            songs[i].duration_sec = songs[i].file_size / (48000 * 2 * 2);
             strcpy(songs[i].filename, song_paths[i]);
-            songs[i].file_handle = file;
             
-            printf("Song %d: %s\n", i+1, songs[i].filename);
-            printf("  Size: %.2f MB (%u bytes)\n", songs[i].file_size/1024.0/1024.0, songs[i].file_size);
-            printf("  Chunks: %u (%.2f KB each)\n", songs[i].num_chunks, AUDIO_CHUNK_SIZE/1024.0);
-            printf("  Duration: ~%.1f seconds\n", (double)songs[i].duration_sec);
+            printf("✓ Canción %d: %s\n", i+1, songs[i].filename);
+            printf("    %.1f MB, %d chunks de %d KB\n", 
+                   songs[i].file_size/1024.0/1024.0, 
+                   songs[i].num_chunks, AUDIO_CHUNK_SIZE/1024);
+            printf("    Duración: ~%d segundos\n", songs[i].duration_sec);
             
-            loaded_count++;
+            loaded++;
         } else {
-            printf("WARNING: Cannot open %s\n", song_paths[i]);
-            songs[i].file_handle = NULL;
-            songs[i].file_size = 0;
-            songs[i].num_chunks = 0;
+            printf("⚠ No se pudo abrir: %s\n", song_paths[i]);
         }
     }
     
-    printf("\nSuccessfully loaded %d/%d songs\n", loaded_count, MAX_TRACKS);
-    return loaded_count > 0 ? 0 : -1;
+    printf("Cargadas %d/%d canciones\n\n", loaded, MAX_TRACKS);
+    return loaded > 0 ? 0 : -1;
 }
 
 int load_chunk(int song_idx, int chunk_idx) {
     if (song_idx >= MAX_TRACKS || !songs[song_idx].file_handle) {
-        printf("ERROR: Invalid song index %d or file not open\n", song_idx);
         return -1;
     }
     
     FILE* file = songs[song_idx].file_handle;
     long offset = chunk_idx * AUDIO_CHUNK_SIZE;
     
-    // Verificar que el chunk existe
     if (chunk_idx >= songs[song_idx].num_chunks) {
-        printf("ERROR: Chunk %d exceeds total chunks %d\n", chunk_idx, songs[song_idx].num_chunks);
+        printf("ERROR: Chunk %d excede total %d\n", chunk_idx, songs[song_idx].num_chunks);
         return -1;
     }
     
     if (fseek(file, offset, SEEK_SET) != 0) {
-        printf("ERROR: Cannot seek to chunk %d (offset %ld)\n", chunk_idx, offset);
+        printf("ERROR: Seek falló para chunk %d\n", chunk_idx);
         return -1;
     }
     
     size_t bytes_read = fread((void*)shared_audio, 1, AUDIO_CHUNK_SIZE, file);
     
     if (bytes_read > 0) {
-        // Actualizar información del chunk en estructura compartida
         shared_ctrl->chunk_size = bytes_read;
-        shared_ctrl->chunk_samples = bytes_read / 4; // 16-bit stereo = 4 bytes per sample
         shared_ctrl->current_chunk = chunk_idx;
         shared_ctrl->song_position = offset + bytes_read;
-        shared_ctrl->data_size = bytes_read;
-        shared_ctrl->write_ptr = bytes_read;
-        
-        // Marcar chunk como listo
         shared_ctrl->chunk_ready = 1;
         shared_ctrl->request_next = 0;
-        shared_ctrl->hps_ready = 1;
+        shared_ctrl->chunks_loaded++;
         
-        printf("Loaded chunk %d/%d of song %d (%zu bytes, %u samples)\n", 
-               chunk_idx + 1, songs[song_idx].num_chunks, song_idx + 1, 
-               bytes_read, shared_ctrl->chunk_samples);
+        // Calcular progreso
+        shared_ctrl->buffer_level = (chunk_idx * 100) / songs[song_idx].num_chunks;
         
+        printf("Chunk %d/%d cargado (%zu bytes, %d%% completado)\n", 
+               chunk_idx + 1, songs[song_idx].num_chunks, 
+               bytes_read, shared_ctrl->buffer_level);
         return 0;
     }
     
-    printf("ERROR: Failed to read chunk data (read %zu bytes)\n", bytes_read);
+    printf("ERROR: Lectura falló\n");
     return -1;
 }
 
-void update_song_info(int song_idx) {
-    if (song_idx >= 0 && song_idx < MAX_TRACKS && songs[song_idx].file_handle) {
-        shared_ctrl->song_id = song_idx;
-        shared_ctrl->total_chunks = songs[song_idx].num_chunks;
-        shared_ctrl->song_total_size = songs[song_idx].file_size;
-        shared_ctrl->song_duration = songs[song_idx].duration_sec * 48000; // Convert to samples
-        shared_ctrl->current_track = song_idx;
-        
-        printf("Updated song info: Song %d, %d chunks, %d bytes\n", 
-               song_idx + 1, shared_ctrl->total_chunks, shared_ctrl->song_total_size);
-    }
-}
-
 int main() {
-    printf("=== HPS Audio Streaming Loader ===\n");
-    printf("Dual-port memory version - HPS using s1 port\n");
-    printf("Structure size: %zu bytes\n", sizeof(shared_control_t));
-    printf("Compiled: %s %s\n\n", __DATE__, __TIME__);
+    printf("=== HPS Audio Loader - 128 KB Optimizado ===\n");
+    printf("Memoria: 0x%08x - 0x%08x (128 KB)\n", 
+           SHARED_MEMORY_OFFSET, SHARED_MEMORY_OFFSET + MEMORY_SIZE - 1);
+    printf("Chunks de audio: %d KB\n", AUDIO_CHUNK_SIZE/1024);
+    printf("Estructura: %zu bytes\n", sizeof(compact_shared_control_t));
+    printf("Usuario: %s\n", getenv("USER") ? getenv("USER") : "unknown");
+    printf("Compilado: %s %s\n\n", __DATE__, __TIME__);
     
-    // Setup signal handler
+    if (getuid() != 0) {
+        printf("ERROR: Ejecutar como root (sudo)\n");
+        return 1;
+    }
+    
     signal(SIGINT, cleanup_and_exit);
     signal(SIGTERM, cleanup_and_exit);
     
-    // Map memory
-    printf("Mapping lwhps2fpga bridge to access s1 port...\n");
-    if (map_memory() != 0) {
-        return -1;
+    // Mapear memoria
+    if (map_shared_memory() != 0) {
+        printf("FATAL: Falló mapeo de memoria\n");
+        return 1;
     }
     
-    // Load song information
-    if (load_song_info() != 0) {
-        printf("ERROR: No songs loaded, exiting\n");
-        cleanup_and_exit(1);
+    // Cargar canciones
+    if (load_songs() != 0) {
+        printf("ADVERTENCIA: Sin canciones, modo test\n");
     }
     
-    // Initialize control structure
-    printf("Initializing shared control structure...\n");
+    // Inicializar sistema
+    printf("=== Inicializando Sistema ===\n");
     
-    // Limpiar toda la estructura primero
-    memset((void*)shared_ctrl, 0, sizeof(shared_control_t));
-    
-    // Inicializar campos básicos
     shared_ctrl->magic = 0xABCD2025;
-    shared_ctrl->version = 0x00020003;
     shared_ctrl->command = CMD_NONE;
     shared_ctrl->status = STATUS_READY;
-    shared_ctrl->hps_connected = 1;  // Marcar HPS como conectado
-    shared_ctrl->hps_ready = 1;
+    shared_ctrl->song_id = 0;
+    shared_ctrl->hps_connected = 1;
     shared_ctrl->sample_rate = 48000;
     shared_ctrl->channels = 2;
-    shared_ctrl->bits_per_sample = 16;
+    shared_ctrl->error_flags = 0;
+    shared_ctrl->chunks_loaded = 0;
+    shared_ctrl->bytes_played = 0;
     
-    // Configurar información de la primera canción
-    current_song = 0;
-    current_chunk = 0;
-    update_song_info(current_song);
-    
-    printf("Control structure initialized:\n");
-    printf("  Magic: 0x%x\n", shared_ctrl->magic);
-    printf("  Version: 0x%x\n", shared_ctrl->version);
-    printf("  HPS Connected: %d\n", shared_ctrl->hps_connected);
-    printf("  Sample Rate: %d\n", shared_ctrl->sample_rate);
-    printf("  Channels: %d\n", shared_ctrl->channels);
-    printf("  Bits per sample: %d\n", shared_ctrl->bits_per_sample);
-    
-    // Pre-load first chunk
-    printf("Pre-loading first chunk...\n");
-    if (load_chunk(current_song, current_chunk) == 0) {
-        printf("Ready to play!\n\n");
-    } else {
-        printf("ERROR: Failed to load first chunk!\n");
-        cleanup_and_exit(1);
+    if (songs[0].file_handle) {
+        shared_ctrl->total_chunks = songs[0].num_chunks;
+        shared_ctrl->song_total_size = songs[0].file_size;
+        shared_ctrl->duration_sec = songs[0].duration_sec;
+        
+        if (load_chunk(0, 0) == 0) {
+            printf("✓ Primer chunk cargado\n");
+        }
     }
     
-    printf("=== Starting audio streaming loop ===\n");
-    printf("Use FPGA buttons to control playback:\n");
-    printf("  KEY0 = Play/Pause\n");
-    printf("  KEY1 = Next Song\n");
-    printf("  KEY2 = Previous Song\n");
-    printf("Waiting for FPGA communication...\n\n");
+    printf("\n=== Estado Inicial ===\n");
+    printf("Magic: 0x%08x\n", shared_ctrl->magic);
+    printf("HPS Conectado: %d\n", shared_ctrl->hps_connected);
+    printf("Canción: %d, Chunks: %d\n", shared_ctrl->song_id, shared_ctrl->total_chunks);
+    printf("Chunk listo: %d (%d bytes)\n", shared_ctrl->chunk_ready, shared_ctrl->chunk_size);
     
-    // Main communication loop
-    uint32_t last_heartbeat = 0;
+    printf("\n=== Loop Principal ===\n");
+    printf("Esperando FPGA...\n");
+    printf("Controles: KEY0=Play/Pause, KEY1=Siguiente, KEY2=Anterior\n\n");
+    
     uint32_t loop_counter = 0;
-    uint32_t last_command = CMD_NONE;
+    uint32_t last_heartbeat = 0;
     
     while (1) {
-        // Mantener conexión activa
         shared_ctrl->hps_connected = 1;
-        shared_ctrl->hps_ready = 1;
         
-        // Verificar heartbeat de FPGA
+        // Heartbeat
         if (shared_ctrl->fpga_heartbeat != last_heartbeat) {
-            printf("FPGA heartbeat: %u (FPGA active)\n", shared_ctrl->fpga_heartbeat);
+            printf("[%06d] FPGA activo: %u\n", loop_counter, shared_ctrl->fpga_heartbeat);
             last_heartbeat = shared_ctrl->fpga_heartbeat;
         }
         
-        // Check for next chunk request from FPGA
-        if (shared_ctrl->request_next && !shared_ctrl->chunk_ready) {
-            printf("FPGA requesting next chunk (current: %d/%d)...\n", 
-                   current_chunk + 1, songs[current_song].num_chunks);
-            
+        // Chunk requests
+        if (shared_ctrl->request_next && !shared_ctrl->chunk_ready && songs[current_song].file_handle) {
+            printf("[%06d] Cargando siguiente chunk...\n", loop_counter);
             current_chunk++;
             
-            // Check if we need to advance to next song or loop
             if (current_chunk >= songs[current_song].num_chunks) {
-                printf("End of song %d reached, advancing to next song\n", current_song + 1);
+                printf("Fin de canción, siguiente...\n");
                 current_chunk = 0;
                 current_song = (current_song + 1) % MAX_TRACKS;
                 
-                // Skip songs that failed to load
-                int attempts = 0;
-                while (!songs[current_song].file_handle && attempts < MAX_TRACKS) {
-                    current_song = (current_song + 1) % MAX_TRACKS;
-                    attempts++;
+                while (!songs[current_song].file_handle && current_song < MAX_TRACKS) {
+                    current_song++;
                 }
+                if (current_song >= MAX_TRACKS) current_song = 0;
                 
-                if (attempts >= MAX_TRACKS) {
-                    printf("ERROR: No valid songs available\n");
-                    shared_ctrl->status = STATUS_READY;
-                    shared_ctrl->command = CMD_STOP;
-                    usleep(100000);
-                    continue;
-                }
-                
-                update_song_info(current_song);
-                printf("Now playing: Song %d\n", current_song + 1);
+                shared_ctrl->song_id = current_song;
+                shared_ctrl->total_chunks = songs[current_song].num_chunks;
+                shared_ctrl->song_total_size = songs[current_song].file_size;
+                shared_ctrl->duration_sec = songs[current_song].duration_sec;
+                printf("Canción %d\n", current_song + 1);
             }
             
-            // Load next chunk
-            if (load_chunk(current_song, current_chunk) == 0) {
-                printf("Next chunk loaded successfully\n");
-            } else {
-                printf("ERROR: Failed to load next chunk\n");
-                shared_ctrl->buffer_underrun = 1;
+            if (load_chunk(current_song, current_chunk) != 0) {
+                shared_ctrl->error_flags |= 0x01;
             }
         }
         
-        // Manejar comandos de FPGA
-        if (shared_ctrl->command != last_command && shared_ctrl->command != CMD_NONE) {
-            switch (shared_ctrl->command) {
-                case CMD_NEXT:
-                    printf("Received NEXT command from FPGA\n");
+        // Commands
+        switch (shared_ctrl->command) {
+            case CMD_NEXT:
+                if (shared_ctrl->command != CMD_NONE) {
+                    printf("[%06d] Comando: SIGUIENTE\n", loop_counter);
                     current_song = (current_song + 1) % MAX_TRACKS;
-                    
-                    // Skip songs that failed to load
-                    int attempts = 0;
-                    while (!songs[current_song].file_handle && attempts < MAX_TRACKS) {
-                        current_song = (current_song + 1) % MAX_TRACKS;
-                        attempts++;
-                    }
+                    while (!songs[current_song].file_handle && current_song < MAX_TRACKS) current_song++;
+                    if (current_song >= MAX_TRACKS) current_song = 0;
                     
                     current_chunk = 0;
-                    update_song_info(current_song);
+                    shared_ctrl->song_id = current_song;
+                    shared_ctrl->total_chunks = songs[current_song].num_chunks;
+                    shared_ctrl->song_total_size = songs[current_song].file_size;
+                    shared_ctrl->duration_sec = songs[current_song].duration_sec;
                     load_chunk(current_song, current_chunk);
-                    printf("Switched to song %d\n", current_song + 1);
-                    break;
-                    
-                case CMD_PREV:
-                    printf("Received PREV command from FPGA\n");
+                    shared_ctrl->command = CMD_NONE;
+                    printf("Cambiado a canción %d\n", current_song + 1);
+                }
+                break;
+                
+            case CMD_PREV:
+                if (shared_ctrl->command != CMD_NONE) {
+                    printf("[%06d] Comando: ANTERIOR\n", loop_counter);
                     current_song = (current_song - 1 + MAX_TRACKS) % MAX_TRACKS;
-                    
-                    // Skip songs that failed to load
-                    attempts = 0;
-                    while (!songs[current_song].file_handle && attempts < MAX_TRACKS) {
-                        current_song = (current_song - 1 + MAX_TRACKS) % MAX_TRACKS;
-                        attempts++;
-                    }
+                    while (!songs[current_song].file_handle && current_song >= 0) current_song--;
+                    if (current_song < 0) current_song = MAX_TRACKS - 1;
                     
                     current_chunk = 0;
-                    update_song_info(current_song);
+                    shared_ctrl->song_id = current_song;
+                    shared_ctrl->total_chunks = songs[current_song].num_chunks;
+                    shared_ctrl->song_total_size = songs[current_song].file_size;
+                    shared_ctrl->duration_sec = songs[current_song].duration_sec;
                     load_chunk(current_song, current_chunk);
-                    printf("Switched to song %d\n", current_song + 1);
-                    break;
-                    
-                case CMD_PLAY:
-                    printf("Received PLAY command from FPGA\n");
+                    shared_ctrl->command = CMD_NONE;
+                    printf("Cambiado a canción %d\n", current_song + 1);
+                }
+                break;
+                
+            case CMD_PLAY:
+                if (shared_ctrl->command != CMD_NONE) {
+                    printf("[%06d] Comando: PLAY\n", loop_counter);
                     shared_ctrl->status = STATUS_PLAYING;
-                    break;
-                    
-                case CMD_PAUSE:
-                    printf("Received PAUSE command from FPGA\n");
+                    shared_ctrl->command = CMD_NONE;
+                }
+                break;
+                
+            case CMD_PAUSE:
+                if (shared_ctrl->command != CMD_NONE) {
+                    printf("[%06d] Comando: PAUSE\n", loop_counter);
                     shared_ctrl->status = STATUS_PAUSED;
-                    break;
-                    
-                case CMD_STOP:
-                    printf("Received STOP command from FPGA\n");
+                    shared_ctrl->command = CMD_NONE;
+                }
+                break;
+                
+            case CMD_STOP:
+                if (shared_ctrl->command != CMD_NONE) {
+                    printf("[%06d] Comando: STOP\n", loop_counter);
                     shared_ctrl->status = STATUS_READY;
                     current_chunk = 0;
                     load_chunk(current_song, current_chunk);
-                    break;
-            }
-            
-            last_command = shared_ctrl->command;
-            // No limpiar el comando aquí - deja que FPGA lo maneje
+                    shared_ctrl->command = CMD_NONE;
+                }
+                break;
         }
         
-        // Debug info cada 5 segundos
-        if ((loop_counter % 500) == 0) {
-            printf("=== HPS STATUS ===\n");
-            printf("Magic: 0x%x, Connected: %d\n", shared_ctrl->magic, shared_ctrl->hps_connected);
-            printf("Command: %d, Status: %d, Song: %d\n", 
-                   shared_ctrl->command, shared_ctrl->status, shared_ctrl->song_id);
-            printf("Chunk: %d/%d, Ready: %d, Request: %d\n", 
-                   shared_ctrl->current_chunk + 1, shared_ctrl->total_chunks,
-                   shared_ctrl->chunk_ready, shared_ctrl->request_next);
-            printf("Chunk size: %d bytes, Samples: %d\n", 
-                   shared_ctrl->chunk_size, shared_ctrl->chunk_samples);
-            printf("Buffer level: %d%%, Underrun: %d\n", 
-                   shared_ctrl->buffer_level, shared_ctrl->buffer_underrun);
-            printf("FPGA heartbeat: %d, Read ptr: %d\n", 
-                   shared_ctrl->fpga_heartbeat, shared_ctrl->read_ptr);
-            printf("==================\n");
+        // Status cada 5 segundos
+        if ((loop_counter % 500) == 0 && loop_counter > 0) {
+            printf("[%06d] Estado: Cmd=%d, Status=%d, Canción=%d, Chunk=%d/%d (%d%%), Listo=%d\n",
+                   loop_counter, shared_ctrl->command, shared_ctrl->status,
+                   shared_ctrl->song_id, shared_ctrl->current_chunk + 1, 
+                   shared_ctrl->total_chunks, shared_ctrl->buffer_level,
+                   shared_ctrl->chunk_ready);
         }
         
         loop_counter++;
         usleep(10000); // 10ms
     }
     
-    cleanup_and_exit(0);
     return 0;
 }
