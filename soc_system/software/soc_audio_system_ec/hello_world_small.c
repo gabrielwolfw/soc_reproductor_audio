@@ -17,46 +17,38 @@
 #define CMD_STOP               3
 #define CMD_NEXT               4
 #define CMD_PREV               5
-#define CMD_LOAD_CHUNK         0x10
-#define CMD_CHUNK_READY        0x11
-#define CMD_REQUEST_CHUNK      0x12
 
 #define STATUS_READY           0
 #define STATUS_PLAYING         1
 #define STATUS_PAUSED          2
-#define STATUS_LOADING         3
-#define STATUS_BUFFERING       0x10
-#define STATUS_CHUNK_READY     0x11
-#define STATUS_END_OF_SONG     0x12
-#define STATUS_ERROR           0xFF
 
-// *** ESTRUCTURA DEFINIDA ANTES DE SER USADA ***
+// *** ESTRUCTURA UNIFICADA - DEBE COINCIDIR EXACTAMENTE CON HPS ***
 typedef struct __attribute__((packed)) {
-    // Control básico
+    // Campos bÃ¡sicos de comunicaciÃ³n
     volatile uint32_t command;          // Comando actual
     volatile uint32_t status;           // Estado del sistema
-    volatile uint32_t song_id;          // ID de canción actual (0-2)
-
+    volatile uint32_t song_id;          // ID de canciÃ³n actual (0-2)
+    
     // Control de chunks
-    volatile uint32_t current_chunk;    // Chunk actual en reproducción
-    volatile uint32_t total_chunks;     // Total de chunks de la canción
-    volatile uint32_t chunk_size;       // Tamaño del chunk actual en bytes
+    volatile uint32_t current_chunk;    // Chunk actual en reproducciÃ³n
+    volatile uint32_t total_chunks;     // Total de chunks de la canciÃ³n
+    volatile uint32_t chunk_size;       // TamaÃ±o del chunk actual en bytes
     volatile uint32_t chunk_samples;    // Samples en el chunk actual
-
-    // Información de la canción
-    volatile uint32_t song_total_size;  // Tamaño total de la canción
-    volatile uint32_t song_position;    // Posición actual en bytes
-    volatile uint32_t song_duration;    // Duración en samples
-
-    // Flags de comunicación - CRÍTICOS
-    volatile uint32_t chunk_ready;      // 1=HPS cargó chunk, 0=FPGA consumió
+    
+    // InformaciÃ³n de la canciÃ³n
+    volatile uint32_t song_total_size;  // TamaÃ±o total de la canciÃ³n
+    volatile uint32_t song_position;    // PosiciÃ³n actual en bytes
+    volatile uint32_t song_duration;    // DuraciÃ³n en samples
+    
+    // Flags de comunicaciÃ³n - CRÃTICOS
+    volatile uint32_t chunk_ready;      // 1=HPS cargÃ³ chunk, 0=FPGA consumiÃ³
     volatile uint32_t request_next;     // 1=FPGA solicita siguiente chunk
-    volatile uint32_t buffer_underrun;  // 1=Buffer vacío (error)
-
-    // Sistema de conexión SIMPLE
+    volatile uint32_t buffer_underrun;  // 1=Buffer vacÃ­o (error)
+    
+    // Sistema de conexiÃ³n
     volatile uint32_t hps_connected;    // 1=HPS conectado, 0=desconectado
     volatile uint32_t fpga_heartbeat;   // Solo FPGA heartbeat
-
+    
     // Campos de compatibilidad
     volatile uint32_t magic;           // 0xABCD2025
     volatile uint32_t version;         // Protocol version
@@ -71,12 +63,12 @@ typedef struct __attribute__((packed)) {
     volatile uint32_t read_ptr;        // FPGA read pointer
     volatile uint32_t write_ptr;       // HPS write pointer
     volatile uint32_t buffer_level;    // Buffer fill level
-
-    // Reservado para expansión futura
+    
+    // Reservado para expansiÃ³n futura
     volatile uint32_t reserved[8];
 } shared_control_t;
 
-// *** AHORA SÍ DECLARAR LAS VARIABLES GLOBALES ***
+// *** VARIABLES GLOBALES ***
 alt_up_audio_dev *audio_dev = NULL;
 volatile shared_control_t *shared_ctrl = (shared_control_t*)0x40000;
 volatile uint8_t *shared_data = (uint8_t*)(0x40000 + AUDIO_DATA_OFFSET);
@@ -100,12 +92,12 @@ void send_command_to_hps(uint32_t cmd);
 void request_next_chunk(void);
 int check_hps_connection(void);
 
-// --- Verificar conexión SIMPLE ---
+// --- Verificar conexiÃ³n SIMPLE ---
 int check_hps_connection(void) {
-    return (shared_ctrl->magic == 0xABCD2025) ? 1 : 0;
+    return (shared_ctrl->magic == 0xABCD2025 && shared_ctrl->hps_connected == 1) ? 1 : 0;
 }
 
-// --- Interrupción Timer (500ms) - SIGNATURA CORREGIDA ---
+// --- InterrupciÃ³n Timer (500ms) - SIGNATURA CORREGIDA ---
 static void timer_isr(void* context, alt_u32 id) {
     volatile unsigned int* timer_status = (unsigned int*) TIMER_BASE;
     *timer_status = 0; // Limpia TO
@@ -117,7 +109,7 @@ static void timer_isr(void* context, alt_u32 id) {
     shared_ctrl->fpga_heartbeat++;
     shared_ctrl->fpga_ready = 1;
 
-    // Verificar conexión HPS
+    // Verificar conexiÃ³n HPS
     shared_ctrl->hps_connected = check_hps_connection();
 
     if (is_playing) {
@@ -135,13 +127,14 @@ static void timer_isr(void* context, alt_u32 id) {
         update_seven_segment_display();
     }
 
-    // Actualizar posición de reproducción
+    // Actualizar posiciÃ³n de reproducciÃ³n
     shared_ctrl->playback_pos = (elapsed_minutes * 60 + elapsed_seconds) * 1000 + elapsed_ms;
 }
 
 // --- Solicitar siguiente chunk ---
 void request_next_chunk(void) {
-    if (!shared_ctrl->hps_connected) {
+    if (!check_hps_connection()) {
+        alt_printf("HPS not connected - cannot request chunk\n");
         return;
     }
 
@@ -150,13 +143,19 @@ void request_next_chunk(void) {
     audio_read_ptr = 0;
 
     alt_printf("Requesting next chunk %d/%d\n",
-              shared_ctrl->current_chunk + 2, shared_ctrl->total_chunks);
+              shared_ctrl->current_chunk + 1, shared_ctrl->total_chunks);
 }
 
 // --- Procesar datos de audio desde SHARED_MEMORY ---
 void process_audio_data(void) {
+    // Verificar conexiÃ³n HPS
+    if (!check_hps_connection()) {
+        return;
+    }
+
     // Verificar que hay un chunk listo
     if (shared_ctrl->chunk_ready == 0 || shared_ctrl->chunk_size == 0) {
+        shared_ctrl->buffer_underrun = 1;
         return;
     }
 
@@ -174,7 +173,7 @@ void process_audio_data(void) {
                 break;
             }
 
-            // Verificar que no nos pasemos del tamaño del chunk
+            // Verificar que no nos pasemos del tamaÃ±o del chunk
             if (audio_read_ptr + 4 > shared_ctrl->chunk_size) {
                 request_next_chunk();
                 break;
@@ -205,12 +204,15 @@ void process_audio_data(void) {
         if (shared_ctrl->chunk_size > 0) {
             shared_ctrl->buffer_level = (audio_read_ptr * 100) / shared_ctrl->chunk_size;
         }
+        
+        // Limpiar flag de buffer underrun si estamos procesando datos
+        shared_ctrl->buffer_underrun = 0;
     }
 }
 
-// --- Interrupción Audio - SIGNATURA CORREGIDA ---
+// --- InterrupciÃ³n Audio - SIGNATURA CORREGIDA ---
 static void audio_isr(void* context, alt_u32 id) {
-    if (!is_playing || audio_dev == NULL || !shared_ctrl->hps_connected)
+    if (!is_playing || audio_dev == NULL || !check_hps_connection())
         return;
 
     process_audio_data();
@@ -218,7 +220,7 @@ static void audio_isr(void* context, alt_u32 id) {
 
 // --- Enviar comando al HPS ---
 void send_command_to_hps(uint32_t cmd) {
-    if (!shared_ctrl->hps_connected) {
+    if (!check_hps_connection()) {
         alt_printf("HPS not connected\n");
         return;
     }
@@ -252,7 +254,7 @@ void handle_buttons(void) {
     int button_pressed = (~button_state) & prev_button_state;
 
     if (button_pressed & 0x1) { // KEY0: Play/Pause
-        if (!shared_ctrl->hps_connected) {
+        if (!check_hps_connection()) {
             alt_printf("HPS not connected\n");
             return;
         }
@@ -265,12 +267,13 @@ void handle_buttons(void) {
         } else {
             is_playing = 1;
             shared_ctrl->command = CMD_PLAY;
+            shared_ctrl->status = STATUS_PLAYING;
             alt_printf("Playing song %d\n", shared_ctrl->song_id + 1);
         }
     }
 
     if (button_pressed & 0x2) { // KEY1: Next
-        if (!shared_ctrl->hps_connected) {
+        if (!check_hps_connection()) {
             alt_printf("HPS not connected\n");
             return;
         }
@@ -285,7 +288,7 @@ void handle_buttons(void) {
     }
 
     if (button_pressed & 0x4) { // KEY2: Previous
-        if (!shared_ctrl->hps_connected) {
+        if (!check_hps_connection()) {
             alt_printf("HPS not connected\n");
             return;
         }
@@ -303,8 +306,15 @@ void handle_buttons(void) {
 }
 
 int main(void) {
-    alt_putstr("=== FPGA Audio Player - On-Chip Memory v2.3 ===\n");
+    alt_putstr("=== FPGA Audio Player - Dual Port Memory v3.0 ===\n");
     alt_printf("Shared memory: 0x%x, Size: %d bytes\n", 0x40000, sizeof(shared_control_t));
+
+    // Verificar tamaÃ±o de estructura
+    if (sizeof(shared_control_t) > AUDIO_DATA_OFFSET) {
+        alt_printf("ERROR: Structure too large (%d bytes > %d bytes)\n", 
+                  sizeof(shared_control_t), AUDIO_DATA_OFFSET);
+        return -1;
+    }
 
     // Inicializar audio
     audio_dev = alt_up_audio_open_dev(AUDIO_NAME);
@@ -329,6 +339,15 @@ int main(void) {
     shared_ctrl->song_id = 0;
     shared_ctrl->command = CMD_NONE;
     shared_ctrl->status = STATUS_READY;
+    shared_ctrl->chunk_ready = 0;
+    shared_ctrl->request_next = 0;
+    shared_ctrl->buffer_underrun = 0;
+    shared_ctrl->fpga_heartbeat = 0;
+
+    alt_printf("Structure initialized:\n");
+    alt_printf("  Magic: 0x%x\n", shared_ctrl->magic);
+    alt_printf("  Version: 0x%x\n", shared_ctrl->version);
+    alt_printf("  Structure size: %d bytes\n", sizeof(shared_control_t));
 
     // Registrar interrupciones - SIGNATURAS CORREGIDAS
     alt_irq_register(TIMER_IRQ, NULL, timer_isr);
@@ -338,7 +357,7 @@ int main(void) {
     volatile unsigned int* timer_control = (unsigned int*)(TIMER_BASE + 4);
     *timer_control = 0x7;
 
-    // Inicialización
+    // InicializaciÃ³n
     is_playing = 0;
     elapsed_ms = 0;
     elapsed_seconds = 0;
@@ -358,31 +377,38 @@ int main(void) {
         handle_buttons();
 
         // Procesar audio
-        if (is_playing && shared_ctrl->hps_connected) {
+        if (is_playing && check_hps_connection()) {
             process_audio_data();
         }
 
         // Debug cada 10 segundos
         if ((loop_counter % 100000) == 0) {
-            alt_printf("=== STATUS ===\n");
+            alt_printf("=== FPGA STATUS ===\n");
             alt_printf("HPS Connected: %d\n", shared_ctrl->hps_connected);
             alt_printf("Magic: 0x%x\n", shared_ctrl->magic);
             alt_printf("Chunk Ready: %d\n", shared_ctrl->chunk_ready);
             alt_printf("Chunk Size: %d\n", shared_ctrl->chunk_size);
+            alt_printf("Request Next: %d\n", shared_ctrl->request_next);
             alt_printf("Playing: %d\n", is_playing);
-            alt_printf("Shared Memory: 0x%x\n", 0x40000);
-            alt_printf("==============\n");
+            alt_printf("Audio Read Ptr: %d\n", audio_read_ptr);
+            alt_printf("Buffer Level: %d%%\n", shared_ctrl->buffer_level);
+            alt_printf("Heartbeat: %d\n", shared_ctrl->fpga_heartbeat);
+            alt_printf("==================\n");
         }
 
-        // Detectar cambios de conexión
-        if (shared_ctrl->hps_connected != last_connected) {
-            if (shared_ctrl->hps_connected) {
+        // Detectar cambios de conexiÃ³n
+        uint32_t current_connected = check_hps_connection();
+        if (current_connected != last_connected) {
+            if (current_connected) {
                 alt_printf("*** HPS CONNECTED ***\n");
+                alt_printf("Song ID: %d, Total Chunks: %d\n", 
+                          shared_ctrl->song_id, shared_ctrl->total_chunks);
             } else {
                 alt_printf("*** HPS DISCONNECTED ***\n");
                 is_playing = 0;
+                shared_ctrl->status = STATUS_READY;
             }
-            last_connected = shared_ctrl->hps_connected;
+            last_connected = current_connected;
         }
 
         loop_counter++;
