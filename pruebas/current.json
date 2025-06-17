@@ -1,0 +1,13 @@
+{
+  "song": {
+    "title": "Billie Jean",
+    "artist": "Michael Jackson",
+    "album": "Thriller",
+    "year": "1982",
+    "genre": "Pop",
+    "duration": "4:54",
+    "cover": "/static/img/mj.jpg"
+  },
+  "is_playing": true,
+  "current_time": 0
+}

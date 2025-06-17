@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproductor de Audio - SoC</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="player-container">
+        <div class="album-art">
+            <img id="cover" src="" alt="Portada del álbum">
+        </div>
+        
+        <div class="song-info">
+            <h1 id="song-title">Canción</h1>
+            <h2 id="song-artist">Artista</h2>
+            <h3 id="song-album">Álbum</h3>
+            
+            <div class="metadata">
+                <p><span>Año:</span> <span id="song-year"></span></p>
+                <p><span>Género:</span> <span id="song-genre"></span></p>
+                <p><span>Duración:</span> <span id="song-duration"></span></p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <span id="current-time">0:00</span> / <span id="total-time">0:00</span>
+            </div>
+            
+            <div class="controls">
+                <button onclick="controlPlayer('prev')"><i class="fas fa-step-backward"></i></button>
+                <button onclick="controlPlayer('play_pause')" id="play-btn"><i class="fas fa-play"></i></button>
+                <button onclick="controlPlayer('next')"><i class="fas fa-step-forward"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

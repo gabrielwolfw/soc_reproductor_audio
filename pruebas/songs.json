@@ -1,0 +1,31 @@
+{
+  "songs": [
+    {
+      "title": "Bohemian Rhapsody",
+      "artist": "Queen",
+      "album": "A Night at the Opera",
+      "year": "1975",
+      "genre": "Rock",
+      "duration": "5:55",
+      "cover": "/static/img/queen.jpg"
+    },
+    {
+      "title": "Imagine",
+      "artist": "John Lennon",
+      "album": "Imagine",
+      "year": "1971",
+      "genre": "Pop",
+      "duration": "3:04",
+      "cover": "/static/img/lennon.jpg"
+    },
+    {
+      "title": "Billie Jean",
+      "artist": "Michael Jackson",
+      "album": "Thriller",
+      "year": "1982",
+      "genre": "Pop",
+      "duration": "4:54",
+      "cover": "/static/img/mj.jpg"
+    }
+  ]
+}
