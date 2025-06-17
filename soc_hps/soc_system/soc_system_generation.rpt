@@ -1,0 +1,137 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate C:\Users\lobok\Desktop\soc_hps\soc_system.qsys --block-symbol-file --output-directory=C:\Users\lobok\Desktop\soc_hps\soc_system --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading soc_hps/soc_system.qsys
+Progress: Reading input file
+Progress: Adding AUDIO [altera_up_avalon_audio 18.0]
+Progress: Parameterizing module AUDIO
+Progress: Adding AUDIO_CONFIG [altera_up_avalon_audio_and_video_config 18.0]
+Progress: Parameterizing module AUDIO_CONFIG
+Progress: Adding AUDIO_PLL [altera_up_avalon_audio_pll 18.0]
+Progress: Parameterizing module AUDIO_PLL
+Progress: Adding BUTTONS [altera_avalon_pio 18.1]
+Progress: Parameterizing module BUTTONS
+Progress: Adding JTAG_UART [altera_avalon_jtag_uart 18.1]
+Progress: Parameterizing module JTAG_UART
+Progress: Adding SEVEN_SEGMENTS [altera_avalon_pio 18.1]
+Progress: Parameterizing module SEVEN_SEGMENTS
+Progress: Adding TIMER [altera_avalon_timer 18.1]
+Progress: Parameterizing module TIMER
+Progress: Adding clk_0 [clock_source 18.1]
+Progress: Parameterizing module clk_0
+Progress: Adding hps_0 [altera_hps 18.1]
+Progress: Parameterizing module hps_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: soc_system.BUTTONS: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: soc_system.JTAG_UART: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Info: soc_system.hps_0: HPS Main PLL counter settings: n = 0  m = 73
+Info: soc_system.hps_0: HPS peripherial PLL counter settings: n = 0  m = 39
+Warning: soc_system.hps_0: "Configuration/HPS-to-FPGA user 0 clock frequency" (desired_cfg_clk_mhz) requested 100.0 MHz, but only achieved 97.368421 MHz
+Warning: soc_system.hps_0: 1 or more output clock frequencies cannot be achieved precisely, consider revising desired output clock frequencies.
+Warning: soc_system.AUDIO: Interrupt sender AUDIO.interrupt is not connected to an interrupt receiver
+Warning: soc_system.BUTTONS: Interrupt sender BUTTONS.irq is not connected to an interrupt receiver
+Warning: soc_system.JTAG_UART: Interrupt sender JTAG_UART.irq is not connected to an interrupt receiver
+Warning: soc_system.TIMER: Interrupt sender TIMER.irq is not connected to an interrupt receiver
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate C:\Users\lobok\Desktop\soc_hps\soc_system.qsys --synthesis=VERILOG --output-directory=C:\Users\lobok\Desktop\soc_hps\soc_system\synthesis --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading soc_hps/soc_system.qsys
+Progress: Reading input file
+Progress: Adding AUDIO [altera_up_avalon_audio 18.0]
+Progress: Parameterizing module AUDIO
+Progress: Adding AUDIO_CONFIG [altera_up_avalon_audio_and_video_config 18.0]
+Progress: Parameterizing module AUDIO_CONFIG
+Progress: Adding AUDIO_PLL [altera_up_avalon_audio_pll 18.0]
+Progress: Parameterizing module AUDIO_PLL
+Progress: Adding BUTTONS [altera_avalon_pio 18.1]
+Progress: Parameterizing module BUTTONS
+Progress: Adding JTAG_UART [altera_avalon_jtag_uart 18.1]
+Progress: Parameterizing module JTAG_UART
+Progress: Adding SEVEN_SEGMENTS [altera_avalon_pio 18.1]
+Progress: Parameterizing module SEVEN_SEGMENTS
+Progress: Adding TIMER [altera_avalon_timer 18.1]
+Progress: Parameterizing module TIMER
+Progress: Adding clk_0 [clock_source 18.1]
+Progress: Parameterizing module clk_0
+Progress: Adding hps_0 [altera_hps 18.1]
+Progress: Parameterizing module hps_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: soc_system.BUTTONS: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: soc_system.JTAG_UART: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Info: soc_system.hps_0: HPS Main PLL counter settings: n = 0  m = 73
+Info: soc_system.hps_0: HPS peripherial PLL counter settings: n = 0  m = 39
+Warning: soc_system.hps_0: "Configuration/HPS-to-FPGA user 0 clock frequency" (desired_cfg_clk_mhz) requested 100.0 MHz, but only achieved 97.368421 MHz
+Warning: soc_system.hps_0: 1 or more output clock frequencies cannot be achieved precisely, consider revising desired output clock frequencies.
+Warning: soc_system.AUDIO: Interrupt sender AUDIO.interrupt is not connected to an interrupt receiver
+Warning: soc_system.BUTTONS: Interrupt sender BUTTONS.irq is not connected to an interrupt receiver
+Warning: soc_system.JTAG_UART: Interrupt sender JTAG_UART.irq is not connected to an interrupt receiver
+Warning: soc_system.TIMER: Interrupt sender TIMER.irq is not connected to an interrupt receiver
+Info: soc_system: Generating soc_system "soc_system" for QUARTUS_SYNTH
+Info: AUDIO: Starting Generation of Audio Controller
+Info: AUDIO: "soc_system" instantiated altera_up_avalon_audio "AUDIO"
+Info: AUDIO_CONFIG: Starting Generation of Audio and Video Config
+Info: AUDIO_CONFIG: "soc_system" instantiated altera_up_avalon_audio_and_video_config "AUDIO_CONFIG"
+Info: AUDIO_PLL: "soc_system" instantiated altera_up_avalon_audio_pll "AUDIO_PLL"
+Info: BUTTONS: Starting RTL generation for module 'soc_system_BUTTONS'
+Info: BUTTONS:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_BUTTONS --dir=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0004_BUTTONS_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0004_BUTTONS_gen//soc_system_BUTTONS_component_configuration.pl  --do_build_sim=0  ]
+Info: BUTTONS: Done RTL generation for module 'soc_system_BUTTONS'
+Info: BUTTONS: "soc_system" instantiated altera_avalon_pio "BUTTONS"
+Info: JTAG_UART: Starting RTL generation for module 'soc_system_JTAG_UART'
+Info: JTAG_UART:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=soc_system_JTAG_UART --dir=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0005_JTAG_UART_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0005_JTAG_UART_gen//soc_system_JTAG_UART_component_configuration.pl  --do_build_sim=0  ]
+Info: JTAG_UART: Done RTL generation for module 'soc_system_JTAG_UART'
+Info: JTAG_UART: "soc_system" instantiated altera_avalon_jtag_uart "JTAG_UART"
+Info: SEVEN_SEGMENTS: Starting RTL generation for module 'soc_system_SEVEN_SEGMENTS'
+Info: SEVEN_SEGMENTS:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_SEVEN_SEGMENTS --dir=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0006_SEVEN_SEGMENTS_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0006_SEVEN_SEGMENTS_gen//soc_system_SEVEN_SEGMENTS_component_configuration.pl  --do_build_sim=0  ]
+Info: SEVEN_SEGMENTS: Done RTL generation for module 'soc_system_SEVEN_SEGMENTS'
+Info: SEVEN_SEGMENTS: "soc_system" instantiated altera_avalon_pio "SEVEN_SEGMENTS"
+Info: TIMER: Starting RTL generation for module 'soc_system_TIMER'
+Info: TIMER:   Generation command is [exec C:/intelFPGA_lite/18.1/quartus/bin64//perl/bin/perl.exe -I C:/intelFPGA_lite/18.1/quartus/bin64//perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer/generate_rtl.pl --name=soc_system_TIMER --dir=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0007_TIMER_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/lobok/AppData/Local/Temp/alt0256_6389973021601216946.dir/0007_TIMER_gen//soc_system_TIMER_component_configuration.pl  --do_build_sim=0  ]
+Info: TIMER: Done RTL generation for module 'soc_system_TIMER'
+Info: TIMER: "soc_system" instantiated altera_avalon_timer "TIMER"
+Info: hps_0: "Running  for module: hps_0"
+Info: hps_0: HPS Main PLL counter settings: n = 0  m = 73
+Info: hps_0: HPS peripherial PLL counter settings: n = 0  m = 39
+Warning: hps_0: "Configuration/HPS-to-FPGA user 0 clock frequency" (desired_cfg_clk_mhz) requested 100.0 MHz, but only achieved 97.368421 MHz
+Warning: hps_0: 1 or more output clock frequencies cannot be achieved precisely, consider revising desired output clock frequencies.
+Info: hps_0: "soc_system" instantiated altera_hps "hps_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "soc_system" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: rst_controller: "soc_system" instantiated altera_reset_controller "rst_controller"
+Info: audio_pll: "AUDIO_PLL" instantiated altera_pll "audio_pll"
+Info: reset_from_locked: "AUDIO_PLL" instantiated altera_up_avalon_reset_from_locked_signal "reset_from_locked"
+Info: fpga_interfaces: "hps_0" instantiated altera_interface_generator "fpga_interfaces"
+Info: hps_io: "hps_0" instantiated altera_hps_io "hps_io"
+Info: AUDIO_avalon_audio_slave_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "AUDIO_avalon_audio_slave_translator"
+Info: hps_0_h2f_lw_axi_master_agent: "mm_interconnect_0" instantiated altera_merlin_axi_master_ni "hps_0_h2f_lw_axi_master_agent"
+Info: AUDIO_avalon_audio_slave_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "AUDIO_avalon_audio_slave_agent"
+Info: AUDIO_avalon_audio_slave_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "AUDIO_avalon_audio_slave_agent_rsp_fifo"
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_002"
+Info: hps_0_h2f_lw_axi_master_wr_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "hps_0_h2f_lw_axi_master_wr_limiter"
+Info: Reusing file C:/Users/lobok/Desktop/soc_hps/soc_system/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: AUDIO_avalon_audio_slave_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "AUDIO_avalon_audio_slave_burst_adapter"
+Info: Reusing file C:/Users/lobok/Desktop/soc_hps/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file C:/Users/lobok/Desktop/soc_hps/soc_system/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file C:/Users/lobok/Desktop/soc_hps/soc_system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: border: "hps_io" instantiated altera_interface_generator "border"
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: soc_system: Done "soc_system" with 30 modules, 108 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

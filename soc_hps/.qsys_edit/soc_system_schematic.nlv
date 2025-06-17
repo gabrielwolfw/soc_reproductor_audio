@@ -1,0 +1,78 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst soc_system.hps_0.uart0 -pg 1
+preplace inst soc_system.AUDIO -pg 1 -lvl 4 -y 800
+preplace inst soc_system.hps_0.gmac0 -pg 1
+preplace inst soc_system.hps_0.uart1 -pg 1
+preplace inst soc_system.hps_0.clkmgr -pg 1
+preplace inst soc_system.hps_0.axi_ocram -pg 1
+preplace inst soc_system.hps_0.sdrctl -pg 1
+preplace inst soc_system.hps_0.gmac1 -pg 1
+preplace inst soc_system.hps_0.qspi -pg 1
+preplace inst soc_system.hps_0.sysmgr -pg 1
+preplace inst soc_system.SEVEN_SEGMENTS -pg 1 -lvl 4 -y 1040
+preplace inst soc_system.hps_0.l3regs -pg 1
+preplace inst soc_system.hps_0.usb0 -pg 1
+preplace inst soc_system.hps_0.i2c0 -pg 1
+preplace inst soc_system.hps_0.clk_0 -pg 1
+preplace inst soc_system.hps_0.usb1 -pg 1
+preplace inst soc_system.hps_0.i2c1 -pg 1
+preplace inst soc_system.hps_0.fpgamgr -pg 1
+preplace inst soc_system.hps_0.bridges -pg 1
+preplace inst soc_system.hps_0.hps_io -pg 1
+preplace inst soc_system.AUDIO_PLL -pg 1 -lvl 4 -y 520
+preplace inst soc_system.hps_0.i2c2 -pg 1
+preplace inst soc_system.hps_0.wd_timer0 -pg 1
+preplace inst soc_system.hps_0.rstmgr -pg 1
+preplace inst soc_system.hps_0.dma -pg 1
+preplace inst soc_system.hps_0.f2s_sdram_ref_clk -pg 1
+preplace inst soc_system.hps_0.i2c3 -pg 1
+preplace inst soc_system.hps_0.wd_timer1 -pg 1
+preplace inst soc_system.hps_0.timer0 -pg 1
+preplace inst soc_system.hps_0.eosc1 -pg 1
+preplace inst soc_system.TIMER -pg 1 -lvl 4 -y 700
+preplace inst soc_system.JTAG_UART -pg 1 -lvl 4 -y 600
+preplace inst soc_system.BUTTONS -pg 1 -lvl 4 -y 920
+preplace inst soc_system -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst soc_system.hps_0.dcan0 -pg 1
+preplace inst soc_system.hps_0.spim0 -pg 1
+preplace inst soc_system.hps_0.timer1 -pg 1
+preplace inst soc_system.hps_0.L2 -pg 1
+preplace inst soc_system.hps_0.eosc2 -pg 1
+preplace inst soc_system.hps_0.hps_io.border -pg 1
+preplace inst soc_system.hps_0.scu -pg 1
+preplace inst soc_system.hps_0.dcan1 -pg 1
+preplace inst soc_system.hps_0.sdmmc -pg 1
+preplace inst soc_system.hps_0.spim1 -pg 1
+preplace inst soc_system.hps_0.gpio0 -pg 1
+preplace inst soc_system.hps_0.timer2 -pg 1
+preplace inst soc_system.hps_0.arm_a9_0 -pg 1
+preplace inst soc_system.AUDIO_PLL.audio_pll -pg 1
+preplace inst soc_system.hps_0.timer -pg 1
+preplace inst soc_system.hps_0.gpio1 -pg 1
+preplace inst soc_system.hps_0.timer3 -pg 1
+preplace inst soc_system.hps_0.arm_a9_1 -pg 1
+preplace inst soc_system.AUDIO_PLL.reset_from_locked -pg 1
+preplace inst soc_system.hps_0.nand0 -pg 1
+preplace inst soc_system.hps_0.gpio2 -pg 1
+preplace inst soc_system.hps_0.arm_gic_0 -pg 1
+preplace inst soc_system.hps_0 -pg 1 -lvl 3 -y 50
+preplace inst soc_system.clk_0 -pg 1 -lvl 1 -y 370
+preplace inst soc_system.AUDIO_CONFIG -pg 1 -lvl 4 -y 310
+preplace inst soc_system.hps_0.f2s_periph_ref_clk -pg 1
+preplace inst soc_system.hps_0.fpga_interfaces -pg 1
+preplace inst soc_system.hps_0.axi_sdram -pg 1
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)SEVEN_SEGMENTS.external_connection,(SLAVE)soc_system.seven_segments) 1 0 4 NJ 1070 NJ 1070 NJ 1070 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.memory,(SLAVE)soc_system.memory) 1 0 3 NJ 200 NJ 200 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.hps_io,(SLAVE)soc_system.hps_io) 1 0 3 NJ 140 NJ 140 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.clk,(SLAVE)clk_0.clk_in) 1 0 1 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(MASTER)soc_system.audio_xclkx,(MASTER)AUDIO_PLL.audio_clk) 1 4 1 N
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(MASTER)clk_0.clk,(SLAVE)hps_0.f2h_axi_clock,(SLAVE)BUTTONS.clk,(SLAVE)AUDIO_CONFIG.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)AUDIO.clk,(SLAVE)hps_0.f2h_sdram0_clock,(SLAVE)TIMER.clk,(SLAVE)JTAG_UART.clk,(SLAVE)AUDIO_PLL.ref_clk,(SLAVE)hps_0.h2f_axi_clock,(SLAVE)SEVEN_SEGMENTS.clk) 1 1 3 NJ 380 430 340 940
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(MASTER)clk_0.clk_reset,(SLAVE)AUDIO_CONFIG.reset,(SLAVE)TIMER.reset,(SLAVE)AUDIO_PLL.ref_reset,(SLAVE)AUDIO.reset,(SLAVE)JTAG_UART.reset,(SLAVE)SEVEN_SEGMENTS.reset,(SLAVE)BUTTONS.reset) 1 1 3 NJ 400 NJ 400 960
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)BUTTONS.s1,(SLAVE)JTAG_UART.avalon_jtag_slave,(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)AUDIO_CONFIG.avalon_av_config_slave,(SLAVE)TIMER.s1,(SLAVE)AUDIO.avalon_audio_slave,(SLAVE)SEVEN_SEGMENTS.s1) 1 3 1 920
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)AUDIO.external_interface,(SLAVE)soc_system.audio) 1 0 4 NJ 850 NJ 850 NJ 850 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)BUTTONS.external_connection,(SLAVE)soc_system.buttons) 1 0 4 NJ 950 NJ 950 NJ 950 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)AUDIO_CONFIG.external_interface,(SLAVE)soc_system.audio_config) 1 0 4 NJ 360 NJ 360 NJ 360 NJ
+levelinfo -pg 1 0 100 1400
+levelinfo -hier soc_system 110 140 410 730 1130 1300
