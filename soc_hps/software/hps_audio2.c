@@ -1,3 +1,9 @@
+#define _POSIX_C_SOURCE 200809L  // Para usleep
+#define _USE_MATH_DEFINES        // Para M_PI en algunos sistemas
+#ifndef M_PI
+#define M_PI 3.14159265358979323846  // Definir M_PI si no existe
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -332,9 +338,9 @@ int main(void)
     while (!should_exit) {
         sleep(2);
         if (is_playing) {
-            printf("♪ Generating %u Hz tone\n", current_freq);
+            printf("Generating %u Hz tone\n", current_freq);
         } else {
-            printf("🎤 Echo mode active\n");
+            printf("Echo mode active\n");
         }
     }
     
