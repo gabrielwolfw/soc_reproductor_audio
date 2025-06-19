@@ -1,23 +1,20 @@
-TARGET = hps_audio2
-
-# Configuración para SoC EDS
-ALT_DEVICE_FAMILY ?= soc_cv_av
-SOCEDS_ROOT ?= $(SOCEDS_DEST_ROOT)
-HWLIBS_ROOT = $(SOCEDS_ROOT)/ip/altera/hps/altera_hps/hwlib
-
+TARGET = hps_audio
+C_SOURCE = hps_audio.c
 CROSS_COMPILE = arm-linux-gnueabihf-
-CFLAGS = -g -Wall -std=c99 -D$(ALT_DEVICE_FAMILY) -I$(HWLIBS_ROOT)/include/$(ALT_DEVICE_FAMILY) -I$(HWLIBS_ROOT)/include/
-LDFLAGS = -g -Wall -lpthread -lm
 CC = $(CROSS_COMPILE)gcc
-ARCH = arm
 
-build: $(TARGET)
-$(TARGET): hps_audio2.o
-	$(CC) $(LDFLAGS) $^ -o $@
+# Añadir -lm al final para enlazar la librería matemática (para sin())
+CFLAGS = -g -Wall -I.
+LDFLAGS = -Wall -lm
+
+all: $(TARGET)
+
+$(TARGET): $(C_SOURCE:.c=.o)
+	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET) *.a *.o *~
+	rm -f $(TARGET) *.o

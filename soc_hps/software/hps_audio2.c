@@ -1,9 +1,11 @@
 #define _POSIX_C_SOURCE 200809L
 #define _USE_MATH_DEFINES
+#define _GNU_SOURCE
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
+#include <unistd.h>  
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -26,7 +28,7 @@ typedef struct {
     char *name;
 } alt_up_audio_dev;
 
-// Estructura para archivos WAV
+// Estructura para archivos WAV mejorada
 typedef struct {
     FILE *file;
     char filename[256];
@@ -34,6 +36,7 @@ typedef struct {
     uint16_t channels;
     uint16_t bits_per_sample;
     uint32_t data_size;
+    uint32_t data_start_offset;
     uint32_t samples_played;
     uint32_t total_samples;
     uint8_t is_valid;
@@ -138,41 +141,84 @@ int alt_up_audio_write_fifo(alt_up_audio_dev* audio_dev, unsigned int* buf,
 
 #define alt_printf printf
 
-// ============== FUNCIONES WAV ==============
+// ============== FUNCIONES WAV CORREGIDAS ==============
 
 static int parse_wav_header(wav_file_t* wav)
 {
-    char header[44];
+    uint8_t header[100];  // Buffer más grande para headers complejos
     
+    // Leer header inicial
     if (fread(header, 1, 44, wav->file) != 44) {
         printf("Error reading WAV header\n");
         return 0;
     }
     
     // Verificar "RIFF"
-    if (strncmp(header, "RIFF", 4) != 0) {
+    if (strncmp((char*)header, "RIFF", 4) != 0) {
         printf("Not a valid WAV file (missing RIFF)\n");
         return 0;
     }
     
     // Verificar "WAVE"
-    if (strncmp(header + 8, "WAVE", 4) != 0) {
+    if (strncmp((char*)header + 8, "WAVE", 4) != 0) {
         printf("Not a valid WAV file (missing WAVE)\n");
         return 0;
     }
     
-    // Extraer información
+    // Verificar "fmt " chunk
+    if (strncmp((char*)header + 12, "fmt ", 4) != 0) {
+        printf("Missing fmt chunk\n");
+        return 0;
+    }
+    
+    // Extraer información del fmt chunk
+    uint32_t fmt_size = *(uint32_t*)(header + 16);
     wav->channels = *(uint16_t*)(header + 22);
     wav->sample_rate = *(uint32_t*)(header + 24);
     wav->bits_per_sample = *(uint16_t*)(header + 34);
-    wav->data_size = *(uint32_t*)(header + 40);
+    
+    printf("DEBUG: fmt_size=%u, channels=%u, rate=%u, bits=%u\n", 
+           fmt_size, wav->channels, wav->sample_rate, wav->bits_per_sample);
+    
+    // Buscar el chunk "data"
+    uint32_t chunk_offset = 20 + fmt_size;  // Después del fmt chunk
+    fseek(wav->file, chunk_offset, SEEK_SET);
+    
+    char chunk_id[5] = {0};
+    uint32_t chunk_size = 0;
+    
+    // Buscar el chunk de datos
+    while (fread(chunk_id, 1, 4, wav->file) == 4) {
+        if (fread(&chunk_size, 4, 1, wav->file) != 1) break;
+        
+        printf("Found chunk: '%s', size: %u\n", chunk_id, chunk_size);
+        
+        if (strncmp(chunk_id, "data", 4) == 0) {
+            wav->data_size = chunk_size;
+            wav->data_start_offset = ftell(wav->file);
+            break;
+        } else {
+            // Saltar este chunk
+            fseek(wav->file, chunk_size, SEEK_CUR);
+        }
+    }
+    
+    if (wav->data_size == 0) {
+        printf("No data chunk found\n");
+        return 0;
+    }
     
     // Calcular total de samples
-    wav->total_samples = wav->data_size / (wav->channels * (wav->bits_per_sample / 8));
+    uint32_t bytes_per_sample = wav->channels * (wav->bits_per_sample / 8);
+    wav->total_samples = wav->data_size / bytes_per_sample;
     wav->samples_played = 0;
     
-    printf("WAV Info: %u Hz, %u channels, %u bits, %u samples\n",
-           wav->sample_rate, wav->channels, wav->bits_per_sample, wav->total_samples);
+    printf("WAV Info: %u Hz, %u ch, %u bits, %u samples, data_size=%u MB\n",
+           wav->sample_rate, wav->channels, wav->bits_per_sample, 
+           wav->total_samples, wav->data_size/(1024*1024));
+    
+    // Posicionar al inicio de los datos
+    fseek(wav->file, wav->data_start_offset, SEEK_SET);
     
     return 1;
 }
@@ -207,7 +253,7 @@ static int load_song(int track_num)
     }
     
     songs[idx].is_valid = 1;
-    printf("Loaded: %s\n", songs[idx].filename);
+    printf("✓ Loaded: %s\n", songs[idx].filename);
     return 1;
 }
 
@@ -256,7 +302,7 @@ static void next_track(void) {
     reset_timer();
     
     if (playback_mode == 0) {
-        printf("Track: %u - %s\n", current_track, songs[current_track-1].filename);
+        printf("Track: %u - Song %u\n", current_track, current_track);
     } else {
         printf("Tone: %u - %u Hz\n", current_track, current_freq);
     }
@@ -280,7 +326,7 @@ static void previous_track(void) {
     reset_timer();
     
     if (playback_mode == 0) {
-        printf("Track: %u - %s\n", current_track, songs[current_track-1].filename);
+        printf("Track: %u - Song %u\n", current_track, current_track);
     } else {
         printf("Tone: %u - %u Hz\n", current_track, current_freq);
     }
@@ -334,14 +380,16 @@ static void* timer_thread_func(void* arg)
     return NULL;
 }
 
-// Thread de audio principal
+// Thread de audio principal CORREGIDO
 static void* audio_playback_thread(void* arg)
 {
+    uint32_t sample_counter = 0;
+    
     while (!should_exit) {
         if (is_playing && audio_dev) {
             
             if (playback_mode == 0) {
-                // ===== MODO WAV =====
+                // ===== MODO WAV CON VOLUMEN ALTO =====
                 int idx = current_track - 1;
                 if (songs[idx].is_valid && songs[idx].file) {
                     
@@ -350,57 +398,106 @@ static void* audio_playback_thread(void* arg)
                     
                     if (write_space_left > 0 && write_space_right > 0) {
                         
-                        if (songs[idx].bits_per_sample == 16) {
-                            int16_t left_sample = 0, right_sample = 0;
+                        // RESAMPLING: Solo procesar cada 3ra iteración (16kHz -> 48kHz)
+                        if (sample_counter % 3 == 0) {
                             
-                            // Leer samples del archivo
-                            if (fread(&left_sample, 2, 1, songs[idx].file) == 1) {
-                                if (songs[idx].channels == 2) {
-                                    fread(&right_sample, 2, 1, songs[idx].file);
+                            if (songs[idx].bits_per_sample == 8) {
+                                // === 8-bit samples ===
+                                uint8_t left_sample = 0, right_sample = 0;
+                                
+                                if (fread(&left_sample, 1, 1, songs[idx].file) == 1) {
+                                    if (songs[idx].channels == 2) {
+                                        fread(&right_sample, 1, 1, songs[idx].file);
+                                    } else {
+                                        right_sample = left_sample;
+                                    }
+                                    
+                                    // VOLUMEN ALTO FIJO: 8-bit unsigned (0-255) a 16-bit signed
+                                    // Amplificación x400 para volumen fuerte
+                                    int32_t left_32 = ((int32_t)left_sample - 128) * 400;
+                                    int32_t right_32 = ((int32_t)right_sample - 128) * 400;
+                                    
+                                    // Clipping protection
+                                    if (left_32 > 32767) left_32 = 32767;
+                                    if (left_32 < -32768) left_32 = -32768;
+                                    if (right_32 > 32767) right_32 = 32767;
+                                    if (right_32 < -32768) right_32 = -32768;
+                                    
+                                    int16_t left_16 = (int16_t)left_32;
+                                    int16_t right_16 = (int16_t)right_32;
+                                    
+                                    uint32_t sample_32 = ((uint32_t)(left_16 & 0xFFFF) << 16) | 
+                                                        (right_16 & 0xFFFF);
+                                    
+                                    alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_LEFT);
+                                    alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_RIGHT);
+                                    
+                                    songs[idx].samples_played++;
+                                    
                                 } else {
-                                    right_sample = left_sample;  // Mono -> Stereo
-                                }
-                                
-                                // Convertir a formato 32-bit
-                                uint32_t sample_32 = ((uint32_t)(left_sample & 0xFFFF) << 16) | 
-                                                    (right_sample & 0xFFFF);
-                                
-                                // Escribir a ambos canales
-                                alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_LEFT);
-                                alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_RIGHT);
-                                
-                                songs[idx].samples_played++;
-                                
-                                // Verificar si la canción terminó
-                                if (songs[idx].samples_played >= songs[idx].total_samples) {
-                                    printf("Song finished, going to next track\n");
+                                    printf("Song finished\n");
                                     next_track();
                                 }
                                 
-                            } else {
-                                // Error o fin de archivo
-                                printf("End of file or read error\n");
-                                next_track();
+                            } else if (songs[idx].bits_per_sample == 16) {
+                                // === 16-bit samples ===
+                                int16_t left_sample = 0, right_sample = 0;
+                                
+                                if (fread(&left_sample, 2, 1, songs[idx].file) == 1) {
+                                    if (songs[idx].channels == 2) {
+                                        fread(&right_sample, 2, 1, songs[idx].file);
+                                    } else {
+                                        right_sample = left_sample;
+                                    }
+                                    
+                                    // VOLUMEN ALTO FIJO: Amplificar x8
+                                    int32_t left_amp = (int32_t)left_sample * 8;
+                                    int32_t right_amp = (int32_t)right_sample * 8;
+                                    
+                                    // Clipping protection
+                                    if (left_amp > 32767) left_amp = 32767;
+                                    if (left_amp < -32768) left_amp = -32768;
+                                    if (right_amp > 32767) right_amp = 32767;
+                                    if (right_amp < -32768) right_amp = -32768;
+                                    
+                                    uint32_t sample_32 = ((uint32_t)(left_amp & 0xFFFF) << 16) | 
+                                                        (right_amp & 0xFFFF);
+                                    
+                                    alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_LEFT);
+                                    alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_RIGHT);
+                                    
+                                    songs[idx].samples_played++;
+                                    
+                                } else {
+                                    printf("Song finished\n");
+                                    next_track();
+                                }
                             }
+                        }
+                        
+                        sample_counter++;
+                        
+                        // Verificar si terminó la canción
+                        if (songs[idx].samples_played >= songs[idx].total_samples) {
+                            printf("Song completed, next track\n");
+                            next_track();
                         }
                     }
                 }
                 
             } else {
-                // ===== MODO TONO =====
+                // ===== MODO TONO CON VOLUMEN ALTO =====
                 int write_space_left = alt_up_audio_write_fifo_avail(audio_dev, ALT_UP_AUDIO_LEFT);
                 int write_space_right = alt_up_audio_write_fifo_avail(audio_dev, ALT_UP_AUDIO_RIGHT);
                 
                 if (write_space_left > 0 && write_space_right > 0) {
-                    // Generar muestra de onda seno
                     float phase_radians = (2.0 * M_PI * tone_phase * current_freq) / sample_rate;
                     float sine_wave = sin(phase_radians);
                     
-                    // Convertir a formato 16-bit
-                    int16_t sample_16 = (int16_t)(sine_wave * 16383);
+                    // VOLUMEN ALTO para tonos también
+                    int16_t sample_16 = (int16_t)(sine_wave * 30000);  // Casi máximo volumen
                     uint32_t sample_32 = ((uint32_t)sample_16 << 16) | (sample_16 & 0xFFFF);
                     
-                    // Escribir a ambos canales
                     alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_LEFT);
                     alt_up_audio_write_fifo(audio_dev, &sample_32, 1, ALT_UP_AUDIO_RIGHT);
                     
@@ -409,11 +506,10 @@ static void* audio_playback_thread(void* arg)
                 }
             }
         }
-        usleep(100);  // 0.1ms
+        usleep(1000);  // 1ms delay
     }
     return NULL;
 }
-
 // Thread de botones
 static void* buttons_thread_func(void* arg)
 {
@@ -450,7 +546,7 @@ static void* buttons_thread_func(void* arg)
                 usleep(200000);
             }
             
-            if (button_pressed & 0x8) {  // KEY3 - Toggle mode (si tienes 4 botones)
+            if (button_pressed & 0x8) {  // KEY3 - Toggle mode
                 toggle_mode();
                 usleep(200000);
             }
@@ -465,7 +561,7 @@ int main(void)
 {
     int fd;
     
-    printf("=== HPS Audio Player with WAV Support ===\n");
+    printf("=== HPS Audio Player with WAV Support (Fixed) ===\n");
     
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
@@ -506,11 +602,11 @@ int main(void)
     current_track = 1;
     playback_mode = 0;  // Inicia en modo WAV
     
-    // Cargar primera canción
+    // Cargar canciones
     printf("Loading songs...\n");
     for (int i = 0; i < 3; i++) {
         if (load_song(i + 1)) {
-            printf("✓ Song %d loaded\n", i + 1);
+            printf("✓ Song %d loaded successfully\n", i + 1);
         } else {
             printf("✗ Song %d failed to load\n", i + 1);
         }
@@ -518,13 +614,13 @@ int main(void)
     
     reset_timer();
     
-    printf("Audio Player Ready!\n");
+    printf("\nAudio Player Ready!\n");
     printf("Mode: WAV Songs\n");
     printf("Controls:\n");
     printf("  KEY0: Play/Pause\n");
-    printf("  KEY1: Next Track\n");
+    printf("  KEY1: Next Track\n");  
     printf("  KEY2: Previous Track\n");
-    printf("  KEY3: Toggle WAV/Tone Mode (if available)\n");
+    printf("  KEY3: Toggle WAV/Tone Mode\n");
     printf("Current: Song %u\n", current_track);
     
     // Crear threads
