@@ -5,7 +5,6 @@
 			audio_DACLRCK                   : in    std_logic                     := 'X';             -- DACLRCK
 			audio_config_SDAT               : inout std_logic                     := 'X';             -- SDAT
 			audio_config_SCLK               : out   std_logic;                                        -- SCLK
-			audio_xclkx_clk                 : out   std_logic;                                        -- clk
 			buttons_export                  : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- export
 			clk_clk                         : in    std_logic                     := 'X';             -- clk
 			hps_io_hps_io_emac1_inst_TX_CLK : out   std_logic;                                        -- hps_io_emac1_inst_TX_CLK
@@ -60,7 +59,8 @@
 			memory_mem_dm                   : out   std_logic_vector(3 downto 0);                     -- mem_dm
 			memory_oct_rzqin                : in    std_logic                     := 'X';             -- oct_rzqin
 			reset_reset_n                   : in    std_logic                     := 'X';             -- reset_n
-			seven_segments_export           : out   std_logic_vector(27 downto 0)                     -- export
+			seven_segments_export           : out   std_logic_vector(27 downto 0);                    -- export
+			audio_xclkx_clk                 : out   std_logic                                         -- clk
 		);
 	end component soc_system;
 
@@ -71,7 +71,6 @@
 			audio_DACLRCK                   => CONNECTED_TO_audio_DACLRCK,                   --               .DACLRCK
 			audio_config_SDAT               => CONNECTED_TO_audio_config_SDAT,               --   audio_config.SDAT
 			audio_config_SCLK               => CONNECTED_TO_audio_config_SCLK,               --               .SCLK
-			audio_xclkx_clk                 => CONNECTED_TO_audio_xclkx_clk,                 --    audio_xclkx.clk
 			buttons_export                  => CONNECTED_TO_buttons_export,                  --        buttons.export
 			clk_clk                         => CONNECTED_TO_clk_clk,                         --            clk.clk
 			hps_io_hps_io_emac1_inst_TX_CLK => CONNECTED_TO_hps_io_hps_io_emac1_inst_TX_CLK, --         hps_io.hps_io_emac1_inst_TX_CLK
@@ -126,6 +125,7 @@
 			memory_mem_dm                   => CONNECTED_TO_memory_mem_dm,                   --               .mem_dm
 			memory_oct_rzqin                => CONNECTED_TO_memory_oct_rzqin,                --               .oct_rzqin
 			reset_reset_n                   => CONNECTED_TO_reset_reset_n,                   --          reset.reset_n
-			seven_segments_export           => CONNECTED_TO_seven_segments_export            -- seven_segments.export
+			seven_segments_export           => CONNECTED_TO_seven_segments_export,           -- seven_segments.export
+			audio_xclkx_clk                 => CONNECTED_TO_audio_xclkx_clk                  --    audio_xclkx.clk
 		);
 

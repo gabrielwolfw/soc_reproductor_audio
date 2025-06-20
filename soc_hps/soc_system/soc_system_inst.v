@@ -4,7 +4,6 @@
 		.audio_DACLRCK                   (<connected-to-audio_DACLRCK>),                   //               .DACLRCK
 		.audio_config_SDAT               (<connected-to-audio_config_SDAT>),               //   audio_config.SDAT
 		.audio_config_SCLK               (<connected-to-audio_config_SCLK>),               //               .SCLK
-		.audio_xclkx_clk                 (<connected-to-audio_xclkx_clk>),                 //    audio_xclkx.clk
 		.buttons_export                  (<connected-to-buttons_export>),                  //        buttons.export
 		.clk_clk                         (<connected-to-clk_clk>),                         //            clk.clk
 		.hps_io_hps_io_emac1_inst_TX_CLK (<connected-to-hps_io_hps_io_emac1_inst_TX_CLK>), //         hps_io.hps_io_emac1_inst_TX_CLK
@@ -59,6 +58,7 @@
 		.memory_mem_dm                   (<connected-to-memory_mem_dm>),                   //               .mem_dm
 		.memory_oct_rzqin                (<connected-to-memory_oct_rzqin>),                //               .oct_rzqin
 		.reset_reset_n                   (<connected-to-reset_reset_n>),                   //          reset.reset_n
-		.seven_segments_export           (<connected-to-seven_segments_export>)            // seven_segments.export
+		.seven_segments_export           (<connected-to-seven_segments_export>),           // seven_segments.export
+		.audio_xclkx_clk                 (<connected-to-audio_xclkx_clk>)                  //    audio_xclkx.clk
 	);
 

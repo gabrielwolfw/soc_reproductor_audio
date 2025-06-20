@@ -5,7 +5,6 @@ module soc_system (
 	audio_DACLRCK,
 	audio_config_SDAT,
 	audio_config_SCLK,
-	audio_xclkx_clk,
 	buttons_export,
 	clk_clk,
 	hps_io_hps_io_emac1_inst_TX_CLK,
@@ -60,14 +59,14 @@ module soc_system (
 	memory_mem_dm,
 	memory_oct_rzqin,
 	reset_reset_n,
-	seven_segments_export);	
+	seven_segments_export,
+	audio_xclkx_clk);	
 
 	input		audio_BCLK;
 	output		audio_DACDAT;
 	input		audio_DACLRCK;
 	inout		audio_config_SDAT;
 	output		audio_config_SCLK;
-	output		audio_xclkx_clk;
 	input	[2:0]	buttons_export;
 	input		clk_clk;
 	output		hps_io_hps_io_emac1_inst_TX_CLK;
@@ -123,4 +122,5 @@ module soc_system (
 	input		memory_oct_rzqin;
 	input		reset_reset_n;
 	output	[27:0]	seven_segments_export;
+	output		audio_xclkx_clk;
 endmodule

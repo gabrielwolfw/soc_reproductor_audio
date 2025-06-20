@@ -406,7 +406,7 @@
   <parameter name="F2SCLK_WARMRST_Enable" value="false" />
   <parameter name="F2SDRAM_Type" value="AXI-3" />
   <parameter name="F2SDRAM_Width" value="64" />
-  <parameter name="F2SINTERRUPT_Enable" value="false" />
+  <parameter name="F2SINTERRUPT_Enable" value="true" />
   <parameter name="F2S_Width" value="2" />
   <parameter name="FIX_READ_LATENCY" value="8" />
   <parameter name="FORCED_NON_LDC_ADDR_CMD_MEM_CK_INVERT" value="false" />
@@ -827,7 +827,7 @@
  <connection
    kind="avalon"
    version="18.1"
-   start="hps_0.h2f_lw_axi_master"
+   start="hps_0.h2f_axi_master"
    end="AUDIO.avalon_audio_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x8860" />
@@ -909,6 +909,34 @@
    start="clk_0.clk"
    end="hps_0.h2f_lw_axi_clock" />
  <connection kind="clock" version="18.1" start="clk_0.clk" end="AUDIO_PLL.ref_clk" />
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="hps_0.f2h_irq0"
+   end="AUDIO.interrupt">
+  <parameter name="irqNumber" value="3" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="hps_0.f2h_irq0"
+   end="TIMER.irq">
+  <parameter name="irqNumber" value="1" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="hps_0.f2h_irq0"
+   end="JTAG_UART.irq">
+  <parameter name="irqNumber" value="2" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="hps_0.f2h_irq0"
+   end="BUTTONS.irq">
+  <parameter name="irqNumber" value="4" />
+ </connection>
  <connection
    kind="reset"
    version="18.1"

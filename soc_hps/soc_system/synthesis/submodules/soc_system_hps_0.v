@@ -161,6 +161,8 @@ module soc_system_hps_0 #(
 		output wire        f2h_sdram0_WREADY,        //                  .wready
 		input  wire [7:0]  f2h_sdram0_WID,           //                  .wid
 		input  wire        f2h_sdram0_clk,           //  f2h_sdram0_clock.clk
+		input  wire [31:0] f2h_irq_p0,               //          f2h_irq0.irq
+		input  wire [31:0] f2h_irq_p1,               //          f2h_irq1.irq
 		output wire [14:0] mem_a,                    //            memory.mem_a
 		output wire [2:0]  mem_ba,                   //                  .mem_ba
 		output wire        mem_ck,                   //                  .mem_ck
@@ -391,7 +393,9 @@ module soc_system_hps_0 #(
 		.f2h_sdram0_WSTRB   (f2h_sdram0_WSTRB),   //                  .wstrb
 		.f2h_sdram0_WREADY  (f2h_sdram0_WREADY),  //                  .wready
 		.f2h_sdram0_WID     (f2h_sdram0_WID),     //                  .wid
-		.f2h_sdram0_clk     (f2h_sdram0_clk)      //  f2h_sdram0_clock.clk
+		.f2h_sdram0_clk     (f2h_sdram0_clk),     //  f2h_sdram0_clock.clk
+		.f2h_irq_p0         (f2h_irq_p0),         //          f2h_irq0.irq
+		.f2h_irq_p1         (f2h_irq_p1)          //          f2h_irq1.irq
 	);
 
 	soc_system_hps_0_hps_io hps_io (
