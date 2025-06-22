@@ -21,7 +21,7 @@ class AppLauncher:
     def check_sudo(self):
         """Verificar si se necesitan permisos sudo para el puerto serial"""
         if os.geteuid() != 0:
-            print("⚠️  Ejecutando sin sudo. Si hay problemas con el puerto serial, ejecuta:")
+            print("Ejecutando sin sudo. Si hay problemas con el puerto serial, ejecuta:")
             print("   sudo python3 start.py")
             print()
     
@@ -35,16 +35,16 @@ class AppLauncher:
                 missing_files.append(file)
         
         if missing_files:
-            print(f"❌ Archivos faltantes: {', '.join(missing_files)}")
-            print("📋 Archivos necesarios:")
-            print("   - app.py (Flask web server)")
-            print("   - receiver.py (Serial monitor)")  # Cambia por tu nombre
+            print(f"Archivos faltantes: {', '.join(missing_files)}")
+            print("Archivos necesarios:")
+            print(" - app.py (Flask web server)")
+            print(" - receiver.py (Serial monitor)")  # Cambia por tu nombre
             return False
         return True
     
     def start_flask_app(self):
         """Iniciar la aplicación Flask"""
-        print("🌐 Iniciando Flask app...")
+        print("Iniciando Flask app...")
         try:
             process = subprocess.Popen([
                 sys.executable, 'app.py'
@@ -63,12 +63,12 @@ class AppLauncher:
             return process
             
         except Exception as e:
-            print(f"❌ Error iniciando Flask: {e}")
+            print(f"Error iniciando Flask: {e}")
             return None
     
     def start_serial_receiver(self):
         """Iniciar el monitor serial"""
-        print("📡 Iniciando Serial receiver...")
+        print("Iniciando Serial receiver...")
         try:
             # Si necesitas sudo específicamente para serial
             if os.geteuid() == 0:  # Running as root
@@ -93,12 +93,12 @@ class AppLauncher:
             return process
             
         except Exception as e:
-            print(f"❌ Error iniciando Serial receiver: {e}")
+            print(f"Error iniciando Serial receiver: {e}")
             return None
     
     def signal_handler(self, signum, frame):
         """Manejar Ctrl+C para cerrar todo limpiamente"""
-        print("\n🛑 Cerrando aplicaciones...")
+        print("\nCerrando aplicaciones...")
         self.running = False
         self.stop_all()
         sys.exit(0)
@@ -107,29 +107,29 @@ class AppLauncher:
         """Terminar todos los procesos"""
         for name, process in self.processes:
             try:
-                print(f"⏹️  Terminando {name}...")
+                print(f"Terminando {name}...")
                 process.terminate()
                 
                 # Esperar un poco y forzar si es necesario
                 try:
                     process.wait(timeout=3)
                 except subprocess.TimeoutExpired:
-                    print(f"🔨 Forzando cierre de {name}...")
+                    print(f"Forzando cierre de {name}...")
                     process.kill()
                     
             except Exception as e:
-                print(f"⚠️  Error cerrando {name}: {e}")
+                print(f"Error cerrando {name}: {e}")
     
     def wait_for_flask(self):
         """Esperar a que Flask esté listo"""
-        print("⏳ Esperando que Flask esté listo...")
+        print("Esperando que Flask esté listo...")
         max_attempts = 10
         for i in range(max_attempts):
             try:
                 import requests
                 response = requests.get('http://localhost:5000', timeout=1)
                 if response.status_code == 200:
-                    print("✅ Flask está listo!")
+                    print("Flask está listo!")
                     return True
             except:
                 pass
@@ -141,7 +141,7 @@ class AppLauncher:
     def run(self):
         """Ejecutar el launcher principal"""
         print("=" * 60)
-        print("🚀 LAUNCHER - Iniciador de aplicaciones")
+        print("LAUNCHER - Iniciador de aplicaciones")
         print("=" * 60)
         
         # Verificaciones iniciales
@@ -164,20 +164,20 @@ class AppLauncher:
             
             # Verificar que Flask esté funcionando
             if not self.wait_for_flask():
-                print("❌ Flask no se inició correctamente")
+                print("Flask no se inició correctamente")
                 self.stop_all()
                 return
             
             # Iniciar serial receiver
             serial_process = self.start_serial_receiver()
             if not serial_process:
-                print("⚠️  Serial receiver no se inició, pero Flask sigue corriendo")
+                print("Serial receiver no se inició, pero Flask sigue corriendo")
             
             print("\n" + "=" * 60)
-            print("✅ SISTEMA INICIADO CORRECTAMENTE")
-            print("🌐 Flask Web Server: http://localhost:5000")
-            print("📡 Serial Monitor: Escuchando /dev/ttyUSB0")
-            print("🛑 Presiona Ctrl+C para terminar")
+            print("SISTEMA INICIADO CORRECTAMENTE")
+            print("Flask Web Server: http://localhost:5000")
+            print("Serial Monitor: Escuchando /dev/ttyUSB0")
+            print("Presiona Ctrl+C para terminar")
             print("=" * 60)
             
             # Mantener el programa corriendo
@@ -187,7 +187,7 @@ class AppLauncher:
                 # Verificar que los procesos sigan vivos
                 for name, process in self.processes:
                     if process.poll() is not None:
-                        print(f"⚠️  {name} terminó inesperadamente")
+                        print(f"{name} terminó inesperadamente")
                         if not self.running:
                             break
                             

@@ -1,4 +1,3 @@
-
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -13,24 +12,29 @@
 #include <linux/workqueue.h>
 #include <linux/cdev.h>
 #include <linux/mutex.h>
+#include <linux/device.h>
+#include <asm/uaccess.h>
+#include <asm/atomic.h>
 
 #define FPGA_CMD_BUF_SIZE 128
 
 static dev_t fpga_cmd_dev;
 static struct cdev fpga_cmd_cdev;
+static struct class *fpga_cmd_class;
+static struct device *fpga_cmd_device;
 static char cmd_buffer[FPGA_CMD_BUF_SIZE];
 static int cmd_buffer_len = 0;
+
 static DEFINE_MUTEX(cmd_mutex);
-
-
+static DEFINE_MUTEX(hw_mutex);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Audio Player Team");
 MODULE_DESCRIPTION("Hybrid Dual AXI Audio Player - 48kHz I2S 24-bit");
 
 /* Virtual address bases */
-void *lwbridgebase;  /* Para controles (botones, display, WM8731) */
-void *audiobase;     /* Para avalon_audio_slave (AXI Master) */
+void __iomem *lwbridgebase;
+void __iomem *audiobase;
 
 /* Audio player state */
 typedef enum {
@@ -61,7 +65,7 @@ typedef struct {
 static wav_file_t songs[3];
 static const char* song_paths[] = {
     "/home/root/media/sd/songs/song1.wav",
-    "/home/root/media/sd/songs/song2.wav", 
+    "/home/root/media/sd/songs/song2.wav",
     "/home/root/media/sd/songs/song3.wav"
 };
 
@@ -76,7 +80,7 @@ static struct timer_list display_timer;
 #define BUTTON_NEXT         0x2
 #define BUTTON_PREV         0x4
 
-/* LW AXI Master offsets (controles) */
+/* LW AXI Master offsets */
 #define BUTTONS_BASE_OFFSET     0x8800
 #define BUTTONS_DATA_OFFSET     0x0
 #define BUTTONS_INTERRUPT_MASK  0x8
@@ -84,24 +88,27 @@ static struct timer_list display_timer;
 #define SEVEN_SEGMENTS_BASE_OFFSET 0x8810
 #define AUDIO_CONFIG_BASE_OFFSET    0x8850
 
-/* AXI Master offsets (solo audio data) */
+/* AXI Master offsets */
 #define AUDIO_FIFOSPACE_REG     0x4
 #define AUDIO_LEFTDATA_REG      0x8
 #define AUDIO_RIGHTDATA_REG     0xC
 #define AUDIO_CONTROL_REG       0x0
 
-/* Audio buffer - optimizado para 48kHz */
-#define AUDIO_BUFFER_SIZE 32768  /* 32KB buffer */
-static uint8_t audio_buffer[AUDIO_BUFFER_SIZE];
+/* Audio buffer - single buffer */
+#define AUDIO_BUFFER_SIZE 32768
+static uint8_t *audio_buffer;
 static int buffer_pos = 0;
 static int buffer_size = 0;
-static int buffer_needs_refill = 1;
+static int buffer_needs_refill = 0;
 
-/* Workqueue for file operations */
+/* Workqueue for file and button operations */
 static struct workqueue_struct *audio_wq;
 static struct work_struct load_work;
 static struct work_struct refill_work;
+static struct work_struct button_work;
+static atomic_t pending_buttons = ATOMIC_INIT(0);
 static int next_track_to_load = 0;
+
 
 /* Debouncing */
 static struct timespec last_button_time[3];
@@ -123,6 +130,7 @@ void generate_audio_samples_48khz(void);
 void audio_timer_callback(unsigned long data);
 void display_timer_callback(unsigned long data);
 int is_button_debounced(int button_num);
+void button_work_handler(struct work_struct *work);
 void load_work_handler(struct work_struct *work);
 void refill_work_handler(struct work_struct *work);
 int parse_wav_header_48khz(wav_file_t* wav);
@@ -130,18 +138,19 @@ void init_wm8731_via_lw_axi(void);
 void init_audio_ip_via_axi(void);
 void reset_audio_completely(void);
 
-
-
 static ssize_t fpga_cmd_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) {
     ssize_t ret = 0;
-    mutex_lock(&cmd_mutex);
+    if (mutex_lock_interruptible(&cmd_mutex))
+        return -ERESTARTSYS;
+
     if (cmd_buffer_len > 0) {
         size_t to_copy = min(count, (size_t)cmd_buffer_len);
         if (copy_to_user(buf, cmd_buffer, to_copy) == 0) {
             ret = to_copy;
-            // Mueve el buffer hacia atrás
             memmove(cmd_buffer, cmd_buffer + to_copy, cmd_buffer_len - to_copy);
             cmd_buffer_len -= to_copy;
+        } else {
+            ret = -EFAULT;
         }
     }
     mutex_unlock(&cmd_mutex);
@@ -156,14 +165,13 @@ static struct file_operations fpga_cmd_fops = {
 static void send_user_command(char cmd)
 {
     mutex_lock(&cmd_mutex);
-    if (cmd_buffer_len < FPGA_CMD_BUF_SIZE) {
+    if (cmd_buffer_len < FPGA_CMD_BUF_SIZE - 1) {
         cmd_buffer[cmd_buffer_len++] = cmd;
     }
     mutex_unlock(&cmd_mutex);
 }
 
-
-/* WM8731 I2C register addresses */
+/* WM8731 register addresses */
 #define WM8731_LEFT_LINE_IN     0x00
 #define WM8731_RIGHT_LINE_IN    0x01
 #define WM8731_LEFT_HP_OUT      0x02
@@ -176,93 +184,78 @@ static void send_user_command(char cmd)
 #define WM8731_ACTIVE_CTRL      0x09
 #define WM8731_RESET            0x0F
 
-/* WM8731 initialization via LW AXI Master - CORREGIDO para I2S 24-bit */
 void init_wm8731_via_lw_axi(void)
 {
     printk(KERN_INFO "Initializing WM8731 for 48kHz I2S 24-bit\n");
-    
-    /* Reset WM8731 */
+
+    mutex_lock(&hw_mutex);
+
     iowrite32((WM8731_RESET << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(10);
-    
-    /* Power management - power up everything except mic */
     iowrite32((WM8731_POWER_DOWN << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(5);
-    
-    /* Left headphone volume - 0 dB */
     iowrite32((WM8731_LEFT_HP_OUT << 9) | 0x79, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
-    
-    /* Right headphone volume - 0 dB */
     iowrite32((WM8731_RIGHT_HP_OUT << 9) | 0x79, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
-    
-    /* Analog audio path - DAC selected, output muted inicialmente */
-    iowrite32((WM8731_ANALOG_PATH << 9) | 0x12, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
-    mdelay(2);
-    
-    /* Digital audio path - disable soft mute */
-    iowrite32((WM8731_DIGITAL_PATH << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
-    mdelay(2);
-    
-    /* Digital audio interface - I2S format, 24-bit */
-    iowrite32((WM8731_DIGITAL_IF << 9) | 0x0A, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
-    mdelay(2);
-    
-    /* Sampling control - 48kHz, normal mode */
-    iowrite32((WM8731_SAMPLING_CTRL << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
-    mdelay(2);
-    
-    /* Activate digital audio interface */
-    iowrite32((WM8731_ACTIVE_CTRL << 9) | 0x01, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
-    mdelay(5);
-    
-    /* Unmute analog path */
     iowrite32((WM8731_ANALOG_PATH << 9) | 0x10, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
-    
-    printk(KERN_INFO "WM8731 configured: I2S 24-bit, 48kHz, unmuted\n");
+    iowrite32((WM8731_DIGITAL_PATH << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    mdelay(2);
+    /* Set I2S format, 24-bit data */
+    iowrite32((WM8731_DIGITAL_IF << 9) | 0x06, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    mdelay(2);
+    iowrite32((WM8731_SAMPLING_CTRL << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    mdelay(2);
+    iowrite32((WM8731_ACTIVE_CTRL << 9) | 0x01, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    mdelay(5);
+
+    mutex_unlock(&hw_mutex);
+
+    printk(KERN_INFO "WM8731 configured: I2S 24-bit, 48kHz\n");
 }
 
-/* Complete audio reset */
 void reset_audio_completely(void)
 {
     printk(KERN_INFO "Complete audio reset\n");
-    
-    /* Reset audio IP via AXI Master */
+
+    mutex_lock(&hw_mutex);
+
     iowrite32(0x0, audiobase + AUDIO_CONTROL_REG);
     mdelay(10);
-    iowrite32(0x2, audiobase + AUDIO_CONTROL_REG);  /* Full reset */
+    iowrite32(0x2, audiobase + AUDIO_CONTROL_REG);
     mdelay(10);
     iowrite32(0x0, audiobase + AUDIO_CONTROL_REG);
     mdelay(5);
+
+    mutex_unlock(&hw_mutex);
 }
 
-/* Audio IP initialization via AXI Master */
 void init_audio_ip_via_axi(void)
 {
     uint32_t fifospace;
-    
     printk(KERN_INFO "Initializing Audio IP for 48kHz I2S streaming\n");
-    
-    /* Complete reset first */
+
     reset_audio_completely();
-    
-    /* Enable */
+
+    mutex_lock(&hw_mutex);
+
     iowrite32(0x1, audiobase + AUDIO_CONTROL_REG);
     mdelay(5);
-    
     fifospace = ioread32(audiobase + AUDIO_FIFOSPACE_REG);
+
+    mutex_unlock(&hw_mutex);
+
     printk(KERN_INFO "AXI Audio FIFO: 0x%08x\n", fifospace);
-    
     if (fifospace == 0 || fifospace == 0xFFFFFFFF) {
         printk(KERN_WARNING "AXI FIFO not responding, extended reset\n");
+        mutex_lock(&hw_mutex);
         iowrite32(0x3, audiobase + AUDIO_CONTROL_REG);
         mdelay(10);
         iowrite32(0x1, audiobase + AUDIO_CONTROL_REG);
         mdelay(5);
+        mutex_unlock(&hw_mutex);
     }
-    
     printk(KERN_INFO "AXI Audio IP ready for 48kHz I2S\n");
 }
 
@@ -271,67 +264,75 @@ int parse_wav_header_48khz(wav_file_t* wav)
 {
     uint8_t chunk_header[8];
     uint8_t fmt_chunk[16];
-    mm_segment_t oldfs;
     int bytes_read;
     uint32_t chunk_size;
     loff_t current_offset;
     int found_fmt = 0;
     int found_data = 0;
-    
+    mm_segment_t oldfs;
+
     if (!wav->file) {
         printk(KERN_ERR "No file handle for WAV parsing\n");
         return 0;
     }
-    
+
     printk(KERN_INFO "Parsing WAV file\n");
-    
-    oldfs = get_fs();
-    set_fs(KERNEL_DS);
-    
+
     /* Read RIFF header */
     current_offset = 0;
-    bytes_read = vfs_read(wav->file, chunk_header, 8, &current_offset);
+
+    oldfs = get_fs();
+    set_fs(KERNEL_DS);
+    bytes_read = vfs_read(wav->file, (char __user *)chunk_header, 8, &current_offset);
+    set_fs(oldfs);
+
     if (bytes_read != 8) {
         printk(KERN_ERR "Failed to read RIFF header\n");
-        set_fs(oldfs);
         return 0;
     }
-    
-    /* Verify RIFF */
+
     if (memcmp(chunk_header, "RIFF", 4) != 0) {
         printk(KERN_ERR "Invalid RIFF header\n");
-        set_fs(oldfs);
         return 0;
     }
-    
-    /* Read WAVE format */
-    bytes_read = vfs_read(wav->file, chunk_header, 4, &current_offset);
+
+    oldfs = get_fs();
+    set_fs(KERNEL_DS);
+    bytes_read = vfs_read(wav->file, (char __user *)chunk_header, 4, &current_offset);
+    set_fs(oldfs);
+
     if (bytes_read != 4 || memcmp(chunk_header, "WAVE", 4) != 0) {
         printk(KERN_ERR "Invalid WAVE header\n");
-        set_fs(oldfs);
         return 0;
     }
-    
-    /* Search for fmt and data chunks */
+
     while (current_offset < 200 && (!found_fmt || !found_data)) {
-        bytes_read = vfs_read(wav->file, chunk_header, 8, &current_offset);
+        oldfs = get_fs();
+        set_fs(KERNEL_DS);
+        bytes_read = vfs_read(wav->file, (char __user *)chunk_header, 8, &current_offset);
+        set_fs(oldfs);
+
         if (bytes_read != 8) {
             printk(KERN_WARNING "End of header at offset %lld\n", current_offset);
             break;
         }
-        
+
         chunk_size = *(uint32_t*)(chunk_header + 4);
-        
+
         if (memcmp(chunk_header, "fmt ", 4) == 0) {
             if (chunk_size >= 16) {
-                bytes_read = vfs_read(wav->file, fmt_chunk, 16, &current_offset);
+                oldfs = get_fs();
+                set_fs(KERNEL_DS);
+                bytes_read = vfs_read(wav->file, (char __user *)fmt_chunk, 16, &current_offset);
+                set_fs(oldfs);
+
                 if (bytes_read == 16) {
                     wav->channels = *(uint16_t*)(fmt_chunk + 2);
                     wav->sample_rate = *(uint32_t*)(fmt_chunk + 4);
                     wav->bits_per_sample = *(uint16_t*)(fmt_chunk + 14);
                     found_fmt = 1;
-                    
-                    printk(KERN_INFO "WAV Format: %uHz, %uch, %ubit\n", 
+
+                    printk(KERN_INFO "WAV Format: %uHz, %uch, %ubit\n",
                            wav->sample_rate, wav->channels, wav->bits_per_sample);
                 }
                 if (chunk_size > 16) {
@@ -340,109 +341,92 @@ int parse_wav_header_48khz(wav_file_t* wav)
             } else {
                 current_offset += chunk_size;
             }
-            
+
         } else if (memcmp(chunk_header, "data", 4) == 0) {
             wav->data_size = chunk_size;
             wav->data_start_offset = current_offset;
             found_data = 1;
-            
-            printk(KERN_INFO "Data chunk: %u bytes at offset %u\n", 
+
+            printk(KERN_INFO "Data chunk: %u bytes at offset %u\n",
                    wav->data_size, wav->data_start_offset);
             break;
-            
+
         } else {
             current_offset += chunk_size;
         }
-        
+
         if (chunk_size % 2) {
             current_offset++;
         }
     }
-    
-    set_fs(oldfs);
-    
+
     if (!found_fmt || !found_data) {
         printk(KERN_ERR "Missing WAV chunks: fmt=%d data=%d\n", found_fmt, found_data);
         return 0;
     }
-    
-    /* Calculate total samples */
+
     if (wav->channels > 0 && wav->bits_per_sample > 0) {
         uint32_t bytes_per_sample = wav->channels * (wav->bits_per_sample / 8);
         wav->total_samples = wav->data_size / bytes_per_sample;
     } else {
         wav->total_samples = 0;
     }
-    
+
     wav->samples_played = 0;
     wav->current_pos = wav->data_start_offset;
-    
+
     printk(KERN_INFO "WAV parsed: %u samples total\n", wav->total_samples);
-    
+
     return 1;
 }
 
-/* Load work handler */
 void load_work_handler(struct work_struct *work)
 {
-    wav_file_t *wav;
-    
-    if (next_track_to_load < 0 || next_track_to_load >= total_tracks) 
-        return;
-    
-    wav = &songs[next_track_to_load];
-    
-    printk(KERN_INFO "Loading track %d\n", next_track_to_load);
-    
+    wav_file_t *wav = &songs[next_track_to_load];
+
     if (wav->file) {
         filp_close(wav->file, NULL);
         wav->file = NULL;
     }
-    
+
     wav->file = filp_open(song_paths[next_track_to_load], O_RDONLY, 0);
     if (IS_ERR(wav->file)) {
-        printk(KERN_ERR "Cannot open %s (error %ld)\n", 
-               song_paths[next_track_to_load], PTR_ERR(wav->file));
+        printk(KERN_ERR "Cannot open %s\n", song_paths[next_track_to_load]);
         wav->file = NULL;
         wav->is_valid = 0;
         return;
     }
-    
+
     strcpy(wav->filename, song_paths[next_track_to_load]);
-    
     if (!parse_wav_header_48khz(wav)) {
-        printk(KERN_ERR "Failed to parse WAV header\n");
+        printk(KERN_ERR "Failed to parse WAV\n");
         filp_close(wav->file, NULL);
         wav->file = NULL;
         wav->is_valid = 0;
         return;
     }
-    
+
     wav->is_valid = 1;
     buffer_pos = 0;
     buffer_size = 0;
     buffer_needs_refill = 1;
-    
-    printk(KERN_INFO "Track %d loaded successfully\n", next_track_to_load);
+    printk(KERN_INFO "Track %d loaded\n", next_track_to_load);
 }
 
-/* Refill work handler */
 void refill_work_handler(struct work_struct *work)
 {
     wav_file_t *wav = &songs[current_track];
-    mm_segment_t oldfs;
     int bytes_read;
-    
-    if (!wav->is_valid || !wav->file || !buffer_needs_refill) 
+    mm_segment_t oldfs;
+
+    if (!wav->is_valid || !wav->file || !buffer_needs_refill)
         return;
-    
+
     oldfs = get_fs();
     set_fs(KERNEL_DS);
-    
-    bytes_read = vfs_read(wav->file, audio_buffer, AUDIO_BUFFER_SIZE, &wav->current_pos);
-    
+    bytes_read = vfs_read(wav->file, (char __user *)audio_buffer, AUDIO_BUFFER_SIZE, &wav->current_pos);
     set_fs(oldfs);
-    
+
     if (bytes_read > 0) {
         buffer_size = bytes_read;
         buffer_pos = 0;
@@ -454,110 +438,85 @@ void refill_work_handler(struct work_struct *work)
     }
 }
 
-/* Display time */
 void display_time_mmss(void)
 {
     uint32_t display_value;
     uint8_t min_tens, min_ones, sec_tens, sec_ones;
-    
+
     min_tens = (current_time_minutes / 10) % 10;
     min_ones = current_time_minutes % 10;
     sec_tens = (current_time_seconds / 10) % 10;
     sec_ones = current_time_seconds % 10;
-    
+
     display_value = ((uint32_t)seven_seg_patterns[min_tens] << 21) |
                     ((uint32_t)seven_seg_patterns[min_ones] << 14) |
                     ((uint32_t)seven_seg_patterns[sec_tens] << 7)  |
                     ((uint32_t)seven_seg_patterns[sec_ones]);
-    
+
+    mutex_lock(&hw_mutex);
     iowrite32(display_value, lwbridgebase + SEVEN_SEGMENTS_BASE_OFFSET);
+    mutex_unlock(&hw_mutex);
 }
 
-/* CORREGIDO: Conversión de 16-bit a 24-bit I2S */
 void generate_audio_samples_48khz(void)
 {
     uint32_t fifospace;
     int write_space_left, write_space_right;
     int i;
     wav_file_t *wav;
-    static int debug_counter = 0;
-    
+
     if (current_state != AUDIO_PLAYING) return;
-    
+
     wav = &songs[current_track];
-    if (!wav->is_valid) {
-        return;
-    }
-    
-    /* Read FIFO space */
+    if (!wav->is_valid) return;
+
+    mutex_lock(&hw_mutex);
     fifospace = ioread32(audiobase + AUDIO_FIFOSPACE_REG);
+    mutex_unlock(&hw_mutex);
+
     write_space_left = (fifospace >> 24) & 0xFF;
     write_space_right = (fifospace >> 16) & 0xFF;
-    
+
     if (write_space_left < 4 || write_space_right < 4) {
         return;
     }
-    
-    /* Check buffer refill */
+
     if (buffer_pos >= buffer_size - 8 && !buffer_needs_refill) {
         buffer_needs_refill = 1;
         queue_work(audio_wq, &refill_work);
         return;
     }
-    
-    if (buffer_size == 0) {
-        return;
-    }
-    
-    /* Process samples - CORREGIDO para I2S 24-bit */
-    for (i = 0; i < 8 && write_space_left > 0 && write_space_right > 0; i++) {
+
+    if (buffer_size == 0) return;
+
+    mutex_lock(&hw_mutex);
+    for (i = 0; i < 32 && write_space_left > 0 && write_space_right > 0; i++) {
         int16_t left_16 = 0, right_16 = 0;
         int32_t left_24, right_24;
 
-        if (buffer_pos >= buffer_size) {
-            break;
-        } else if (buffer_pos + 3 < buffer_size) {
-            if (wav->bits_per_sample == 16 && wav->channels == 2) {
-                /* 16-bit stereo */
-                left_16  = *(int16_t*)(&audio_buffer[buffer_pos]);
-                right_16 = *(int16_t*)(&audio_buffer[buffer_pos + 2]);
-                buffer_pos += 4;
-                wav->samples_played++;
-            } else if (wav->bits_per_sample == 16 && wav->channels == 1) {
-                /* 16-bit mono */
-                left_16 = *(int16_t*)(&audio_buffer[buffer_pos]);
-                right_16 = left_16;
-                buffer_pos += 2;
-                wav->samples_played++;
-            } else {
-                buffer_pos += 2;
-                continue;
-            }
+        if (buffer_pos + 3 < buffer_size) {
+            left_16 = *(int16_t*)(&audio_buffer[buffer_pos]);
+            right_16 = *(int16_t*)(&audio_buffer[buffer_pos + 2]);
+            buffer_pos += 4;
+            wav->samples_played++;
         } else {
             break;
         }
-        if (debug_counter < 16) {
-            printk(KERN_INFO "Sample left=%d right=%d", left_16, right_16);
-        }
-        /* CONVERSIÓN CORRECTA: 16-bit a 24-bit I2S 
-         * Para I2S de 24 bits, los datos se alinean en el MSB
-         * Shift left 8 bits para convertir de 16-bit a 24-bit */
-        left_24  = ((int32_t)left_16) << 8;
+
+        left_24 = ((int32_t)left_16) << 8;
         right_24 = ((int32_t)right_16) << 8;
 
-        /* Write to FIFO */
         iowrite32(left_24, audiobase + AUDIO_LEFTDATA_REG);
         iowrite32(right_24, audiobase + AUDIO_RIGHTDATA_REG);
 
         write_space_left--;
         write_space_right--;
-        debug_counter++;
     }
-    
-    /* Log progress occasionally */
-    if (debug_counter % 2000 == 0) {
-        printk(KERN_INFO "Audio: samples=%u/%u pos=%d/%d\n", 
-               wav->samples_played, wav->total_samples, buffer_pos, buffer_size);
+    mutex_unlock(&hw_mutex);
+
+    if (buffer_pos >= buffer_size - 8 && !buffer_needs_refill && buffer_size > 0) {
+        buffer_needs_refill = 1;
+        queue_work(audio_wq, &refill_work);
     }
 }
 
@@ -565,7 +524,7 @@ void audio_timer_callback(unsigned long data)
 {
     if (current_state == AUDIO_PLAYING) {
         generate_audio_samples_48khz();
-        mod_timer(&audio_timer, jiffies + msecs_to_jiffies(10));  /* 10ms for 48kHz */
+        mod_timer(&audio_timer, jiffies + msecs_to_jiffies(5));
     }
 }
 
@@ -585,17 +544,16 @@ void display_timer_callback(unsigned long data)
     mod_timer(&display_timer, jiffies + HZ);
 }
 
-/* Debouncing */
 int is_button_debounced(int button_num)
 {
     struct timespec current_time;
-    long diff_ms;
-    
+    long long diff_ms;
+
     getnstimeofday(&current_time);
-    
+
     diff_ms = (current_time.tv_sec - last_button_time[button_num].tv_sec) * 1000 +
               (current_time.tv_nsec - last_button_time[button_num].tv_nsec) / 1000000;
-    
+
     if (diff_ms > DEBOUNCE_TIME_MS) {
         last_button_time[button_num] = current_time;
         return 1;
@@ -603,62 +561,68 @@ int is_button_debounced(int button_num)
     return 0;
 }
 
-/* IRQ Handler */
-irq_handler_t button_irq_handler(int irq, void *dev_id, struct pt_regs *regs)
+void button_work_handler(struct work_struct *work)
+{
+    uint32_t buttons_to_process = atomic_xchg(&pending_buttons, 0);
+
+    if (!buttons_to_process)
+        return;
+
+    printk(KERN_INFO "Button work handler: 0x%x\n", buttons_to_process);
+
+    if ((buttons_to_process & BUTTON_PLAY_PAUSE) && is_button_debounced(0)) {
+        if (current_state == AUDIO_PLAYING) {
+            audio_pause();
+            send_user_command('2');
+        } else {
+            audio_play();
+            send_user_command('1');
+        }
+    }
+
+    if ((buttons_to_process & BUTTON_NEXT) && is_button_debounced(1)) {
+        audio_next_track();
+        send_user_command('3');
+    }
+
+    if ((buttons_to_process & BUTTON_PREV) && is_button_debounced(2)) {
+        audio_prev_track();
+        send_user_command('4');
+    }
+}
+
+static irqreturn_t button_irq_handler(int irq, void *dev_id)
 {
     uint32_t edge_capture;
 
     edge_capture = ioread32(lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_EDGE_CAPTURE);
-    
-    printk(KERN_INFO "Button IRQ: 0x%x\n", edge_capture);
-    
-    if ((edge_capture & BUTTON_PLAY_PAUSE) && is_button_debounced(0)) {
-        if (current_state == AUDIO_PLAYING) {
-            audio_pause();
-            send_user_command('2');  // Pause
-        } else {
-            audio_play();
-            send_user_command('1');  // Play
-        }
+
+    if (edge_capture & (BUTTON_PLAY_PAUSE | BUTTON_NEXT | BUTTON_PREV)) {
+        atomic_or(edge_capture, &pending_buttons);
+        queue_work(audio_wq, &button_work);
     }
-    
-    if ((edge_capture & BUTTON_NEXT) && is_button_debounced(1)) {
-        audio_next_track();
-        send_user_command('3');      // Next
-    }
-    
-    if ((edge_capture & BUTTON_PREV) && is_button_debounced(2)) {
-        audio_prev_track();
-        send_user_command('4');      // Prev
-    }
-    
+
     iowrite32(edge_capture, lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_EDGE_CAPTURE);
-    return (irq_handler_t) IRQ_HANDLED;
+
+    return IRQ_HANDLED;
 }
 
-/* Audio control functions */
 void audio_play(void)
 {
     printk(KERN_INFO "PLAY: Track %d\n", current_track);
-    
     current_state = AUDIO_PLAYING;
-    
-    /* Ensure we have data */
+
     if (songs[current_track].is_valid && buffer_size == 0) {
         buffer_needs_refill = 1;
         queue_work(audio_wq, &refill_work);
-        mdelay(100);
+        msleep(100);
     }
-    
-    /* Initialize audio for I2S */
+
     init_audio_ip_via_axi();
-    
-    /* Start timers */
-    mod_timer(&audio_timer, jiffies + msecs_to_jiffies(10));
+
+    mod_timer(&audio_timer, jiffies + msecs_to_jiffies(5));
     mod_timer(&display_timer, jiffies + HZ);
-    
     display_time_mmss();
-    
     printk(KERN_INFO "I2S playback started\n");
 }
 
@@ -666,9 +630,7 @@ void audio_pause(void)
 {
     printk(KERN_INFO "PAUSE\n");
     current_state = AUDIO_PAUSED;
-    
     reset_audio_completely();
-    
     del_timer(&audio_timer);
     del_timer(&display_timer);
 }
@@ -676,26 +638,26 @@ void audio_pause(void)
 void audio_next_track(void)
 {
     int was_playing;
-    
+
     was_playing = (current_state == AUDIO_PLAYING);
     if (was_playing) audio_pause();
-    
+
     current_track = (current_track + 1) % total_tracks;
     current_time_seconds = 0;
     current_time_minutes = 0;
-    
+
     buffer_pos = 0;
     buffer_size = 0;
     buffer_needs_refill = 1;
-    
+
     next_track_to_load = current_track;
     queue_work(audio_wq, &load_work);
-    
+
     printk(KERN_INFO "Next track: %d\n", current_track);
     display_time_mmss();
-    
+
     if (was_playing) {
-        mdelay(200);
+        msleep(200);
         audio_play();
     }
 }
@@ -703,26 +665,26 @@ void audio_next_track(void)
 void audio_prev_track(void)
 {
     int was_playing;
-    
+
     was_playing = (current_state == AUDIO_PLAYING);
     if (was_playing) audio_pause();
-    
+
     current_track = (current_track - 1 + total_tracks) % total_tracks;
     current_time_seconds = 0;
     current_time_minutes = 0;
-    
+
     buffer_pos = 0;
     buffer_size = 0;
     buffer_needs_refill = 1;
-    
+
     next_track_to_load = current_track;
     queue_work(audio_wq, &load_work);
-    
+
     printk(KERN_INFO "Prev track: %d\n", current_track);
     display_time_mmss();
-    
+
     if (was_playing) {
-        mdelay(200);
+        msleep(200);
         audio_play();
     }
 }
@@ -732,135 +694,167 @@ static int __init initialize_48khz_audio_player(void)
 {
     int result;
     int i;
-    struct timespec current_time;
-    
+    struct timespec now;
+
     printk(KERN_INFO "=== I2S 24-bit Audio Player ===\n");
     printk(KERN_INFO "48kHz Stereo WAV Support\n");
-    
-    /* Initialize debounce */
-    getnstimeofday(&current_time);
-    for (i = 0; i < 3; i++) {
-        last_button_time[i] = current_time;
-    }
-    
-    /* Create workqueue */
+
+    getnstimeofday(&now);
+    for (i = 0; i < 3; i++)
+        last_button_time[i] = now;
+
     audio_wq = create_singlethread_workqueue("audio_wq");
     if (!audio_wq) {
         printk(KERN_ERR "Failed to create workqueue\n");
         return -ENOMEM;
     }
-    
     INIT_WORK(&load_work, load_work_handler);
     INIT_WORK(&refill_work, refill_work_handler);
-    
-    /* Initialize timers */
+    INIT_WORK(&button_work, button_work_handler);
+
+
+    audio_buffer = kmalloc(AUDIO_BUFFER_SIZE, GFP_KERNEL);
+    if (!audio_buffer) {
+        printk(KERN_ERR "Failed to allocate audio buffer\n");
+        destroy_workqueue(audio_wq);
+        return -ENOMEM;
+    }
+
     init_timer(&audio_timer);
     audio_timer.function = audio_timer_callback;
-    
+    audio_timer.data = 0;
+
     init_timer(&display_timer);
     display_timer.function = display_timer_callback;
-    
-    /* Map memory regions */
+    display_timer.data = 0;
+
     lwbridgebase = ioremap_nocache(0xff200000, 0x200000);
     audiobase = ioremap_nocache(0xc0000000, 0x800000);
-    
     if (!lwbridgebase || !audiobase) {
         printk(KERN_ERR "Memory mapping failed\n");
         if (lwbridgebase) iounmap(lwbridgebase);
         if (audiobase) iounmap(audiobase);
-        if (audio_wq) destroy_workqueue(audio_wq);
+        kfree(audio_buffer);
+        destroy_workqueue(audio_wq);
         return -ENOMEM;
     }
-    
-    printk(KERN_INFO "Memory mapped: LW_AXI=0x%p AXI_AUDIO=0x%p\n", 
+
+    printk(KERN_INFO "Memory mapped: LW_AXI=0x%p AXI_AUDIO=0x%p\n",
            lwbridgebase, audiobase);
-    
-    /* Initialize hardware */
+
     iowrite32(0x0, lwbridgebase + SEVEN_SEGMENTS_BASE_OFFSET);
     iowrite32(0x0, audiobase + AUDIO_CONTROL_REG);
-    
-    /* Initialize WM8731 for I2S 24-bit */
     init_wm8731_via_lw_axi();
-    
-    alloc_chrdev_region(&fpga_cmd_dev, 0, 1, "fpga_cmd");
+
+    result = alloc_chrdev_region(&fpga_cmd_dev, 0, 1, "fpga_cmd");
+    if (result < 0) {
+        printk(KERN_ERR "alloc_chrdev_region failed\n");
+        goto err_unmap;
+    }
     cdev_init(&fpga_cmd_cdev, &fpga_cmd_fops);
-    cdev_add(&fpga_cmd_cdev, fpga_cmd_dev, 1);
+    if (cdev_add(&fpga_cmd_cdev, fpga_cmd_dev, 1)) {
+        printk(KERN_ERR "cdev_add failed\n");
+        unregister_chrdev_region(fpga_cmd_dev, 1);
+        goto err_unmap;
+    }
+    fpga_cmd_class = class_create(THIS_MODULE, "fpga_cmd_class");
+    if (IS_ERR(fpga_cmd_class)) {
+        printk(KERN_ERR "class_create failed\n");
+        cdev_del(&fpga_cmd_cdev);
+        unregister_chrdev_region(fpga_cmd_dev, 1);
+        goto err_unmap;
+    }
+    fpga_cmd_device = device_create(fpga_cmd_class, NULL, fpga_cmd_dev, NULL, "fpga_cmd");
+    if (IS_ERR(fpga_cmd_device)) {
+        printk(KERN_ERR "device_create failed\n");
+        class_destroy(fpga_cmd_class);
+        cdev_del(&fpga_cmd_cdev);
+        unregister_chrdev_region(fpga_cmd_dev, 1);
+        goto err_unmap;
+    }
+
     printk(KERN_INFO "fpga_cmd device created: major=%d minor=%d\n", MAJOR(fpga_cmd_dev), MINOR(fpga_cmd_dev));
 
     current_time_seconds = 0;
     current_time_minutes = 0;
     display_time_mmss();
 
-    
-    // Load first 48kHz song
     next_track_to_load = 0;
     queue_work(audio_wq, &load_work);
-    mdelay(200);
-    
-    // Setup interrupts
+    msleep(200);
+
     iowrite32(0x7, lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_EDGE_CAPTURE);
     iowrite32(0x7, lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_INTERRUPT_MASK);
-    
-    result = request_irq(72 + 4, (irq_handler_t)button_irq_handler, 
+    result = request_irq(72 + 4, (irq_handler_t)button_irq_handler,
                         IRQF_SHARED, "audio_48khz_irq", (void *)(button_irq_handler));
-    
     if (result) {
         printk(KERN_ERR "IRQ request failed: %d\n", result);
-        if (audio_wq) {
-            flush_workqueue(audio_wq);
-            destroy_workqueue(audio_wq);
-        }
-        iounmap(lwbridgebase);
-        iounmap(audiobase);
-        return result;
+        device_destroy(fpga_cmd_class, fpga_cmd_dev);
+        class_destroy(fpga_cmd_class);
+        cdev_del(&fpga_cmd_cdev);
+        unregister_chrdev_region(fpga_cmd_dev, 1);
+        goto err_unmap;
     }
-    
-    printk(KERN_INFO "=== 48kHz Audio Player Ready (Left-Justified) ===\n");
+
+    printk(KERN_INFO "=== 48kHz Audio Player Ready (OLD KERNEL) ===\n");
     printk(KERN_INFO "Button 0: Play/Pause\n");
     printk(KERN_INFO "Button 1: Next Track\n");
     printk(KERN_INFO "Button 2: Previous Track\n");
-    
     return 0;
+
+err_unmap:
+    if (lwbridgebase) iounmap(lwbridgebase);
+    if (audiobase) iounmap(audiobase);
+    kfree(audio_buffer);
+    destroy_workqueue(audio_wq);
+    return -ENOMEM;
 }
 
-// Module cleanup
 static void __exit cleanup_48khz_audio_player(void)
 {
     int i;
-    
+
     printk(KERN_INFO "=== 48kHz cleanup ===\n");
-    
+
     current_state = AUDIO_STOPPED;
+
     del_timer_sync(&audio_timer);
     del_timer_sync(&display_timer);
-    cdev_del(&fpga_cmd_cdev);
-    unregister_chrdev_region(fpga_cmd_dev, 1);
-    
-    if (audiobase) {
-        iowrite32(0x0, audiobase + AUDIO_CONTROL_REG);
-    }
-    
+
     if (audio_wq) {
         flush_workqueue(audio_wq);
         destroy_workqueue(audio_wq);
     }
-    
+
+    if (audio_buffer)
+        kfree(audio_buffer);
+
     for (i = 0; i < total_tracks; i++) {
         if (songs[i].file) {
             filp_close(songs[i].file, NULL);
+            songs[i].file = NULL;
         }
     }
-    
+
     if (lwbridgebase) {
         iowrite32(0x0, lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_INTERRUPT_MASK);
         iowrite32(0x0, lwbridgebase + SEVEN_SEGMENTS_BASE_OFFSET);
     }
-    
+
     free_irq(72 + 4, (void*)button_irq_handler);
-    
+
+    if (fpga_cmd_device && fpga_cmd_class)
+        device_destroy(fpga_cmd_class, fpga_cmd_dev);
+
+    if (fpga_cmd_class)
+        class_destroy(fpga_cmd_class);
+
+    cdev_del(&fpga_cmd_cdev);
+    unregister_chrdev_region(fpga_cmd_dev, 1);
+
     if (lwbridgebase) iounmap(lwbridgebase);
     if (audiobase) iounmap(audiobase);
-    
+
     printk(KERN_INFO "=== I2S 24-bit Audio Player cleanup ===\n");
 }
 
