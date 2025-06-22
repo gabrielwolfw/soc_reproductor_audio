@@ -11,18 +11,6 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
-#include <linux/cdev.h>
-#include <linux/mutex.h>
-
-#define FPGA_CMD_BUF_SIZE 128
-
-static dev_t fpga_cmd_dev;
-static struct cdev fpga_cmd_cdev;
-static char cmd_buffer[FPGA_CMD_BUF_SIZE];
-static int cmd_buffer_len = 0;
-static DEFINE_MUTEX(cmd_mutex);
-
-
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Audio Player Team");
@@ -129,39 +117,6 @@ int parse_wav_header_48khz(wav_file_t* wav);
 void init_wm8731_via_lw_axi(void);
 void init_audio_ip_via_axi(void);
 void reset_audio_completely(void);
-
-
-
-static ssize_t fpga_cmd_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) {
-    ssize_t ret = 0;
-    mutex_lock(&cmd_mutex);
-    if (cmd_buffer_len > 0) {
-        size_t to_copy = min(count, (size_t)cmd_buffer_len);
-        if (copy_to_user(buf, cmd_buffer, to_copy) == 0) {
-            ret = to_copy;
-            // Mueve el buffer hacia atrás
-            memmove(cmd_buffer, cmd_buffer + to_copy, cmd_buffer_len - to_copy);
-            cmd_buffer_len -= to_copy;
-        }
-    }
-    mutex_unlock(&cmd_mutex);
-    return ret;
-}
-
-static struct file_operations fpga_cmd_fops = {
-    .owner = THIS_MODULE,
-    .read = fpga_cmd_read,
-};
-
-static void send_user_command(char cmd)
-{
-    mutex_lock(&cmd_mutex);
-    if (cmd_buffer_len < FPGA_CMD_BUF_SIZE) {
-        cmd_buffer[cmd_buffer_len++] = cmd;
-    }
-    mutex_unlock(&cmd_mutex);
-}
-
 
 /* WM8731 I2C register addresses */
 #define WM8731_LEFT_LINE_IN     0x00
@@ -536,9 +491,7 @@ void generate_audio_samples_48khz(void)
         } else {
             break;
         }
-        if (debug_counter < 16) {
-            printk(KERN_INFO "Sample left=%d right=%d", left_16, right_16);
-        }
+
         /* CONVERSIÓN CORRECTA: 16-bit a 24-bit I2S 
          * Para I2S de 24 bits, los datos se alinean en el MSB
          * Shift left 8 bits para convertir de 16-bit a 24-bit */
@@ -607,7 +560,7 @@ int is_button_debounced(int button_num)
 irq_handler_t button_irq_handler(int irq, void *dev_id, struct pt_regs *regs)
 {
     uint32_t edge_capture;
-
+    
     edge_capture = ioread32(lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_EDGE_CAPTURE);
     
     printk(KERN_INFO "Button IRQ: 0x%x\n", edge_capture);
@@ -615,21 +568,17 @@ irq_handler_t button_irq_handler(int irq, void *dev_id, struct pt_regs *regs)
     if ((edge_capture & BUTTON_PLAY_PAUSE) && is_button_debounced(0)) {
         if (current_state == AUDIO_PLAYING) {
             audio_pause();
-            send_user_command('2');  // Pause
         } else {
             audio_play();
-            send_user_command('1');  // Play
         }
     }
     
     if ((edge_capture & BUTTON_NEXT) && is_button_debounced(1)) {
         audio_next_track();
-        send_user_command('3');      // Next
     }
     
     if ((edge_capture & BUTTON_PREV) && is_button_debounced(2)) {
         audio_prev_track();
-        send_user_command('4');      // Prev
     }
     
     iowrite32(edge_capture, lwbridgebase + BUTTONS_BASE_OFFSET + BUTTONS_EDGE_CAPTURE);
@@ -782,15 +731,9 @@ static int __init initialize_48khz_audio_player(void)
     /* Initialize WM8731 for I2S 24-bit */
     init_wm8731_via_lw_axi();
     
-    alloc_chrdev_region(&fpga_cmd_dev, 0, 1, "fpga_cmd");
-    cdev_init(&fpga_cmd_cdev, &fpga_cmd_fops);
-    cdev_add(&fpga_cmd_cdev, fpga_cmd_dev, 1);
-    printk(KERN_INFO "fpga_cmd device created: major=%d minor=%d\n", MAJOR(fpga_cmd_dev), MINOR(fpga_cmd_dev));
-
     current_time_seconds = 0;
     current_time_minutes = 0;
     display_time_mmss();
-
     
     // Load first 48kHz song
     next_track_to_load = 0;
@@ -833,8 +776,6 @@ static void __exit cleanup_48khz_audio_player(void)
     current_state = AUDIO_STOPPED;
     del_timer_sync(&audio_timer);
     del_timer_sync(&display_timer);
-    cdev_del(&fpga_cmd_cdev);
-    unregister_chrdev_region(fpga_cmd_dev, 1);
     
     if (audiobase) {
         iowrite32(0x0, audiobase + AUDIO_CONTROL_REG);

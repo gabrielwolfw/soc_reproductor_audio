@@ -1,0 +1,31 @@
+{
+  "songs": [
+    {
+      "title": "We Are the Champions",
+      "artist": "Queen",
+      "album": "News of the World",
+      "year": "1977",
+      "genre": "Rock",
+      "duration": "1:15",
+      "cover": "/static/img/weare.jpg"
+    },
+    {
+      "title": "Gravity",
+      "artist": "John Mayer",
+      "album": "Blues Rock",
+      "year": "2006",
+      "genre": "Pop",
+      "duration": "1:15",
+      "cover": "/static/img/gravity.jpg"
+    },
+        {
+      "title": "I Was Made for Lovin You",
+      "artist": "Kiss",
+      "album": "Dynasty",
+      "year": "1971",
+      "genre": "Rock",
+      "duration": "1:15",
+      "cover": "/static/img/kiss.jpg"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "song": {
+    "title": "Gravity",
+    "artist": "John Mayer",
+    "album": "Blues Rock",
+    "year": "2006",
+    "genre": "Pop",
+    "duration": "1:15",
+    "cover": "/static/img/mj.jpg"
+  },
+  "is_playing": false,
+  "current_time": 0
+}
