@@ -27,10 +27,12 @@ static int cmd_buffer_len = 0;
 
 static DEFINE_MUTEX(cmd_mutex);
 static DEFINE_MUTEX(hw_mutex);
+static DEFINE_SPINLOCK(buffer_lock);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Audio Player Team");
 MODULE_DESCRIPTION("Hybrid Dual AXI Audio Player - 48kHz I2S 24-bit");
+
 
 /* Virtual address bases */
 void __iomem *lwbridgebase;
@@ -194,16 +196,16 @@ void init_wm8731_via_lw_axi(void)
     mdelay(10);
     iowrite32((WM8731_POWER_DOWN << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(5);
-    iowrite32((WM8731_LEFT_HP_OUT << 9) | 0x79, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    iowrite32((WM8731_LEFT_HP_OUT << 9) | 0x20, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
-    iowrite32((WM8731_RIGHT_HP_OUT << 9) | 0x79, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    iowrite32((WM8731_RIGHT_HP_OUT << 9) | 0x20, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
-    iowrite32((WM8731_ANALOG_PATH << 9) | 0x10, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    iowrite32((WM8731_ANALOG_PATH << 9) | 0x12, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
     iowrite32((WM8731_DIGITAL_PATH << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
     /* Set I2S format, 24-bit data */
-    iowrite32((WM8731_DIGITAL_IF << 9) | 0x06, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
+    iowrite32((WM8731_DIGITAL_IF << 9) | 0x0A, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
     iowrite32((WM8731_SAMPLING_CTRL << 9) | 0x00, lwbridgebase + AUDIO_CONFIG_BASE_OFFSET);
     mdelay(2);
@@ -418,6 +420,7 @@ void refill_work_handler(struct work_struct *work)
     wav_file_t *wav = &songs[current_track];
     int bytes_read;
     mm_segment_t oldfs;
+    unsigned long flags;
 
     if (!wav->is_valid || !wav->file || !buffer_needs_refill)
         return;
@@ -427,7 +430,9 @@ void refill_work_handler(struct work_struct *work)
     bytes_read = vfs_read(wav->file, (char __user *)audio_buffer, AUDIO_BUFFER_SIZE, &wav->current_pos);
     set_fs(oldfs);
 
+    spin_lock_irqsave(&buffer_lock, flags);
     if (bytes_read > 0) {
+        printk(KERN_INFO "Refilled audio buffer with %d bytes\n", bytes_read);
         buffer_size = bytes_read;
         buffer_pos = 0;
         buffer_needs_refill = 0;
@@ -435,7 +440,9 @@ void refill_work_handler(struct work_struct *work)
         printk(KERN_INFO "End of track reached\n");
         buffer_size = 0;
         buffer_pos = 0;
+        buffer_needs_refill = 0;
     }
+    spin_unlock_irqrestore(&buffer_lock, flags);
 }
 
 void display_time_mmss(void)
@@ -461,14 +468,23 @@ void display_time_mmss(void)
 void generate_audio_samples_48khz(void)
 {
     uint32_t fifospace;
-    int write_space_left, write_space_right;
+    int write_space_left, write_space_right, write_space;
     int i;
     wav_file_t *wav;
+    unsigned long flags;
 
     if (current_state != AUDIO_PLAYING) return;
 
     wav = &songs[current_track];
     if (!wav->is_valid) return;
+
+    /* Verificar si necesitamos recargar el buffer proactivamente */
+    spin_lock_irqsave(&buffer_lock, flags);
+    if (buffer_pos > buffer_size / 2 && !buffer_needs_refill) {
+        buffer_needs_refill = 1;
+        queue_work(audio_wq, &refill_work);
+    }
+    spin_unlock_irqrestore(&buffer_lock, flags);
 
     mutex_lock(&hw_mutex);
     fifospace = ioread32(audiobase + AUDIO_FIFOSPACE_REG);
@@ -476,55 +492,54 @@ void generate_audio_samples_48khz(void)
 
     write_space_left = (fifospace >> 24) & 0xFF;
     write_space_right = (fifospace >> 16) & 0xFF;
+    write_space = min(write_space_left, write_space_right);
 
-    if (write_space_left < 4 || write_space_right < 4) {
+    if (write_space < 4) {
         return;
     }
 
-    if (buffer_pos >= buffer_size - 8 && !buffer_needs_refill) {
-        buffer_needs_refill = 1;
-        queue_work(audio_wq, &refill_work);
+    spin_lock_irqsave(&buffer_lock, flags);
+    
+    if (buffer_size == 0 || buffer_pos >= buffer_size) {
+        spin_unlock_irqrestore(&buffer_lock, flags);
         return;
     }
-
-    if (buffer_size == 0) return;
 
     mutex_lock(&hw_mutex);
-    for (i = 0; i < 32 && write_space_left > 0 && write_space_right > 0; i++) {
-        int16_t left_16 = 0, right_16 = 0;
+    for (i = 0; i < write_space && buffer_pos + 3 < buffer_size; i++) {
+        static int log_counter = 0;
+        if (i > 0 && log_counter++ % 100 == 0) {
+            printk(KERN_INFO "Sent %d samples to audio FIFO\n", i);
+        }
+        int16_t left_16, right_16;
         int32_t left_24, right_24;
 
-        if (buffer_pos + 3 < buffer_size) {
-            left_16 = *(int16_t*)(&audio_buffer[buffer_pos]);
-            right_16 = *(int16_t*)(&audio_buffer[buffer_pos + 2]);
-            buffer_pos += 4;
-            wav->samples_played++;
-        } else {
-            break;
-        }
+        left_16 = *(int16_t*)(&audio_buffer[buffer_pos]);
+        right_16 = *(int16_t*)(&audio_buffer[buffer_pos + 2]);
+        buffer_pos += 4;
+        wav->samples_played++;
 
         left_24 = ((int32_t)left_16) << 8;
         right_24 = ((int32_t)right_16) << 8;
 
         iowrite32(left_24, audiobase + AUDIO_LEFTDATA_REG);
         iowrite32(right_24, audiobase + AUDIO_RIGHTDATA_REG);
-
-        write_space_left--;
-        write_space_right--;
     }
     mutex_unlock(&hw_mutex);
-
-    if (buffer_pos >= buffer_size - 8 && !buffer_needs_refill && buffer_size > 0) {
-        buffer_needs_refill = 1;
-        queue_work(audio_wq, &refill_work);
+    if (i > 0) {
+        static int log_counter = 0;
+        if (log_counter++ % 100 == 0) {
+            printk(KERN_INFO "Sent %d samples to audio FIFO\n", i);
+        }
     }
+    spin_unlock_irqrestore(&buffer_lock, flags);
 }
 
 void audio_timer_callback(unsigned long data)
 {
     if (current_state == AUDIO_PLAYING) {
         generate_audio_samples_48khz();
-        mod_timer(&audio_timer, jiffies + msecs_to_jiffies(5));
+        mod_timer(&audio_timer, jiffies + msecs_to_jiffies(1));
     }
 }
 
@@ -620,7 +635,7 @@ void audio_play(void)
 
     init_audio_ip_via_axi();
 
-    mod_timer(&audio_timer, jiffies + msecs_to_jiffies(5));
+    mod_timer(&audio_timer, jiffies + msecs_to_jiffies(1));
     mod_timer(&display_timer, jiffies + HZ);
     display_time_mmss();
     printk(KERN_INFO "I2S playback started\n");
