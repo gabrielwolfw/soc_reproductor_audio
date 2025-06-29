@@ -1,0 +1,31 @@
+#!/bin/sh -e
+#
+# rc.local - Auto-load FPGA and HPS Audio System
+#
+
+echo "=== Auto-loading FPGA + HPS Audio System ==="
+
+# 1. Load FPGA first
+echo "Loading FPGA configuration..."
+if [ -f /output_file.rbf ]; then
+    echo "Programming FPGA with .rbf..."
+    cat /output_file.rbf > /dev/fpga0 2>/dev/null
+    sleep 5
+    echo "FPGA programmed"
+else
+    echo "WARNING: .rbf file not found"
+fi
+
+# 2. Start HPS Audio Streamer
+echo "Starting HPS Audio Streamer..."
+if [ -f /usr/bin/hps_audio_loader ]; then
+    /usr/bin/hps_audio_loader &
+    echo "HPS Audio Streamer started"
+    echo "System ready - use FPGA buttons to control"
+else
+    echo "ERROR: HPS Audio Loader not found"
+fi
+
+echo "=== Auto-start complete ==="
+
+exit 0
